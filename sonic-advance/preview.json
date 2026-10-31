@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/78-previews-progress-threads",
-  "commit": "b0cf7bcaa88ff65dffd96e55439afd984fea195f",
-  "made": "2026-10-31T02:32:59.813Z",
-  "about": "The first preview and post made with npm run dp -- share, from a fork, while building #78. The game itself is as it is on main."
+  "branch": "team/sonic-advance",
+  "commit": "045c53f3d39eb31233f977646493c22a5e6789c5",
+  "made": "2026-10-31T06:27:09.320Z",
+  "about": ""
 }

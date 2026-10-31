@@ -5,6 +5,7 @@
 // middle: its top and bottom 40 lines show at once, and its middle 80 lines start split apart, every other
 // line shifted the other way, closing in 2 pixels a frame. With SEGA's ring sound it holds for 122 frames, then
 // fades to white over 33, and the intro starts. A or Start while it fades goes to the title screen instead.
+// The team build test of #80 changed this line only: a comment, so every frame plays as before.
 
 import { drawBackground, createBackground } from '../gba/background.js';
 import { scrollLines, fillLines, shearLines } from '../gba/lines.js';
