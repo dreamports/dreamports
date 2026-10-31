@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/123-sonic-battle",
+  "commit": "5c97257b8cffd77f1cd4cda86948d1d19dd6e410",
+  "made": "2026-10-31T16:51:35.560Z",
+  "about": "The first piece of Sonic Battle Dreamport: the SEGA and Sonic Team logos, from power-on to the black screen after them, with Start skipping each logo as the original does. Every frame matches the original. There's no sound yet, and the intro comes next."
+}
