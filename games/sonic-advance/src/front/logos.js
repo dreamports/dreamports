@@ -13,7 +13,7 @@ import { FLAGS, KEY } from '../gba/engine.js';
 import { SONG } from '../sound/songs.js';
 
 const TM_PRESENTED_BY_SEGA = 86, TM_CREATED_BY_SONIC_TEAM = 87;
-const WIPE = 160, SEGA_HOLD = 120, SONIC_TEAM_HOLD = 120, FADE_STEP = 0x80, FADE_END = 0x1000;
+const WIPE = 160, SEGA_HOLD = 119, SONIC_TEAM_HOLD = 120, FADE_STEP = 0x80, FADE_END = 0x1000;
 
 // CreateSegaLogo and CreateSonicTeamLogo: layer 2 alone (map block 30, tiles from 0) with the logo's 20 × 10
 // tiles at (5, 5), the map filled with tile 0 first
