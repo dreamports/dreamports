@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/78-previews-progress-threads",
-  "commit": "8bf066fe7ada840d8a61682e3ab35acecef01a71",
-  "made": "2026-10-31T02:26:14.549Z",
-  "about": "First preview from a fork, made while building #78."
+  "commit": "b0cf7bcaa88ff65dffd96e55439afd984fea195f",
+  "made": "2026-10-31T02:32:59.813Z",
+  "about": "The first preview and post made with npm run dp -- share, from a fork, while building #78. The game itself is as it is on main."
 }
