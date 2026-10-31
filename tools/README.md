@@ -125,3 +125,4 @@ Everything else the tools keep is in `.dreamports/`, in the repository's folder,
 ## For a game on the Game Boy Advance kit
 
 A game made on [the Game Boy Advance kit](../kit/gba/README.md) works with the tools when its page calls `proof?.watch(screen, input)`, as the kit's guide shows, and keeps the kit's start screen, where the tools give it the copy and press Play. Its screen has to be the console's 240 by 160 pixels while the tools play it. Games with more than one player on a page aren't supported yet.
+

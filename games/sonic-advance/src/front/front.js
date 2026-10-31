@@ -5,6 +5,7 @@
 //
 // A new game, with no save yet, starts with the language screen (language.js), which writes the save; with a save,
 // the game starts with the logos. The Options menu (options.js) changes the save and writes it.
+// A comment, for the team build test of #80.
 
 import { createVideo, REG, SCREEN_W, SCREEN_H } from '../../../../kit/gba/video.js';
 import { createEngine, KEY } from '../gba/engine.js';
