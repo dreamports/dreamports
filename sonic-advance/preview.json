@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/78-previews-progress-threads",
+  "commit": "8bf066fe7ada840d8a61682e3ab35acecef01a71",
+  "made": "2026-10-31T02:26:14.549Z",
+  "about": "First preview from a fork, made while building #78."
+}
