@@ -27,3 +27,4 @@ ownCopy:
 ## Credits
 
 Made by the Dreamports team. The game’s rules come from [cypressru’s decompilation](https://github.com/cypressru/SonicBattleDecomp), a community project turning Sonic Battle’s program back into readable code, which this Dreamport reads as a guide.
+
