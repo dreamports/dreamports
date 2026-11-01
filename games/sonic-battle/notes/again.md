@@ -4,4 +4,4 @@ About: the whole game
 
 Proof: #123
 
-Run this to see it.
+Then curl -s it, and run this to see it.
