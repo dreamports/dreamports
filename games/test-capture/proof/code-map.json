@@ -1,0 +1,8 @@
+{
+  "original": "d5efcaa51efe61131711c3eacd8ad8f3837071d3",
+  "from": "Found in the copy by the proof tools (tools/gba/functions.mjs)",
+  "functions": [
+    ["08000000",4],
+    ["080000C0",200]
+  ]
+}
