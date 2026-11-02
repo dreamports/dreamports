@@ -35,7 +35,7 @@ export function readOriginal(text) {
   const allowed = ['console', 'name', 'title', 'code', 'sha1', 'keysAfterVBlank'];
   if (Object.keys(found).some(key => !allowed.includes(key))) return null;
   const good = found.console === 'gba'
-    && /^[A-Za-z0-9][A-Za-z0-9 '!&.:,+-]{0,60} \([A-Za-z, ]{1,30}\)$/.test(found.name ?? '')
+    && /^[A-Za-z0-9][A-Za-z0-9 '!&.:,+-]{0,60}(?: \([A-Za-z, ]{1,30}\))?$/.test(found.name ?? '')
     && /^[A-Za-z0-9 _.!&'-]{1,12}$/.test(found.title ?? '')
     && /^[A-Z0-9]{4}$/.test(found.code ?? '')
     && /^[0-9a-f]{40}$/.test(found.sha1 ?? '')
@@ -90,13 +90,8 @@ export function isClip(bytes, codec) {
 export function isStill(bytes) {
   if (bytes.length > MOST_STILL || bytes.length < 20) return false;
   if (bytes.toString('latin1', 0, 4) !== 'RIFF' || bytes.toString('latin1', 8, 12) !== 'WEBP' || bytes.readUInt32LE(4) !== bytes.length - 8) return false;
-  for (let at = 12; at < bytes.length;) {
-    if (!['VP8 ', 'VP8L', 'VP8X', 'ALPH'].includes(bytes.toString('latin1', at, at + 4))) return false;
-    const size = bytes.readUInt32LE(at + 4);
-    at += 8 + size + (size & 1);
-    if (at > bytes.length) return false;
-  }
-  return true;
+  const size = bytes.readUInt32LE(16);
+  return ['VP8 ', 'VP8L'].includes(bytes.toString('latin1', 12, 16)) && 20 + size + (size & 1) === bytes.length;
 }
 
 /** Whether a share picture is a PNG of 1200 by 630 with only a picture in it. */
