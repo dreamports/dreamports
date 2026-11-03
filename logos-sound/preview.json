@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/190-logos-sound",
+  "commit": "5e0cd2dac53b7ce7345608b5253b6038a573d845",
+  "made": "2026-11-03T02:20:11.391Z",
+  "about": "The logos now play their song: the Dreamport runs the game's sound engine on your own copy, at the rate the original uses, so the SEGA and Sonic Team logos match every frame."
+}
