@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/193-the-main-menu",
+  "commit": "595ce1ccc50d717e5ad32b75a6892d607fe953cb",
+  "made": "2026-11-03T23:51:52.165Z",
+  "about": "The main menu's pictures, palette fades, preview and sprites start after the title screen; the screen doesn't match yet."
+}
