@@ -15,6 +15,11 @@ ownCopy:
     - label: Play
       href: https://dreamports.net/play/test-capture/
       icon: play
+screen:
+  clip: /media/test-capture-dreamport
+  still: /media/test-capture-dreamport-still.webp
+  pixelated: true
+share: /media/test-capture-dreamport-share.png
 ---
 
 ## Credits
