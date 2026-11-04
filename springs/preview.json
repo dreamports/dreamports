@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/480-springs",
-  "commit": "20725471f039e340572bdd42a737ae5bbcbd1044",
-  "made": "2026-11-04T15:48:40.356Z",
-  "about": "Springs now throw Sonic and Tails up, down, left and right in Route 99 act 1, with the camera following, as the original does."
+  "commit": "3543fb5320b377ce1310d9c4ec173c25e899bf94",
+  "made": "2026-11-04T16:45:11.149Z",
+  "about": "Springs now throw Sonic and Tails up, left and right in Route 99 act 1, with the camera following, as the original does."
 }
