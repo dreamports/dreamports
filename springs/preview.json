@@ -1,10 +1,10 @@
 {
-  "game": "sonic-advance-2",
-  "title": "Sonic Advance 2 Dreamport",
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/500-springs",
-  "commit": "076b9264bc2f12de2807b4be845f3f7eca861de8",
-  "made": "2026-11-04T14:22:44.477Z",
-  "about": "Springs come to Leaf Forest act 1: Sonic is thrown up and diagonally, with the camera following, and falls back to the ground, with every frame matching the original."
+  "branch": "feat/480-springs",
+  "commit": "20725471f039e340572bdd42a737ae5bbcbd1044",
+  "made": "2026-11-04T15:35:33.272Z",
+  "about": "Springs now throw Sonic and Tails up, down, left and right in Route 99 act 1, with the camera following, as the original does."
 }
