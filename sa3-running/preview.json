@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/476-a-character-running",
+  "commit": "80c7e90bc4205d3fbe1d70034ddb6010997e7451",
+  "made": "2026-11-04T09:53:37.597Z",
+  "about": "Sonic runs, brakes and turns round both ways on Route 99's overworld, with the camera following and Tails running after him. All 1,100 frames match the original."
+}
