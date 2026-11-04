@@ -1,10 +1,10 @@
 {
-  "game": "sonic-battle",
-  "title": "Sonic Battle Dreamport",
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/465-name-entry",
-  "commit": "6fb68d6ad9ee73ae265afc130ba98f2e75d26217",
-  "made": "2026-11-04T12:16:27.573Z",
-  "about": "The name entry at the first start: choose your name with A and B, scroll the letters, and Start keeps it and goes on to the main menu."
+  "branch": "feat/300-name-entry",
+  "commit": "88fd40ac91b6a9740001e48cf6079c9ba8117c02",
+  "made": "2026-11-04T18:14:28.544Z",
+  "about": "The name entry now plays after the language screen: writing a name, the marks on kana, the menu and keeping it, up to the black before the logos."
 }
