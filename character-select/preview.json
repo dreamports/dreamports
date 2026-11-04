@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/91-character-select",
+  "commit": "5d348bb0952efd48a65ecb4c3a73578cb46687b3",
+  "made": "2026-11-04T06:03:47.889Z",
+  "about": "The character select, from Game Start on the main menu: every picture matches the original, with the row, each pick, going back and the partner code's keys."
+}
