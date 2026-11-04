@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/91-character-select",
-  "commit": "f9ef4708ce9e4eb4370e685a8441c74c7b1d49e2",
-  "made": "2026-11-04T06:05:28.880Z",
-  "about": "The character select, from Game Start on the main menu: every picture matches the original, with the row, each pick, going back and the partner code's keys."
+  "commit": "b96d1763b3c7d04a23727549e7b905c791ecdbf5",
+  "made": "2026-11-04T09:16:16.434Z",
+  "about": "CPU Tails follows Sonic through Neo Green Hill Zone, from the character select's code: every picture matches the original through the goal, the results and into act 2."
 }
