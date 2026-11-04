@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/94-the-title-screens-demos",
   "commit": "2469ad8e5fee2017ff8220c45587470c6cab4316",
-  "made": "2026-11-04T20:54:52.746Z",
-  "about": "The title screen now plays its four demos in turn, and every frame of them matches the original, pictures and sound."
+  "made": "2026-11-04T20:55:58.855Z",
+  "about": "Start cuts a demo short, on its title card, under the spotlights or later, and every frame matches the original."
 }
