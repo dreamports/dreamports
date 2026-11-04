@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/88-fix-the-originals-bugs",
-  "commit": "95a6637f6ecbd6d44ad3e29b4461987802f82a3d",
-  "made": "2026-11-04T10:56:31.549Z",
+  "commit": "ce3353db00a8d3a97e49964362b2fe84e0e25546",
+  "made": "2026-11-04T11:54:12.009Z",
   "about": "A Bug fixes setting, off unless chosen, that fixes the original game's bugs. With it off, the game plays as before."
 }
