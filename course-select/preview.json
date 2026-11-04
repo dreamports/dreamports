@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/92-course-select",
+  "commit": "f23009a4cd11b57f5734396a6e99c7b3470fc707",
+  "made": "2026-11-04T06:52:20.493Z",
+  "about": "The course select: once Sonic has progress, Game Start leads to the original screen where you pick any act reached."
+}
