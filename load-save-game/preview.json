@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/319-crash-purple-load-save",
   "commit": "5238b99b3cbb8c3c5f2467a7643763854965d3e1",
-  "made": "2026-11-04T11:05:52.117Z",
+  "made": "2026-11-04T11:07:44.506Z",
   "about": "The load save game screen now plays after the title screen: its text, Aku Aku as the pointer, moving between the lines, B back to the title, and A through the save's pause and the fade to white. Every frame matches the original in picture and sound."
 }
