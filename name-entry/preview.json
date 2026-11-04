@@ -1,10 +1,10 @@
 {
-  "game": "sonic-advance-3",
-  "title": "Sonic Advance 3 Dreamport",
+  "game": "sonic-advance-2",
+  "title": "Sonic Advance 2 Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/300-name-entry",
-  "commit": "43c6fef86b9379b6e804fdd077e028ffe27693d6",
-  "made": "2026-11-04T19:37:26.507Z",
-  "about": "The name entry now plays after the language screen: writing a name, both marks on kana, the menu and keeping it, up to the black before the logos."
+  "branch": "feat/399-name-entry",
+  "commit": "e72b82b4c3debd99588c4c326d44a59639037d70",
+  "made": "2026-11-04T19:44:59.563Z",
+  "about": "The name entry at the first start: the letters, both marks, the pages, the end button, in all six languages, matching the original on every frame."
 }
