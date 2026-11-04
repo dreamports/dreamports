@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/94-the-title-screens-demos",
-  "commit": "9f79ae26b7cc4a6ee96dded359b81eeb303f2fa7",
-  "made": "2026-11-04T19:53:08.962Z",
-  "about": "The title screen now plays its four demos in turn. Sonic's matches the original except for one frame of sound, and Secret Base's still differs by a few pixels on some frames."
+  "commit": "2469ad8e5fee2017ff8220c45587470c6cab4316",
+  "made": "2026-11-04T20:54:52.746Z",
+  "about": "The title screen now plays its four demos in turn, and every frame of them matches the original, pictures and sound."
 }
