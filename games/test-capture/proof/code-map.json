@@ -1,0 +1,8 @@
+{
+  "original": "d5efcaa51efe61131711c3eacd8ad8f3837071d3",
+  "from": "A list made for this test",
+  "functions": [
+    ["080000C0", 256],
+    ["080001C0", 64]
+  ]
+}
