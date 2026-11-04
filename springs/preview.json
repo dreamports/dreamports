@@ -1,10 +1,10 @@
 {
-  "game": "sonic-advance-3",
-  "title": "Sonic Advance 3 Dreamport",
+  "game": "sonic-advance-2",
+  "title": "Sonic Advance 2 Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/480-springs",
-  "commit": "20725471f039e340572bdd42a737ae5bbcbd1044",
-  "made": "2026-11-04T15:36:50.294Z",
-  "about": "Springs now throw Sonic and Tails up, down, left and right in Route 99 act 1, with the camera following, as the original does."
+  "branch": "feat/500-springs",
+  "commit": "bc4b448f66979c2b44faed49408d4bec8ce224f9",
+  "made": "2026-11-04T15:37:52.354Z",
+  "about": "Springs in Leaf Forest act 1: still until Sonic touches them, then pressed down with their sound while they throw him. He waits out the countdown on the ground before reaching each one."
 }
