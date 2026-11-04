@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/208-the-options",
+  "commit": "6eac45bcd9b9ef6f56bfc3fc8383d52a414734c5",
+  "made": "2026-11-04T18:56:19.152Z",
+  "about": "The options screen: the language, the music and sound tests, and deleting the save, reached from the main menu."
+}
