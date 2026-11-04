@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/322-crash-purple-story-opening",
-  "commit": "129a2096ef0d5aeca66b87284e63b32b4195eaa8",
-  "made": "2026-11-04T19:14:44.263Z",
-  "about": "The story's opening scene now plays after Story Mode on the main menu, with its videos, pages of text and song. Its pictures match the original up to frame 2350, and its sound doesn't match yet."
+  "commit": "ac1bf3263838314d9b1d987bf85efd2eb6efc3e1",
+  "made": "2026-11-04T21:41:21.659Z",
+  "about": "The story's opening scene now plays after the title screen, before the first world's hub, matching the original on every frame in picture and sound."
 }
