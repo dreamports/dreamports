@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/193-the-main-menu",
-  "commit": "595ce1ccc50d717e5ad32b75a6892d607fe953cb",
-  "made": "2026-11-03T23:52:23.854Z",
-  "about": "The main menu's pictures, palette fades, preview and sprites start after the title screen; the screen doesn't match yet."
+  "commit": "451bc3ef738993397cd538a50bc352375356067f",
+  "made": "2026-11-04T04:42:26.070Z",
+  "about": "The main menu now matches the original on every frame, in picture and sound: moving through its seven choices, and choosing one."
 }
