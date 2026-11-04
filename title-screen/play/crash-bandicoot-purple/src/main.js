@@ -13,7 +13,7 @@ import { proof } from '../../../kit/gba/proof.js';
 import { createSettings } from '../../../kit/gba/ui/settings.js';
 import { createTouch } from '../../../kit/gba/ui/touch.js';
 import { createSound } from '../../../kit/gba/sound/audio.js';
-import { createCore, step } from './core.js';
+import { createCore, step, hblank } from './core.js';
 
 // the game as its cartridge's header names it, and the version the Dreamport is built from
 const GAME = { name: 'Crash Bandicoot Purple: Ripto\'s Rampage', title: 'CRASH PURPLE', codes: { BD4E: 'USA' }, versions: [{ sha1: '35d1c8c90890bf7ce66306e6c06a3676a723dcf3' }] };
@@ -35,7 +35,7 @@ const input = createInput(LAYOUT);
 const sound = createSound({
   worklet: new URL('./sound/worklet.js', import.meta.url),
   calls: call => ({
-    startSong(address, ahead = 0) { call('startSong', address, ahead); },
+    startSong(address) { call('startSong', address); },
     playEffect(address) { call('playEffect', address); },
   }),
 });
@@ -66,12 +66,11 @@ createRomSetup(picker, {
   onPlay: start,
 });
 
-// The game so far: the copyright screen, the logos and the title screen. What comes after it, the load save game screen,
-// isn't ported yet, so the screen stays white there.
+// The game so far: the copyright screen, the logos and the title screen, which waits there as Start's next screen, the
+// load save screen, isn't ported yet.
 function createGame(video, rom, sound) {
-  // a start point (tools/README.md), which the game's own path doesn't reach yet: ?hub opens in the first world's hub
-  const core = createCore(video, rom, sound, new URLSearchParams(location.search).has('hub') ? 'hub' : null);
-  return { step(keys) { step(core, keys); }, hblank(y) { core.hblank?.(y); } };
+  const core = createCore(video, rom, sound);
+  return { step(keys) { step(core, keys); }, hblank(y) { hblank(core, y); } };
 }
 
 function start() {

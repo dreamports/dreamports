@@ -77,7 +77,7 @@ function createLayer(video, rom, number, tiles, def, screen) {
     // 0x0801AB30, with 0x0801A9A4's size in the eighth of a pixel it keeps: half the screen or half the layer
     halfW: 0, halfH: 0, maxX: 0, maxY: 0,
     x: 0, y: 0, x0: 0, x1: 0, y0: 0, y1: 0,
-    // [112], the columns it keeps past each side of the screen, for lines the H-blank moves (0x08002158)
+    // 0x08002158: how many columns beyond the screen's it draws on each side, for a layer whose lines move on their own
     margin: 0,
   };
   const pixelsW = width << 12, pixelsH = height << 12;
@@ -195,8 +195,7 @@ export function createWorld(video, rom, def) {
   const world = { layers: [], camera: { x: 0, y: 0 } };
   for (let n = 0; n < 4; n++) {
     const layerDef = rom.u32(at + 4 + n * 4);
-    world.layers[n] = null;
-    if (!layerDef) continue;   // 0x0802F460: a level needn't use all four
+    if (!layerDef) continue;   // the title screen has only the first and the last
     const usesBig = rom.u8(layerDef - CARTRIDGE + 22) !== 0;
     world.layers[n] = createLayer(video, rom, n, usesBig ? big : small, layerDef, 28 + n);
     const priority = rom.u32(layerDef - CARTRIDGE + 8) & 3;
@@ -218,7 +217,6 @@ const ORDER = [3, 0, 1, 2];
 /** 0x0802F2E0: every layer's first picture. */
 export function showWorld(world) {
   const last = world.layers[3];
-  if (world.layers[0]) world.layers[0].margin = 1;   // 0x0802F8A0, for the first layer
   placeLayer(last, world.camera);
   for (const n of ORDER.slice(1)) if (world.layers[n]) placeLayer(world.layers[n], last);
 }

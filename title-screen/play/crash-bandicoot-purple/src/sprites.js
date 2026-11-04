@@ -17,7 +17,7 @@ export function readAnimation(rom, address) {
 
 /** 0x08035654: something on screen playing an animation, at its place in eighths of a pixel (0x080352DC starts it). */
 export function createSprite(rom, address, x, y, flipX = false) {
-  const sprite = { rom, x, y, flipX, flipY: false, animation: null, frame: 0, next: 0, ended: false, hidden: false };
+  const sprite = { rom, x, y, flipX, flipY: false, priority: 0, animation: null, frame: 0, next: 0, ended: false, hidden: false };
   sprite.animation = readAnimation(rom, address);
   return sprite;
 }
@@ -52,15 +52,20 @@ const TILES = [1, 4, 16, 64, 2, 4, 8, 32, 2, 4, 8, 32];
 const WIDTHS = [8, 16, 32, 64, 16, 32, 32, 64, 8, 8, 16, 32];
 const HEIGHTS = [8, 16, 32, 64, 8, 8, 16, 32, 16, 32, 32, 64];
 
-/** 0x080190D0 with 0x08018BD8: a sprite's frame at its place on screen: its colours, its pieces and its tiles. */
-export function drawSprite(sprites, sprite, screenX, screenY, colours) {
-  const { rom, list } = sprites, { animation } = sprite;
-  let slot = sprites.slots.get(animation.colours);
+// 0x0801F7A8: the place a sprite's colours have among the console's 16, given the first time they're asked for
+function colourSlot(sprites, address, colours) {
+  let slot = sprites.slots.get(address);
   if (slot === undefined) {
     slot = sprites.nextSlot--;
-    sprites.slots.set(animation.colours, slot);
-    for (let i = 0; i < 16; i++) colours[256 + slot * 16 + i] = rom.u16(animation.colours + i * 2);
+    sprites.slots.set(address, slot);
+    for (let i = 0; i < 16; i++) colours[256 + slot * 16 + i] = sprites.rom.u16(address + i * 2);
   }
+  return slot;
+}
+
+/** 0x080190D0 with 0x08018BD8: a sprite's frame at its place on screen: its colours, its pieces and its tiles. */
+export function drawSprite(sprites, sprite, screenX, screenY, colours) {
+  const { rom, list } = sprites, { animation } = sprite, slot = colourSlot(sprites, animation.colours, colours);
   const frame = rom.u32(animation.sheet + 4) - CARTRIDGE + rom.u16(animation.list + sprite.frame * 2) * 44;
   const parts = rom.u32(frame) - CARTRIDGE, count = rom.u8(frame + 16);
   let offset = 0;
@@ -74,7 +79,7 @@ export function drawSprite(sprites, sprite, screenX, screenY, colours) {
       list.push([
         (y & 0xFF) | ((kind & 0xC) << 12),
         (x & 0x1FF) | ((kind & 3) << 14) | (sprite.flipX ? 0x1000 : 0) | (sprite.flipY ? 0x2000 : 0),
-        (slot << 12) | ((sprite.priority ?? 1) << 10) | (sprites.tiles + offset),   // [52], which 0x08019190 sets to 1 in a level and 0x08019254 starts at 0
+        (slot << 12) | (sprite.priority << 10) | (sprites.tiles + offset),   // as 0x08019190 sets it
       ]);
     }
     offset += TILES[kind];
@@ -84,11 +89,18 @@ export function drawSprite(sprites, sprite, screenX, screenY, colours) {
   sprites.tiles += (offset + 1) & ~1;
 }
 
-/** 0x0802AF14: a letter of 8 by 16 from the font's tiles at `from`, with the font's 0x9000: tall, with mosaic set, at priority 0. */
-export function drawLetter(sprites, from, x, y, slot) {
-  sprites.list.push([(y & 0xFF) | 0x9000, x & 0x1FF, (slot << 12) | sprites.tiles]);
-  sprites.jobs.push([from, sprites.tiles, 2]);
-  sprites.tiles += 2;
+/** 0x0800E1A8: a line of the game's letters, a sprite each of 8 by 16, in the colours `font.colours`. */
+export function drawText(sprites, font, text, x, y, colours) {
+  const { rom, list, jobs } = sprites, slot = colourSlot(sprites, font.colours, colours);
+  for (const char of text) {
+    const width = rom.u8(font.widths + char);
+    if (char !== 32 && x + width > 0 && x <= 239) {
+      list.push([(y & 0xFF) | 0x9000, x & 0x1FF, (slot << 12) | sprites.tiles]);
+      jobs.push([font.tiles + rom.u8(font.map + char) * font.size, sprites.tiles, font.count]);
+      sprites.tiles += font.count;
+    }
+    x += width;
+  }
 }
 
 /** At the V-blank: 0x08037B28's tiles and 0x0803FA50's list. */
