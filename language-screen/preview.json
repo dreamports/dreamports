@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/295-sonic-advance-3",
+  "commit": "0f762580daf5edf613aa21e223290c87ffe4e39d",
+  "made": "2026-11-04T00:46:24.044Z",
+  "about": "The language screen, the first screen of a game with nothing saved: every picture matches the original, and a few frames of its cursor sounds still differ."
+}
