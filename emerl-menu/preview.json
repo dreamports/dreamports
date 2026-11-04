@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/518-emerls-skills-menu",
+  "commit": "d5b44c4a5d55026633595a9b4b2eba70161dca52",
+  "made": "2026-11-04T13:21:42.778Z",
+  "about": "Emerl's screen and its menu of five, from a start point, with every frame matching the original."
+}
