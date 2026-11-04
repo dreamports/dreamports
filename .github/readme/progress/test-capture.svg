@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="480" height="388" viewBox="0 0 480 388">
-<title>Test Capture Dreamport’s progress. Code ported: 0% (0/320 bytes). Gameplay proven: no list of parts yet.</title>
+<title>Test Capture Dreamport’s progress. Code ported: 0% (0/320 bytes). Gameplay proven: 0% (0/1 parts).</title>
 <style>text{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', monospace}</style>
 <rect x="0" width="87" height="20" fill="#1f2d63"/>
 <rect x="87" width="25.6" height="20" fill="#b54708"/>
 <text x="6" y="14" font-size="11" fill="#eef4ff">Code ported</text>
 <text x="93" y="14" font-size="11" font-weight="700" fill="#ffffff">0%</text>
 <rect x="118.7" width="114.3" height="20" fill="#1f2d63"/>
-<rect x="233" width="59.7" height="20" fill="#1f2d63"/>
+<rect x="233" width="25.6" height="20" fill="#b54708"/>
 <text x="124.7" y="14" font-size="11" fill="#eef4ff">Gameplay proven</text>
-<text x="239" y="14" font-size="11" font-weight="700" fill="#ffffff">not yet</text>
+<text x="239" y="14" font-size="11" font-weight="700" fill="#ffffff">0%</text>
 <rect y="30" width="480" height="294" fill="#050a24"/>
 <text x="10" y="47" font-size="13" fill="#eef4ff">Code ported: 0% (0/320 bytes)</text>
 <g><title>08000000 to 0800FFFF: 2 functions, 320 bytes, 0% ported</title>
@@ -18,6 +18,6 @@
 <path fill="#454c63" d="M7.8 72.8h371.3v243.3h-371.3zM379.9 72.8h92.3v243.3h-92.3z"/>
 <path fill="#3fb950" d=""/>
 <rect y="334" width="480" height="54" fill="#050a24"/>
-<text x="10" y="351" font-size="13" fill="#eef4ff">Gameplay proven: no list of parts yet</text>
-<text x="10" y="376" font-size="11" fill="#a9b8e6">Its lead lists its parts in proof/parts.json.</text>
+<text x="10" y="351" font-size="13" fill="#eef4ff">Gameplay proven: 0% (0/1 parts)</text>
+<rect x="5.5" y="361.5" width="469" height="21" fill="#454c63"><title>The picture</title></rect>
 </svg>
