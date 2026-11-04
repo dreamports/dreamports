@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/297-the-platforming",
+  "commit": "fc707a083c99ddc2b4c88f7dace5a087b16b0d52",
+  "made": "2026-11-04T03:35:41.122Z",
+  "about": "Route 99's overworld's layers, where its camera starts, its fade and its numbers, with no characters yet, at ?level=2. Nothing here matches the original yet."
+}
