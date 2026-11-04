@@ -1,10 +1,10 @@
 {
-  "game": "sonic-advance-2",
-  "title": "Sonic Advance 2 Dreamport",
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/498-a-character-jumping",
-  "commit": "1a33e6ef255cbc6077e8691fc8509fba702f3a52",
-  "made": "2026-11-04T12:21:54.082Z",
-  "about": "Sonic jumps, steers in the air, lands, rolls, spin dashes, and meets walls and ceilings, with every frame the same as the original."
+  "branch": "feat/477-a-character-jumping",
+  "commit": "292a119bad43f32a873a18bb61756a5328248058",
+  "made": "2026-11-04T12:55:00.826Z",
+  "about": "Tails flies up to Sonic out of the shaft under the broken wall, and every frame matches the original. The wall comes back once the camera has gone far from it and returned, as it does in the original."
 }
