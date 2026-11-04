@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "fix/539-credits-message-emeralds",
+  "commit": "b9c8540df9b343c56bf112cb091646d11e61d053",
+  "made": "2026-11-04T19:01:31.310Z",
+  "about": "After the normal ending the staff credits now go by the save's Chaos Emeralds: with all seven they go straight to the SEGA logo, and otherwise on to the message to collect them."
+}
