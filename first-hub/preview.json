@@ -1,0 +1,10 @@
+{
+  "game": "crash-bandicoot-purple",
+  "title": "Crash Bandicoot Purple: Ripto's Rampage Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/493-crash-purple-standing",
+  "commit": "f89c6c6b3d0320a15e8ec8c1e5f58455158e46f0",
+  "made": "2026-11-04T08:01:11.612Z",
+  "about": "Crash stands in the first world's hub, with its map, sprites, Aku Aku and song. Add ?hub to the address to open there."
+}
