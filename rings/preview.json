@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-2",
+  "title": "Sonic Advance 2 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/499-rings",
+  "commit": "3954d532a923f55b4bff3099e991e9d3b12449a8",
+  "made": "2026-11-04T12:59:02.750Z",
+  "about": "Sonic takes Leaf Forest act 1's first rings, with their sparkle and sound and the number going up, matching the original on every frame."
+}
