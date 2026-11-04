@@ -1,0 +1,10 @@
+{
+  "game": "crash-bandicoot-purple",
+  "title": "Crash Bandicoot Purple: Ripto's Rampage Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/320-crash-purple-main-menu",
+  "commit": "421e176c28fe6de4a9dbed2b48a7df0cd47e243e",
+  "made": "2026-11-04T18:15:59.946Z",
+  "about": "The game now goes from the load save game screen to the main menu, with its four lines, Aku Aku, Crash and every way out of it, on every frame."
+}
