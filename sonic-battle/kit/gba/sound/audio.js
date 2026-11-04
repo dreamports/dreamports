@@ -3,17 +3,49 @@
 // (processor.js), which it is sent what they need (keep). Browsers keep audio paused until the page has been
 // interacted with; choosing the ROM counts, and any later key press or tap resumes it too. A multiplayer game on
 // one page has one engine per GBA, each GBA's game calling its own (`forGba`).
+//
+// While a proof tool plays the game (proof.js), the worklet's processor runs on the page instead, with no
+// AudioContext: the tool runs a frame of its sound after each of the game's frames and keeps what it played, at the
+// console's own mix rate (onPage).
+
+import { proof } from '../proof.js';
+import { createM4A } from './m4a.js';
+import { createApu } from './apu.js';
 
 const GAIN = 0.5;   // the GBA's full scale is loud next to other pages; half of it leaves headroom
+// the rate the console mixes its sound at once the sound library has started: every 256 cycles (apu.js)
+const PROOF_RATE = 65536;
+// a frame's cycles, and how far the chip's length counters have got when the count of cycles (countCycles) starts, as
+// mGBA measures it: a PSG voice's end shows in that count, and they step every 32768 cycles
+const FRAME_CYCLES = 280896;
+const COUNTER_SEQUENCER_START = 131019;
+
+// the worklet module's processor, made on the page: the module finds what an AudioWorklet gives it, registers its
+// processor, and the page talks to it as it would to the worklet's node
+let onPageProcessor = null;
+async function onPage(worklet) {
+  if (!onPageProcessor) {
+    globalThis.sampleRate = PROOF_RATE;
+    globalThis.AudioWorkletProcessor ??= class { constructor() { this.port = { onmessage: null, postMessage() {} }; } };
+    globalThis.registerProcessor = (name, Processor) => { onPageProcessor = Processor; };
+    await import(String(worklet));
+  }
+  const processor = new onPageProcessor();
+  return { processor, port: { postMessage: data => processor.port.onmessage?.({ data }) } };
+}
 
 /**
  * The game's sound. `worklet` is the address of the AudioWorklet module that registers the 'gba-sound' processor:
  * the kit's by default, or the game's own (processor.js). `calls(call, send)` gives the game's own calls on each
  * GBA's sound, such as its music manager's: `call(name, ...args)` queues one for that GBA's engine or music
- * manager, and `send(message)` posts a message to the game's processor.
+ * manager, and `send(message)` posts a message to the game's processor. With `countCycles`, for a game whose picture
+ * depends on how long the console's sound work takes, a silent engine of its own runs on the page, a frame each time
+ * the game calls `frameDone()`, so `frameCycles()` says the same in a player's browser as under the proof tools.
  */
-export function createSound({ worklet = new URL('./worklet.js', import.meta.url), calls = () => ({}) } = {}) {
+export function createSound({ worklet = new URL('./worklet.js', import.meta.url), calls = () => ({}), countCycles = false } = {}) {
   let ctx = null, node = null, muted = false, held = false, songPlayers = null, count = 1;
+  let counter = null, counterApu = null;
+  const counterCalls = [];
   const waiting = [], kept = new Map();
   const post = msg => (node ? node.port.postMessage(msg) : waiting.push(msg));
   const resume = () => { if (ctx?.state === 'suspended' && !held) ctx.resume().catch(() => {}); };   // closed meanwhile: nothing to resume
@@ -22,7 +54,10 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
 
   // the calls a game makes on its GBA's engine
   function gbaSound(gba) {
-    const call = (name, ...args) => post({ type: 'call', name, args, gba });
+    const call = (name, ...args) => {
+      if (counter && gba === 0) counterCalls.push([name, args]);
+      post({ type: 'call', name, args, gba });
+    };
     return {
       /** m4aSongNumStart */
       play(song) { call('songStart', song); },
@@ -80,6 +115,28 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
       ctx = node = null;
       const bytes = new Uint8Array(romBuffer);
       songPlayers = Array.from({ length: layout.songs }, (_, n) => bytes[layout.songTable + n * 8 + 4]);
+      if (countCycles) {
+        counterApu = createApu();
+        counter = createM4A(bytes, layout, counterApu);
+        counterApu.run(COUNTER_SEQUENCER_START);
+        // two frames of the original's sound have gone by when this count starts, which sets when its envelopes step
+        counter.frame();
+        counter.frame();
+        counterCalls.length = 0;
+      }
+      if (proof?.mode === 'play') {
+        // the game's frames wait while the engine starts, so it starts at the same frame every time
+        const started = onPage(worklet).then(made => {
+          node = made;
+          node.port.postMessage({ type: 'raw' });
+          node.port.postMessage({ type: 'rom', rom: romBuffer, layout, count });
+          for (const message of kept.values()) node.port.postMessage(message);
+          for (const msg of waiting.splice(0)) node.port.postMessage(msg);
+          proof.listen((left, right) => made.processor.process([], [[left, right]]), PROOF_RATE);
+        });
+        proof.wait(started);
+        return started;
+      }
       if (!globalThis.AudioWorkletNode) { waiting.length = 0; return; }
       const c = new AudioContext({ latencyHint: 'interactive' });
       ctx = c;
@@ -96,6 +153,16 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
     /** Sends `message` to the game's processor now if it runs, and each time the engine starts on a ROM after,
      *  such as the data an extra's sounds need; one of the same `type` takes the place of the last. */
     keep(message) { kept.set(message.type, message); node?.port.postMessage(message); },
+
+    /** With `countCycles`, how many of the console's cycles the last frame's SoundMain took. */
+    frameCycles() { return counter?.frameCycles ?? null; },
+    /** With `countCycles`, the end of one of the game's frames: its sound's calls and the next frame of SoundMain. */
+    frameDone() {
+      if (!counter) return;
+      for (const [name, args] of counterCalls.splice(0)) counter[name](...args);
+      counterApu.run(FRAME_CYCLES);
+      counter.frame();
+    },
 
     get muted() { return muted; },
     set muted(value) { muted = value; post({ type: 'gain', value: muted ? 0 : GAIN }); },

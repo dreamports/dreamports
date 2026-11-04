@@ -6,7 +6,8 @@ year: 2003
 added: 2026-10-31
 summary: Sonic Battle, rebuilt to play in your web browser, a piece at a time. No emulator, nothing to install.
 needs: A Sonic Battle (USA) ROM (.gba)
-controls: [keyboard, controller]
+controls: [keyboard, controller, touch]
+issue: 123
 lead: NahuelGenchi
 kit: gba
 sources:
@@ -14,15 +15,23 @@ sources:
     href: https://github.com/cypressru/SonicBattleDecomp
     license: none
     use: guide
+  - name: mGBA’s timing of instructions and of the BIOS, by Jeffrey Pfau
+    href: https://github.com/mgba-emu/mgba/tree/0.10.5/src
+    license: MPL-2.0
+    use: guide
 ownCopy:
   confirm: I own Sonic Battle
   links:
     - label: Play
       href: https://dreamports.net/play/sonic-battle/
       icon: play
-  note: Your copy stays on your device.
+screen:
+  clip: /media/sonic-battle-dreamport
+  still: /media/sonic-battle-dreamport-still.webp
+  pixelated: true
+share: /media/sonic-battle-dreamport-share.png
 ---
 
 ## Credits
 
-Made by the Dreamports team. The game’s rules come from [cypressru’s decompilation](https://github.com/cypressru/SonicBattleDecomp), a community project turning Sonic Battle’s program back into readable code, which this Dreamport reads as a guide.
+Made by the Dreamports team.

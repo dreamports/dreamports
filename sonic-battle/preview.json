@@ -3,8 +3,8 @@
   "title": "Sonic Battle Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/123-sonic-battle",
-  "commit": "5c97257b8cffd77f1cd4cda86948d1d19dd6e410",
-  "made": "2026-10-31T16:51:35.560Z",
-  "about": "The first piece of Sonic Battle Dreamport: the SEGA and Sonic Team logos, from power-on to the black screen after them, with Start skipping each logo as the original does. Every frame matches the original. There's no sound yet, and the intro comes next."
+  "branch": "feat/545-mini-games-colours-longer-play",
+  "commit": "c41c741dec9e5f8d30d2b5774f987cd867084991",
+  "made": "2026-11-04T22:52:03.315Z",
+  "about": ""
 }
