@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-2",
+  "title": "Sonic Advance 2 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/496-an-acts-opening",
+  "commit": "01753b1f5543c2740e0f3493c00887d54e9d12aa",
+  "made": "2026-11-04T08:53:43.702Z",
+  "about": "Leaf Forest act 1 now opens as the original does once its title card is left: its layers, the numbers, Sonic, the machine, the countdown, the song and the announcer."
+}
