@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/477-a-character-jumping",
-  "commit": "292a119bad43f32a873a18bb61756a5328248058",
-  "made": "2026-11-04T12:55:00.826Z",
-  "about": "Tails flies up to Sonic out of the shaft under the broken wall, and every frame matches the original. The wall comes back once the camera has gone far from it and returned, as it does in the original."
+  "commit": "ab5065c18939386cb289234d609013dcbe943c65",
+  "made": "2026-11-04T13:27:58.849Z",
+  "about": "A roll ignores the d-pad, as the original's does: Sonic holds the opposite way through rolls and a spin dash, and every frame matches. The spin dash's speeds now come from the player's own copy."
 }
