@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/447-a-fights-opening",
+  "commit": "deb27fce7a9fcb287ac70561f12852e7d320ff6d",
+  "made": "2026-11-04T07:28:07.496Z",
+  "about": "A fight's opening in Training mode, from a start point: the arena, the choice of special attacks and both fighters dropping in, with 394 of its 400 frames matching the original."
+}
