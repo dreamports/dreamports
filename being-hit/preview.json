@@ -1,10 +1,10 @@
 {
-  "game": "sonic-advance-2",
-  "title": "Sonic Advance 2 Dreamport",
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/501-being-hit",
-  "commit": "7371c6151553eed4a3024550113c8e1a08d43d0e",
-  "made": "2026-11-04T16:41:47.546Z",
-  "about": "Leaf Forest act 1's Mon, Buzzer and Kiki move and hit Sonic, his rings scatter and he blinks, and a jump beats a Mon or a Buzzer."
+  "branch": "feat/481-being-hit",
+  "commit": "457d9fe6e15778fd2028217b3bbeb2eb8018f4f7",
+  "made": "2026-11-04T17:36:04.185Z",
+  "about": "Sonic can be hit now: Route 99 act 1's first enemy walks its stretch and hurts him, his rings scatter, the number flashes red and he blinks, and a jump on it beats it, in a cloud that leaves a ring."
 }
