@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/477-a-character-jumping",
+  "commit": "a85c8b1a63eb72929875e722563fc5ffaf93c71f",
+  "made": "2026-11-04T12:08:44.654Z",
+  "about": "Sonic jumps, rolls, crouches, looks up and spin dashes on Route 99's overworld, hits and breaks the wall, and Tails follows, jumping and flying. Every frame matches the original."
+}
