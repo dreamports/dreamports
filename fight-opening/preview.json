@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/447-a-fights-opening",
-  "commit": "07ad07e45156acb4f956c9805ff264bf5a472183",
-  "made": "2026-11-04T08:01:29.352Z",
-  "about": "A fight's opening in Training mode, from a start point: the arena, the choice of special attacks and both fighters dropping in, with 394 of its 400 frames matching the original."
+  "commit": "320ef83ed1495878d0c9eef163971904232684a4",
+  "made": "2026-11-04T13:54:53.174Z",
+  "about": "A fight's opening in Training mode, from a start point: the arena, the choice of special attacks and both fighters dropping in. prove finds 394 of its 400 frames the same, and the opening isn't counted as proven."
 }
