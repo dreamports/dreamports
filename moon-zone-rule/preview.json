@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/93-the-moons-full-unlock-rule",
+  "commit": "63c43c0e6e6990f38dc9b0a205315456d9f8ef4f",
+  "made": "2026-11-04T18:24:20.883Z",
+  "about": "Beating Egg X now follows the original's whole rule: with all seven Chaos Emeralds and every character past X Zone, Sonic goes on to the Moon Zone, and otherwise the normal ending comes."
+}
