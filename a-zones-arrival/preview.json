@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/475-a-zones-arrival",
+  "commit": "36585394754a442398c69faf92b6d073bc175a1f",
+  "made": "2026-11-04T04:43:20.978Z",
+  "about": "Sonic and Tails come out of the big ring into Route 99's overworld and run to a stop. Press A on the language screen to go there. You can run with the d-pad, but not jump yet, and Tails doesn't follow."
+}
