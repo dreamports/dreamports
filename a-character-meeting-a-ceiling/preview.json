@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/513-a-character-meeting-a-ceiling",
+  "commit": "71d25b3367269e45e3dbe4c40829086e25494559",
+  "made": "2026-11-04T14:20:16.467Z",
+  "about": "Sonic's head now meets a ceiling on his way up and he falls back, in three recordings from a start point, every frame matching the original."
+}
