@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/300-name-entry",
-  "commit": "3f6bd5a9c548e7f2a5174e0f8cfd40069e105c05",
-  "made": "2026-11-04T19:09:04.302Z",
-  "about": "The name entry now plays after the language screen: writing a name, the marks on kana, the menu and keeping it, up to the black before the logos."
+  "commit": "43c6fef86b9379b6e804fdd077e028ffe27693d6",
+  "made": "2026-11-04T19:37:26.507Z",
+  "about": "The name entry now plays after the language screen: writing a name, both marks on kana, the menu and keeping it, up to the black before the logos."
 }
