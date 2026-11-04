@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/465-name-entry",
+  "commit": "43a7e9f8fc00c71b7c0f440b28f1cd3ad82a8b68",
+  "made": "2026-11-04T10:20:10.456Z",
+  "about": "The name entry at the first start: choose your name with A and B, and Start keeps it and goes on to the main menu."
+}
