@@ -87,7 +87,9 @@ function chooseMode(t) {
     if (++screen.mode >= PAK_COUNT) screen.mode = MULTI_PAK;
     screen.qBand = 0;
   }
-  if (e.pressed & KEY.A) {
+  // A on Single-Pak does nothing for now: its waiting screen needs the multiboot transfer, which isn't built, and
+  // there is nothing to go on to
+  if ((e.pressed & KEY.A) && screen.mode === MULTI_PAK) {
     screen.leaving = 0;
     e.playSong(SONG.SELECT);
     e.bldCnt = 0xFF;
@@ -137,11 +139,18 @@ function fadeOut(t) {
       e.destroyTask(t);
       createMainMenu(ctx, true);
     } else {
-      t.main = screen.mode === MULTI_PAK ? initMultiPak : initSinglePak;
+      t.main = initMultiPak;
     }
   } else {
     e.bldY = screen.qFade >> 8;
     drawMode(screen);
+    // CreateMainMenu's DmaFill32 over the first layer's and the sprites' first tiles already shows in the original's
+    // picture on the frame before the main menu is made, as it does leaving the Time Attack menu. The 64 pixels
+    // of the first four lines above the first tile still differ in the picture; why isn't known
+    if (screen.leaving && screen.qFade + 0x80 >= 0x1000) {
+      e.video.vram.fill(0, 0, 0x40);
+      e.video.vram.fill(0, OBJ_VRAM, OBJ_VRAM + 0x40);
+    }
   }
 }
 
@@ -199,6 +208,3 @@ function waitMultiPak(t) {
     displaySprite(e, ctx.sprites, s);
   }
 }
-
-// ModeSelect_InitSinglePak needs the multiboot transfer, which isn't built: it stays on the black screen
-function initSinglePak() {}

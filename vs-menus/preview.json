@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/96-vs-menus",
-  "commit": "d1290574fdfa65f91301551bb2df35e78186189b",
-  "made": "2026-11-05T01:46:12.011Z",
-  "about": "The VS menu's first screens: the mode select, and the Multi-Pak waiting screen for a lone GBA"
+  "commit": "f85cd8f01aad7bbba2f53758aac024787c825d99",
+  "made": "2026-11-05T03:02:50.115Z",
+  "about": "The VS menu: mode select and the Multi-Pak waiting screen"
 }
