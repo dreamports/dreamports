@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/304-the-main-menu",
-  "commit": "abf9363c6cb011f1ce4eae7044a6400a29cff5ef",
-  "made": "2026-11-05T03:30:00.780Z",
+  "commit": "def08530d87a7bc4f1a404f38d347a29b8a55170",
+  "made": "2026-11-05T04:15:19.321Z",
   "about": "The main menu: the buttons fly in, the choice moves with the Chao beside it, each of the first three buttons opens its choices, B goes back, and A on a choice fades the screen out, every frame matching the original."
 }
