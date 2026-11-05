@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/448-a-fighter-moving",
+  "commit": "dd111de592982b180474e854f6d8d8e5bb4f34f3",
+  "made": "2026-11-05T03:50:42.376Z",
+  "about": "Sonic running, turning, jumping, dashing and landing in Training, with the view following and the arena's walls and edges in the way"
+}
