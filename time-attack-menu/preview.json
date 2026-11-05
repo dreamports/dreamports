@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/550-time-attack-menu",
+  "commit": "84b35a96da3e62484c3b1a756842b6145ce15b5a",
+  "made": "2026-11-05T01:18:53.804Z",
+  "about": "Time Attack on the main menu now opens its menu: move between its two entries with Up and Down, and go back with B. The screens the entries lead to are still to come."
+}
