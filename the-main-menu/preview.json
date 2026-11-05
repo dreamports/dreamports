@@ -1,10 +1,10 @@
 {
-  "game": "sonic-battle",
-  "title": "Sonic Battle Dreamport",
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/193-the-main-menu",
-  "commit": "451bc3ef738993397cd538a50bc352375356067f",
-  "made": "2026-11-04T04:42:26.070Z",
-  "about": "The main menu now matches the original on every frame, in picture and sound: moving through its seven choices, and choosing one."
+  "branch": "feat/304-the-main-menu",
+  "commit": "abf9363c6cb011f1ce4eae7044a6400a29cff5ef",
+  "made": "2026-11-05T03:29:11.335Z",
+  "about": "The main menu: the buttons fly in, the choice moves with the Chao beside it, each of the first three buttons opens its choices, B goes back, and A on a choice fades the screen out, every frame matching the original."
 }
