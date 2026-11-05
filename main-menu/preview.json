@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/320-crash-purple-main-menu",
-  "commit": "421e176c28fe6de4a9dbed2b48a7df0cd47e243e",
-  "made": "2026-11-04T18:15:59.946Z",
-  "about": "The game now goes from the load save game screen to the main menu, with its four lines, Aku Aku, Crash and every way out of it, on every frame."
+  "commit": "9fdce49ea8e79765677d1a255b664028353020cb",
+  "made": "2026-11-05T02:09:19.673Z",
+  "about": "The load save game screen and the main menu, now on the game's newest code, from the title screen through to the story's opening scene and the hub."
 }
