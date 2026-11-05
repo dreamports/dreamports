@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/302-the-intro",
+  "commit": "1d6439ddc3dfd0f4a2791bc1b9e933d7140f7283",
+  "made": "2026-11-05T02:26:50.086Z",
+  "about": "The intro, from the characters to the logo and the run that fades into the title, next to the original"
+}
