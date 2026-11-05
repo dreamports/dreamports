@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "team/sonic-advance",
-  "commit": "045c53f3d39eb31233f977646493c22a5e6789c5",
-  "made": "2026-10-31T06:27:09.320Z",
-  "about": ""
+  "branch": "feat/97-chao-hunt-stages",
+  "commit": "19218a98e3b43b9ab4f8f930f89e195d7d16b845",
+  "made": "2026-11-05T05:20:23.266Z",
+  "about": "Chao Hunt on stages 15 to 17, with stage 15's round beside the original"
 }

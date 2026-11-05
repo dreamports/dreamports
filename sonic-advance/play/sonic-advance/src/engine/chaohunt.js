@@ -18,6 +18,7 @@ import { createMultiplayerPlayer, animationIds, FLAG } from './mpplayer.js';
 import { createChao } from './chao.js';
 import { hudTask, indicatorTask, confusionTask, darknessTask, finishTask } from './mphud.js';
 import { SONG } from '../sound/songs.js';
+import { fixes } from './fixes.js';
 
 export const ROUND_TIME = 3 * 3600;    // TIME(3, 0)
 const KIND_STAGE = 0x1000;              // a packet's kind in a stage
@@ -29,6 +30,7 @@ const PLAYERS_PRIORITY = 0x2000, INDICATOR_PRIORITY = 0x2001, CONFUSION_PRIORITY
 const RECEIVE_PRIORITY = 1, SEND_PRIORITY = 0xFFFE;
 // the items' bits in itemEffect, as the packets carry them
 const SHIELD = 1, INVINCIBLE = 2, SPEED_UP = 4, MAGNETIC = 8, INVISIBLE = 0x20, CONFUSED = 0x40, TELEPORT = 0x80;
+const CHAO_HUNT_D = 17;
 const ROOM_EVENT = { PLATFORM: 1, MYSTERY_BOX: 5, ITEM: 6, CHAO: 9 };
 
 /**
@@ -89,7 +91,7 @@ export function createChaoHunt({ link, id, count, stage, anims, seed, chaoPlace,
           player.itemEffect |= CONFUSED;
           player.confusion = CONFUSION_TIME;
           // the bubble goes to the player numbered as this GBA's character, not to this player
-          mp.confusionBubble(0);
+          mp.confusionBubble(fixes.on ? id : 0);
         } else if (ev[1] === 1) {
           let rings = 0;
           for (let i = 0; i < 4 && mp.players[i]; i++) rings += mp.charRings[i];
@@ -196,7 +198,7 @@ export function createChaoHunt({ link, id, count, stage, anims, seed, chaoPlace,
         g.tasks.add(m.task, PLAYERS_PRIORITY);
         if (i !== id) g.tasks.add(indicatorTask(mp, i, anims), INDICATOR_PRIORITY);
       }
-      const chao = createChao(mp, stage.chaoSpawns[chaoPlace], 0, anims);
+      const chao = createChao(mp, stage.chaoSpawns[chaoPlace], 0, anims, stage.level === CHAO_HUNT_D && chaoPlace > 4);
       mp.chao[0] = chao;
       g.tasks.add(chao.task, PLAYERS_PRIORITY);
       player.itemEffect |= TELEPORT;

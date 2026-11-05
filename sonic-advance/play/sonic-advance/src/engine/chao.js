@@ -12,6 +12,7 @@ import { overlap } from './collide.js';
 import { SINE, vectorAngle } from './trig.js';
 import { tileEdge, PROBE_FLOOR } from './terrain.js';
 import { SONG } from '../sound/songs.js';
+import { fixes } from './fixes.js';
 
 export const NO_PLAYER = 0xFF;
 const ABOVE = 16;                       // it starts this far above its place
@@ -23,11 +24,13 @@ const ZERO_BOX = [0, 0, 0, 0];
 
 /**
  * Chao `id` (CreateMultiplayerChao) at `place` of the stage's spawn table. `mp` is the mode's shared state
- * (its players' tasks); the Chao's `playerA` is whom it goes to, and `playerB` whom it is with.
+ * (its players' tasks); `ceiling` is set for places 5 to 7 of Chao Hunt D; the Chao's `playerA` is whom it goes to, and `playerB` whom it is with.
  */
-export function createChao(mp, place, id, anims) {
+export function createChao(mp, place, id, anims, ceiling = false) {
   const s = makeSprite('chaoSitting', { order: 16 - id });
-  const c = { id, playerA: NO_PLAYER, playerB: NO_PLAYER, qx: place.x << 8, qy: (place.y - ABOVE) << 8, vx: 0, vy: 0, s };
+  // on Chao Hunt D's ceiling places it starts upside down, below its place
+  if (ceiling) s.flipY = true;
+  const c = { id, playerA: NO_PLAYER, playerB: NO_PLAYER, qx: place.x << 8, qy: (ceiling ? place.y + ABOVE : place.y - ABOVE) << 8, vx: 0, vy: 0, s };
   let phase = 'free';
   const box = () => s.boxes[0] ?? ZERO_BOX;
   const player = () => mp.players[c.playerA];
@@ -96,6 +99,7 @@ export function createChao(mp, place, id, anims) {
         for (let pid = 0; pid < 4 && mp.players[pid]; pid++) {
           const mpp = mp.players[pid];
           if (mpp.flags & 4) continue;   // untouchable
+          if (fixes.on && !mpp.boxes[0].active) continue;
           if (!overlap(I(c.qx), I(c.qy), box(), mpp.pos.x, mpp.pos.y, mpp.boxes[0].b)) continue;
           mpp.state |= 0x10000 << c.id;
           c.playerA = c.playerB = pid;
@@ -127,7 +131,7 @@ export function createChao(mp, place, id, anims) {
     // Task_8028A1C: the landing plays out, its animation stepped twice a frame
     landing(ctx) {
       if (animate(s, anims)) phase = c.playerA !== NO_PLAYER ? 'follow' : 'free';
-      animate(s, anims);
+      if (!fixes.on) animate(s, anims);
       show(ctx);
       return true;
     },

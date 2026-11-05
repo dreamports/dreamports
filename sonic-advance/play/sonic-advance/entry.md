@@ -7,6 +7,7 @@ added: 2026-10-27
 summary: Sonic Advance, rebuilt to play in your web browser. No emulator, nothing to install.
 needs: A Sonic Advance (USA) ROM (.gba)
 controls: [keyboard, controller, touch]
+issue: 146
 lead: NahuelGenchi
 kit: gba
 sources:
@@ -14,14 +15,16 @@ sources:
     href: https://github.com/SAT-R/sa2
     license: none
     use: guide
-thread: https://github.com/NahuelGenchi/dreamports/discussions/110
+  - name: mGBA’s window drawing, by Jeffrey Pfau
+    href: https://github.com/mgba-emu/mgba/blob/0.10.5/src/gba/renderers/video-software.c
+    license: MPL-2.0
+    use: code
 ownCopy:
   confirm: I own Sonic Advance
   links:
     - label: Play
       href: https://dreamports.net/play/sonic-advance/
       icon: play
-  note: Your copy stays on your device.
 extras:
   - name: Widescreen
     icon: aspect-ratio
@@ -50,9 +53,11 @@ extras:
     screen:
       clip: /media/sonic-tricks
       still: /media/sonic-tricks-still.webp
+  - name: Bug fixes
+    icon: sparkles
+    text: The bugs the original game shipped with, fixed. Off, it plays exactly like the cartridge, bugs included.
 facts:
   - label: Article
-    value: On nahuelgenchi.com
     href: https://nahuelgenchi.com/gaming/onsoku-advance/
 screen:
   clip: /media/sonic-advance-dreamport
@@ -63,4 +68,4 @@ glow: '#8fd1ff'
 
 ## Credits
 
-Made by [Nahuel Genchi](https://nahuelgenchi.com/). The game’s rules come from [SAT-R](https://github.com/SAT-R), the community project that turned Sonic Advance’s program back into readable code.
+Made by [Nahuel Genchi](https://nahuelgenchi.com/).

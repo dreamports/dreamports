@@ -9,7 +9,9 @@
 <style>
   :root { color-scheme: light dark; --page: #ffffff; --ink: #0a1738; --dim: rgba(10, 23, 56, 0.68); --line: #cde3f8; --act: #1a4fb0; --on-act: #ffffff; --warn: #fff3c4; --warn-ink: #2a1f00; --warn-line: #8a6a00; }
   @media (prefers-color-scheme: dark) { :root { --page: #050a24; --ink: #eef4ff; --dim: rgba(238, 244, 255, 0.7); --line: #1f2c6b; --act: #8fd1ff; --on-act: #050a24; } }
-  body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.55 system-ui, sans-serif; }
+  html { overflow: hidden; overscroll-behavior: none; }
+  body { position: fixed; inset: 0; overflow: hidden auto; scrollbar-width: none; margin: 0; background: var(--page); color: var(--ink); font: 16px/1.55 system-ui, sans-serif; }
+  body::-webkit-scrollbar { display: none; }
   main { max-width: 640px; margin: 0 auto; padding: 32px 16px 48px; }
   a { color: inherit; }
   .crumb, .made, .more { color: var(--dim); font-size: 14px; margin: 0; }
@@ -28,8 +30,8 @@
 <main>
   <p class="crumb">A preview by <a href="https://github.com/NahuelGenchi">NahuelGenchi</a></p>
   <h1>Sonic Advance Dreamport</h1>
-  <p class="made">From <a href="https://github.com/dreamports/dreamports/commit/045c53f3d39eb31233f977646493c22a5e6789c5">045c53f</a> on team/sonic-advance, 2026-10-31</p>
-  
+  <p class="made">From <a href="https://github.com/dreamports/dreamports/commit/19218a98e3b43b9ab4f8f930f89e195d7d16b845">19218a9</a> on feat/97-chao-hunt-stages, 2026-11-05</p>
+  <section class="about"><h2>What changed</h2><p>Chao Hunt on stages 15 to 17, with stage 15&#39;s round beside the original</p></section>
   <section class="warning" aria-labelledby="warning">
     <h2 id="warning">This preview hasn't been reviewed</h2>
     <p>NahuelGenchi published it on their own, and the Dreamports team hasn't checked its code. Like any web page, it can do whatever it wants with the copy of the game you give it, including sending it somewhere else. Play it only if you trust NahuelGenchi.</p>

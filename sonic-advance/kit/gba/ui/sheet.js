@@ -1,7 +1,7 @@
 // The settings as one sheet in the middle of the screen, over the game, which waits behind it, blurred (the
 // game's page), drawn like the dreamports.net launcher and light or dark as it is. The settings are its first
-// view; the achievements, Your ROMs, the asset viewer and the controls are views it grows into from them, each
-// with its way back. It rises in as it opens and fades as it closes.
+// view; the achievements, Your ROMs, the asset viewer, the controls and the question before quitting are views it
+// grows into from them, each with its way back. It rises in as it opens and fades as it closes.
 //
 // With a keyboard the arrows move to the nearest button that way, Z or Enter presses it, Q and E go through a
 // view's tabs, and Esc, X or Backspace goes back a step, closing the sheet from the settings (H closes it from
@@ -14,6 +14,7 @@ import { connectedPads, holdsSettingsCombo } from '../input.js';
 import { padsHeld, rightStick, toward, REPEAT_AFTER, REPEAT_EVERY } from './pad-nav.js';
 import { isDark } from './theme.js';
 import { keyHtml } from './keys.js';
+import { leave } from './leave.js';
 
 const still = matchMedia('(prefers-reduced-motion: reduce)');
 const RISE = 'cubic-bezier(.2, .9, .25, 1)', GROW = 'cubic-bezier(.65, 0, .2, 1)';
@@ -23,9 +24,10 @@ const PRESSABLE = 'button:not(:disabled), a[href], input:not([type=file]):not(:d
 const pixels = (w, h, d) => `<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true"><path d="${d}"/></svg>`;
 const BACK = pixels(7, 7, 'M3 0h1v1H3zM2 1h1v1H2zM1 2h1v1H1zM0 3h7v1H0zM1 4h1v1H1zM2 5h1v1H2zM3 6h1v1H3z');
 const PAUSED = pixels(7, 9, 'M0 0h2v9H0zM5 0h2v9H5z');
-// the keys each view's foot names, for a keyboard and for a controller; `tabs` only where the view has tabs
-const KEYS = [['↑↓←→', 'Move'], ['Z', 'Pick'], ['Q E', 'Tabs', 'tabs'], ['Esc', 'Back'], ['H', 'Close']];
-const PAD = [['D-pad', 'Move'], ['A', 'Pick'], ['LB RB', 'Tabs', 'tabs'], ['B', 'Back'], ['View Menu', 'Close']];
+// the keys each view's foot names, for a keyboard and for a controller; `tabs` only where the view has tabs, and
+// `deeper` only past the settings, where going back and closing the sheet are the same
+const KEYS = [['↑↓←→', 'Move'], ['Z', 'Pick'], ['Q E', 'Tabs', 'tabs'], ['Esc', 'Back'], ['H', 'Close', 'deeper']];
+const PAD = [['D-pad', 'Move'], ['A', 'Pick'], ['LB RB', 'Tabs', 'tabs'], ['B', 'Back'], ['View Menu', 'Close', 'deeper']];
 
 /**
  * Makes the sheet in `wrap` (a child of `stage`, holding `.sheet-veil` and `.sheet`). `onOpen()` and `onClose()`
@@ -51,7 +53,7 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
       el.innerHTML = `
         <header class="sheet-head">
           <button type="button" class="sheet-back" data-back aria-label="Back to the settings" title="Back to the settings">${BACK}</button>
-          <div class="sheet-title"><p class="sheet-crumb">Settings</p><h2 id="sheet-${name}-title">${title}</h2></div>
+          <div class="sheet-title"><h2 id="sheet-${name}-title">${title}</h2></div>
           <span class="sheet-note"></span>
           <span class="sheet-paused">${PAUSED}Paused</span>
           <button type="button" class="sheet-close" data-close aria-label="Close" title="Close">×</button>
@@ -73,7 +75,7 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
   function showKeys(v) {
     const pad = connectedPads().length > 0;
     v.foot.dataset.input = pad ? 'pad' : 'keys';
-    v.foot.innerHTML = (pad ? PAD : KEYS).filter(([, , only]) => !only || v.tabs)
+    v.foot.innerHTML = (pad ? PAD : KEYS).filter(([, , only]) => !only || (only === 'tabs' ? v.tabs : v.name !== 'settings'))
       .map(([keys, what]) => `<span>${keys.split(' ').map(k => keyHtml(k, pad)).join('')}${what}</span>`).join('');
   }
 
@@ -133,7 +135,7 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
 
   /** Closes the sheet: at once with `now`. */
   function close({ now = false } = {}) {
-    if (!isOpen) return;
+    if (!isOpen || cover) return;
     settle();
     isOpen = false;
     const v = current;
@@ -161,7 +163,7 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
 
   /** Goes to the view `name`, the sheet growing or shrinking to it; back to the settings, to what opened it. */
   function go(name) {
-    if (!isOpen || current.name === name) return;
+    if (!isOpen || cover || current.name === name) return;
     settle();
     const out = current, into = views.get(name);
     if (name !== 'settings') into.opener = document.activeElement;
@@ -209,6 +211,31 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
     if (current.name === 'settings') close();
     else go('settings');
   }
+
+  // what comes up over everything as the game is left, and the wait for the page to go
+  let cover = null, stay = 0;
+  function uncover() {
+    clearTimeout(stay);
+    cover?.remove();
+    cover = null;
+  }
+  /**
+   * Leaves the game: the launcher's page colour comes up over everything, with the game still waiting behind it, and
+   * only then the page goes, so the launcher opens from that same colour.
+   */
+  function quit() {
+    if (!isOpen || cover) return;
+    cover = document.createElement('div');
+    cover.className = 'sheet-cover';
+    wrap.append(cover);
+    cover.animate([{ opacity: 0 }, { opacity: 1 }], { duration: still.matches ? 120 : 280, easing: 'ease-in-out', fill: 'forwards' }).onfinish = () => {
+      leave();
+      // a page that never goes doesn't stay covered
+      stay = setTimeout(uncover, 6000);
+    };
+  }
+  // coming forward again in the browser's history finds the sheet as it was left
+  addEventListener('pageshow', e => { if (e.persisted) uncover(); });
 
   // what can be picked in the view showing, and the box drawn around each (a switch's label, for its checkbox)
   const ring = el => el.closest('label') ?? el;
@@ -308,7 +335,7 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
   wrap.addEventListener('click', e => { if (e.target === wrap || e.target === veil) close(); });
   addEventListener('pointerdown', () => { how = 'pointer'; clearMark(); }, true);
   addEventListener('keydown', e => {
-    if (!isOpen || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!isOpen || cover || e.altKey || e.ctrlKey || e.metaKey) return;
     how = 'keys';
     const dir = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' }[e.code];
     if (dir) {
@@ -344,7 +371,7 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
       how = 'pad';
       if (isOpen) close();
       else if (canOpen()) open();
-    } else if (isOpen) {
+    } else if (isOpen && !cover) {
       if (down('b')) back();
       if (down('lb')) tab(-1);
       if (down('rb')) tab(1);
@@ -368,7 +395,7 @@ export function createSheet(stage, wrap, { onOpen = () => {}, onClose = () => {}
   requestAnimationFrame(read);
 
   return {
-    view, open, close, go, back,
+    view, open, close, go, back, quit,
     get isOpen() { return isOpen; },
     /** The view showing, while the sheet is open. */
     get current() { return isOpen ? current.name : null; },
