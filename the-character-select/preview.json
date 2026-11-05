@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3",
+  "title": "Sonic Advance 3 Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/305-the-character-select",
+  "commit": "bbe6b8c77f477dc6cc93571ba9973cad2a57baa4",
+  "made": "2026-11-05T04:44:41.341Z",
+  "about": "The character select: the main character's choice, the partner's, and the pair's announcement, matching the original on every frame."
+}
