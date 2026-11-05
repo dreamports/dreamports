@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/96-vs-menus",
+  "commit": "d1290574fdfa65f91301551bb2df35e78186189b",
+  "made": "2026-11-05T01:46:12.011Z",
+  "about": "The VS menu's first screens: the mode select, and the Multi-Pak waiting screen for a lone GBA"
+}
