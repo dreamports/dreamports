@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/87-soft-reset",
-  "commit": "28ddd1987aa7b6122cc34aca981ae6491f6f4a81",
-  "made": "2026-11-03T21:57:11.636Z",
-  "about": "A, B, Start and Select held together now restart the game on the title screen with the save kept, frame for frame like the original."
+  "commit": "796273e560f0f09a3d457ecb151a77835bd434b0",
+  "made": "2026-11-05T23:26:15.148Z",
+  "about": ""
 }
