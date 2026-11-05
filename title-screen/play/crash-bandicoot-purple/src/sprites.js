@@ -27,6 +27,7 @@ export function playAnimation(sprite, address, clock) {
   sprite.animation = readAnimation(sprite.rom, address);
   sprite.frame = 0;
   sprite.ended = false;
+  sprite.backward = false;
   sprite.next = clock + sprite.animation.delay + 1;
 }
 
@@ -34,7 +35,11 @@ export function playAnimation(sprite, address, clock) {
 export function stepAnimation(sprite, clock) {
   if (clock < sprite.next) return;
   const { animation } = sprite;
-  if (sprite.frame === animation.count - 1) {
+  if (sprite.backward) {
+    if (sprite.frame !== 0) sprite.frame--;
+    else if (animation.loops) sprite.frame = animation.count - 1;
+    else sprite.ended = true;
+  } else if (sprite.frame === animation.count - 1) {
     if (animation.loops) sprite.frame = 0;
     else sprite.ended = true;
   } else sprite.frame++;
@@ -43,17 +48,15 @@ export function stepAnimation(sprite, clock) {
 }
 
 /** The console's sprites as a frame's objects ask for them: 0x08037C54's tile memory, 0x0801F7A8's colours and 0x0200A820's list. */
-export function createSprites(video, rom) {
-  return { video, rom, list: [], tiles: 0, jobs: [], slots: new Map(), nextSlot: 15 };
+export function createSprites(video, rom, firstTile = 0) {
+  return { video, rom, list: [], firstTile, tiles: firstTile, jobs: [], slots: new Map(), nextSlot: 15 };
 }
 
 // 0x08069648: how many tiles each shape and size holds, and 0x080695E8 its width and height
-const TILES = [1, 4, 16, 64, 2, 4, 8, 32, 2, 4, 8, 32];
-const WIDTHS = [8, 16, 32, 64, 16, 32, 32, 64, 8, 8, 16, 32];
-const HEIGHTS = [8, 16, 32, 64, 8, 8, 16, 32, 16, 32, 32, 64];
+const TILES = 0x08069648 - CARTRIDGE, SIZES = 0x080695E8 - CARTRIDGE;
 
 // 0x0801F7A8: the place a sprite's colours have among the console's 16, given the first time they're asked for
-function colourSlot(sprites, address, colours) {
+export function colourSlot(sprites, address, colours) {
   let slot = sprites.slots.get(address);
   if (slot === undefined) {
     slot = sprites.nextSlot--;
@@ -72,7 +75,7 @@ export function drawSprite(sprites, sprite, screenX, screenY, colours) {
   for (let n = 0; n < count; n++) {
     const at = parts + n * 8, kind = rom.u8(at + 4);
     const partX = rom.view.getInt16(at, true), partY = rom.view.getInt16(at + 2, true);
-    const w = WIDTHS[kind], h = HEIGHTS[kind];
+    const w = rom.u32(SIZES + kind * 8), h = rom.u32(SIZES + kind * 8 + 4);
     const y = sprite.flipY ? screenY - partY - h : screenY + partY;
     const x = sprite.flipX ? screenX - partX - w : screenX + partX;
     if (y > -h && y <= 159 && x > -w && x <= 239) {
@@ -82,7 +85,7 @@ export function drawSprite(sprites, sprite, screenX, screenY, colours) {
         (slot << 12) | (sprite.priority << 10) | (sprites.tiles + offset),   // as 0x08019190 sets it
       ]);
     }
-    offset += TILES[kind];
+    offset += rom.u32(TILES + kind * 4);
   }
   // 0x08037B5C: the frame's tiles, which go into video memory at the V-blank, in pairs
   sprites.jobs.push([rom.u32(frame + 4) - CARTRIDGE, sprites.tiles, offset]);
@@ -103,6 +106,13 @@ export function drawText(sprites, font, text, x, y, colours) {
   }
 }
 
+/** 0x0800E1A8: a letter from the font's tiles at `from`, at priority 0, of the shape and size its font gives. */
+export function drawLetter(sprites, from, x, y, slot, { shape, size, tiles }) {
+  sprites.list.push([(y & 0xFF) | shape, (x & 0x1FF) | size, (slot << 12) | sprites.tiles]);
+  sprites.jobs.push([from, sprites.tiles, tiles]);
+  sprites.tiles += (tiles + 1) & ~1;
+}
+
 /** At the V-blank: 0x08037B28's tiles and 0x0803FA50's list. */
 export function showSprites(sprites) {
   const { video, rom, list, jobs } = sprites;
@@ -116,5 +126,5 @@ export function showSprites(sprites) {
   }
   list.length = 0;
   jobs.length = 0;
-  sprites.tiles = 0;
+  sprites.tiles = sprites.firstTile;
 }

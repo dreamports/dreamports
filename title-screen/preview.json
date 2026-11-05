@@ -3,8 +3,8 @@
   "title": "Crash Bandicoot Purple: Ripto's Rampage Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/314-crash-purple-first-screens",
-  "commit": "67bd144ca6bd24c218c2aa722f23b30ce702bae5",
-  "made": "2026-11-04T16:42:08.416Z",
-  "about": "The first screens with their sound, then the title screen, which waits there."
+  "branch": "feat/317-crash-purple-title-screen",
+  "commit": "b613b1b953d1091c71c7c9f9f02b86b596d4f190",
+  "made": "2026-11-05T02:14:19.113Z",
+  "about": "The title screen, left by A while the name is still arriving, with the name stopping as the fade starts."
 }
