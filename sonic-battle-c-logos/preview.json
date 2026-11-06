@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/642-sega-and-sonic-team-logos",
+  "commit": "f31496a4ee5da250872b312587b09f63a9e23396",
+  "made": "2026-11-06T23:07:31.213Z",
+  "about": "The SEGA and Sonic Team logos in C: the start-up, the fades, the cross-fade of both logos and the Start skip."
+}
