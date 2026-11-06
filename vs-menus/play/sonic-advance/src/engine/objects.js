@@ -16,7 +16,7 @@ import { makeAnimator, setAnim, tickAnim, frameOf } from './animator.js';
 import { createSpring, createHidingSpring } from './springs.js';
 import { createSpikes } from './spikes.js';
 import { ENEMIES } from './enemies.js';
-import { createItemBox } from './itembox.js';
+import { createItemBox, ONE_UP } from './itembox.js';
 import { createPlatform } from './platforms.js';
 import { createBoulder } from './boulders.js';
 import { createIceBlock } from './iceblocks.js';
@@ -38,7 +38,7 @@ import { createMiniLoop } from './miniloops.js';
 import { createWaterBridge, createBridgeSplash } from './waterbridges.js';
 import { createShrub } from './shrubs.js';
 import { createGoal, STAGE_GOAL } from './goal.js';
-import { createSpecialSpring } from './specialspring.js';
+import { createSpecialSpring, SPECIAL_SPRING } from './specialspring.js';
 import { createHookRail } from './hookrails.js';
 import { createSecurityGate } from './securitygates.js';
 import { createConveyor } from './conveyors.js';
@@ -82,6 +82,8 @@ import { createSpikedBarrel } from './spikedbarrel.js';
 import { createPropeller } from './propeller.js';
 import { createToggleGravity } from './gravity.js';
 import { createMysteryBox } from './mysterybox.js';
+
+const CHAO_HUNT_C = 16;
 
 export const OBJECTS = 0x2000;   // the priority of the entities and of most tasks they make
 
@@ -234,7 +236,7 @@ function interactable(e, slot, anims, ctx, level, zone) {
     ?? createPartyBalloon(e, slot, anims) ?? createBumper(e, slot, anims) ?? createFlipper(e, slot, anims)
     ?? createSegaSonicLetter(e, slot, anims) ?? createTeleportOrb(e, slot) ?? createTubeJunction(e, slot)
     ?? createBarrelOfDoomMini(e, slot, anims) ?? createRedFlag(e, slot, anims) ?? createShipSwing(e, slot, anims)
-    ?? createSpikedPlatform(e, slot, anims, zone) ?? createBowl(e, slot, anims) ?? createPanelGate(e, slot, anims)
+    ?? createSpikedPlatform(e, slot, anims, zone === 2 || level === CHAO_HUNT_C) ?? createBowl(e, slot, anims) ?? createPanelGate(e, slot, anims)
     ?? createCarousel(e, slot, anims) ?? createSnow(e, slot, ctx) ?? createAirBubbles(e, slot, anims) ?? createSkatingStone(e, slot, anims, ctx)
     ?? createTorch(e, slot, ctx.world) ?? createBoulderSpawner(e, slot, anims) ?? createFloat(e, slot) ?? createLift(e, slot, anims)
     ?? createRunWheel(e, slot, anims) ?? createUpdraft(e, slot, anims) ?? createIronBall(e, slot, anims)
@@ -256,7 +258,7 @@ function interactable(e, slot, anims, ctx, level, zone) {
  * `stage` has interactables, itemBoxes, enemies and entityRegions; `tasks` is the list it adds to. Each game
  * keeps its own copy of the entities' data, which some objects change (the mystery item boxes' counts).
  */
-export function createEntities(stage, anims, tasks) {
+export function createEntities(stage, anims, tasks, { timeAttack = false } = {}) {
   const { x: regionsX, y: regionsY } = stage.entityRegions;
   const regions = Array.from({ length: regionsX * regionsY }, () => []);
   const slot = (e, spawn) => ({ e: { ...e, d: e.d.slice() }, live: null, gone: false, d: null, spawn });
@@ -268,7 +270,11 @@ export function createEntities(stage, anims, tasks) {
     [stage.enemies, (s, ctx) => (ENEMIES[s.e.kind] ?? standIn)(s.e, s, anims, ctx)],
   ]) {
     // each region keeps its interactables, then its item boxes, then its enemies
-    for (const e of list) regions[e.rx + e.ry * regionsX].push(slot(e, spawn));
+    for (const e of list) {
+      // Time Attack makes neither 1-UP item boxes nor the special spring (CreateEntity_ItemBox, CreateEntity_SpecialSpring)
+      if (timeAttack && (list === stage.itemBoxes && e.kind === ONE_UP || list === stage.interactables && e.kind === SPECIAL_SPRING)) continue;
+      regions[e.rx + e.ry * regionsX].push(slot(e, spawn));
+    }
   }
   const width = regionsX * 256, height = regionsY * 256;
   let prev = null;   // the camera the last scan saw; null spawns everything in range

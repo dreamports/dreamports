@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/96-vs-menus",
-  "commit": "f85cd8f01aad7bbba2f53758aac024787c825d99",
-  "made": "2026-11-05T03:02:50.115Z",
-  "about": "The VS menu: mode select and the Multi-Pak waiting screen"
+  "commit": "7748e458261957ead316fa5af41181a19433065c",
+  "made": "2026-11-06T05:43:52.330Z",
+  "about": "The VS menus: Multi-Pak, the link screens, character select, game and stage choice, for 2 to 4 players"
 }

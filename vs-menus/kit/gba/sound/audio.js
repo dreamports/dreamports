@@ -154,6 +154,9 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
       for (const msg of waiting.splice(0)) node.port.postMessage(msg);
       resume();
     },
+    /** The engine starts again from nothing, as the game's start does it (m4aSoundInit): every player, channel and
+     *  effect clean, with the sound chip as it was. A game that starts again from a soft reset calls it. */
+    reset() { post({ type: 'reset' }); },
     /** Sends `message` to the game's processor now if it runs, and each time the engine starts on a ROM after,
      *  such as the data an extra's sounds need; one of the same `type` takes the place of the last. */
     keep(message) { kept.set(message.type, message); node?.port.postMessage(message); },
@@ -166,6 +169,12 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
       for (const [name, args] of counterCalls.splice(0)) counter[name](...args);
       counterApu.run(FRAME_CYCLES);
       counter.frame();
+    },
+
+    /** With `countCycles`, `frames` frames of SoundMain with nothing playing, for a start point that leaves out what led to it. */
+    framesGoneBy(frames) {
+      if (!counter) return;
+      for (let i = 0; i < frames; i++) { counterApu.run(FRAME_CYCLES); counter.frame(); }
     },
 
     get muted() { return muted; },
