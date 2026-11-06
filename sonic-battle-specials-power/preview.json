@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/451-special-attacks",
+  "commit": "edaa794cd8fa5329e5ca7cf8c411ffa8c99dd3e2",
+  "made": "2026-11-06T23:05:41.579Z",
+  "about": "Sonic's ground power special"
+}
