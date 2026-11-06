@@ -92,7 +92,13 @@ export function createTitleScreen(ctx, playMusic) {
 function fadeIn(t) {
   const title = t.data, { ctx } = title, e = ctx.engine;
   e.dispCnt |= 0x100 | 0x1000;
-  if (title.qBlend === BLEND_END) drawBackground(e, ctx.tilemaps, title.bg2);
+  if (title.qBlend === BLEND_END) {
+    drawBackground(e, ctx.tilemaps, title.bg2);
+    // the first screen after a soft reset has all of the title's graphics to copy at once, which takes longer than
+    // the V-blank: its first frame shows the layers on with the graphics in but not the maps, and the tasks wait a
+    // frame
+    if (ctx.afterReset) e.lag(1, true);
+  }
   title.qBlend = s16(title.qBlend - BLEND_STEP);
   e.bldY = (title.qBlend >> 8) & 0xFFFF;
   if (title.qBlend <= 0) {
@@ -242,7 +248,7 @@ function chooseItem(t) {
     displaySprite(e, ctx.sprites, item);
   });
   // Tiny Chao Garden's screen isn't built: A on it does nothing (the original fades out to it too)
-  if (e.pressed & KEY.A && (menu.selectedItem === GAME_START || menu.selectedItem === VS || (menu.selectedItem === TIME_ATTACK && ctx.offsets.timeAttackMenu) || menu.selectedItem === OPTIONS)) {
+  if (e.pressed & KEY.A && (menu.selectedItem === GAME_START || menu.selectedItem === VS || (menu.selectedItem === TIME_ATTACK && ctx.offsets.timeAttackMenu && ctx.offsets.timeAttackCards && ctx.offsets.timeAttackLobby && ctx.offsets.timeAttackRecord) || menu.selectedItem === OPTIONS)) {
     e.playSong(SONG.SELECT);
     t.main = fadeOut;
     menu.unk1B0 = 0;

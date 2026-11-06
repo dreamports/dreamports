@@ -11,6 +11,7 @@ import { extractAssets, extractAgain } from './rom/extract.js';
 import { isSonicAdvance, RomError } from './rom/identify.js';
 import { Rom } from '../../../kit/gba/rom/rom.js';
 import { createFrontEnd } from './front/front.js';
+import { createTimeAttackOverlay } from './front/timeattackresult.js';
 import { extractRush, isRush } from './rom/rush.js';
 import { openSa2, isSa2 } from './rom/sa2.js';
 import { readBoostArt } from './rom/sa2boost.js';
@@ -73,6 +74,7 @@ const chaoPlace = params.has('chao') ? (Number(params.get('chao')) | 0) & 7 : DE
 // `?character=` is Sonic (0, the default), Tails (1), Knuckles (2) or Amy (3) with ?debug, and the one the character
 // select's row starts on otherwise; the multiplayer stage is everyone as Sonic
 let partner = false;   // gTailsEnabled: the character select's code
+let timeAttack = false;   // gGameMode is GAME_MODE_TIME_ATTACK: the acts run for a record, and end in the lobby
 let character = multiplayer ? 0 : Math.min(3, Math.max(0, Number(params.get('character') ?? 0) | 0));
 const screens = document.getElementById('screens');
 stage.classList.toggle('debug', debug);   // the panel shows the player's speed and state then
@@ -244,7 +246,10 @@ romFile.addEventListener('change', async () => {
 // the save (save.js), read as the GBA is switched on and kept in this browser, which the game changes and writes
 // as it goes; the continues the special stages have given, kept for this visit; and the level the game was
 // started on, the course select's (gMultiplayerCurrentLevel: the level pick's, or 0 from the start)
-const save = unlocked === null ? openSave() : openSave(null);
+// The special stage's start point (`?special`) plays with a save kept nowhere too, as the language screen the
+// original's way there passes leaves it, so a soft reset from it starts again at the title screen as the original does
+const save = unlocked === null && !specialTest ? openSave() : openSave(null);
+if (specialTest) save.write();
 // as Game Start is pressed, so that the first write is what the language screen leaves, as the proof's original has it
 const proofSave = () => {
   if (unlocked === null) return;
@@ -424,7 +429,7 @@ function stopAll() {
   clearInterval(statsTimer);
 }
 
-function start(buffer, assets, back = null) {
+function start(buffer, assets, back = null, afterReset = false) {
   stopAll();
   rom = new Rom(buffer);
   picker.hidden = true;
@@ -436,18 +441,20 @@ function start(buffer, assets, back = null) {
   sheet.close({ now: true });
   counts = !debug && !specialTest && unlocked === null && (assets.first === 0 || multi);
   if (multi) { startRound(assets); return; }
-  const leaving = specialTest && specialSpringStart(assets, { emeralds: save.chaosEmeralds, continues });
+  // a start point is where the game opens, and a soft reset starts it again as the original does
+  const leaving = specialTest && !afterReset && specialSpringStart(assets, { emeralds: save.chaosEmeralds, continues });
   if (leaving) { enterSpecialStage(assets, leaving); return; }
   if (debug) { play(assets); return; }
   front = createFrontEnd(screen, rom, assets.info.offsets, input, sound, save, (level, frameCount, picked) => {
     front = null;
     if (picked.demo) { playDemo(frameCount, picked.vram); return; }
     character = picked.character;
+    timeAttack = !!picked.timeAttack;
     // the code's partner comes along with Sonic only (GameStageStart)
     partner = picked.partner && character === 0;
     if (level === undefined) play(assets.character === character && !!assets.partner === partner ? assets : extractAgain(sa1.buffer, assets, { level: assets.first, character, partner }));
     else playChosen(level, frameCount);
-  }, { character, levels: () => ({ current: currentLevel, started: startLevel }), courseSelect: !params.has('level'), select: !params.has('unlocked') || params.has('select'), onGameStart: proofSave, prepareDemo, back });
+  }, { character, levels: () => ({ current: currentLevel, started: startLevel }), courseSelect: !params.has('level'), select: !params.has('unlocked') || params.has('select'), onGameStart: proofSave, prepareDemo, back, softReset, afterReset });
   fitScreen();
   screen.focus();
 }
@@ -458,7 +465,7 @@ async function playChosen(level, frameCount) {
   const same = from.assets.first === level && from.assets.character === character && !!from.assets.partner === partner;
   const assets = same ? from.assets : await extractAssets(from.buffer, () => {}, { level, character, partner });
   if (sa1 !== from || stage.hidden) return;   // the player left the game meanwhile
-  play(assets, null, null, { level, frameCount });
+  play(assets, null, null, { level, frameCount, timeAttack });
 }
 
 // gDemoPlayCounter, the demo the title screen starts next, and gPseudoRandom as the last demo left it: a demo goes on
@@ -506,6 +513,14 @@ function leaveDemo(title) {
   start(sa1.buffer, sa1.assets, { title, frameCount, white, vram });
 }
 
+// the Time Attack lobby (CreateTimeAttackLobbyScreen), from the act that ended the run
+function toLobby() {
+  const { level, seed } = game.state, frameCount = game.state.frameCount + 1;
+  currentLevel = level;
+  randomSeed = seed;
+  start(sa1.buffer, sa1.assets, { lobby: { character, level }, frameCount, white: false });
+}
+
 // the act, after the game's start, again from what the special stage hands back (`resume`), the next zone's first
 // act with what the game carries over (`carry`), or the act the course select `chosen`, { level, frameCount }
 function play(assets, resume = null, carry = null, chosen = null) {
@@ -516,8 +531,13 @@ function play(assets, resume = null, carry = null, chosen = null) {
     resume, carry, save, startLevel, continues, levelPick, frameCount: chosen?.frameCount, demo, seed: randomSeed,
     onSpecialStage: handover => enterSpecialStage(assets, handover),
     onNextZone: next => nextZone(next),
+    timeAttack: chosen?.timeAttack,
+    createTimeAttackResult: result => createTimeAttackOverlay({ rom, offsets: assets.info.offsets, sound, save, ...result }),
+    // a Time Attack run is over (results, a life lost or A in the pause menu): the lobby, on the frame after
+    onTimeAttackEnd: () => queueMicrotask(() => toLobby()),
     // a game over without a continue goes back to the start of the game, the SEGA logo
     onTitle: demo ? leaveDemo : () => queueMicrotask(restartGame),
+    onSoftReset: softReset,
     // after the true ending, the staff credits; called from inside a step, so the game changes once that
     // frame is over
     onCredits: () => queueMicrotask(() => endGame(assets, 'credits')),
@@ -545,20 +565,24 @@ function endGame(assets, from) {
   const { seed, level } = game.state;
   currentLevel = level;
   game.stop();
-  game = createNormalEnding(screen, assets, input, sound, { from, emeralds: save.chaosEmeralds === ALL_EMERALDS, seed, save, onEnd: () => queueMicrotask(restartGame) });
+  game = createNormalEnding(screen, assets, input, sound, { from, emeralds: save.chaosEmeralds === ALL_EMERALDS, seed, save, onEnd: () => queueMicrotask(restartGame), onSoftReset: softReset });
   fitScreen();
   game.start();
   if (debug) globalThis.onsoku = { game, assets, input, sound, save, nextZone, endGame: from => endGame(assets, from) };
 }
 
 // back to the start of the game, the SEGA logo, with no continues and act 1's art (read again if another
-// act's is loaded)
-async function restartGame() {
+// act's is loaded); after a soft reset (`afterReset`), the title screen, past the logos and the intro
+async function restartGame(afterReset = false) {
   continues = 0;
   currentLevel = game?.state?.level ?? currentLevel;
   const assets = sa1.assets.first === 0 ? sa1.assets : await extractAssets(sa1.buffer, () => {}, { level: 0, character });
-  start(sa1.buffer, assets);
+  start(sa1.buffer, assets, null, afterReset);
 }
+
+// A, B, Start and Select held together (VBlankIntr's SoftReset), from any screen that hasn't turned it off: the
+// game starts again from the title screen, with the save as it is
+function softReset() { sound.reset(); restartGame(true); }
 
 // the last act decoded is over: the next zone's acts, decoded from the ROM now, played on with the score, the
 // lives and the random numbers carried over (GameStageStart). Past the zones this game has, the screen stays.
@@ -585,7 +609,7 @@ async function nextZone({ level, moon = false, ...carry }) {
 // and the continues it gives are kept
 function enterSpecialStage(assets, handover) {
   game?.stop(); game = null;
-  specialStage = createSpecialStageRun(screen, rom, assets.info.offsets, input, sound, { ...handover, btnConfig: save.btnConfig, achieve }, back => {
+  specialStage = createSpecialStageRun(screen, rom, assets.info.offsets, input, sound, { ...handover, btnConfig: save.btnConfig, achieve, onSoftReset: softReset }, back => {
     specialStage = null;
     save.chaosEmeralds = back.emeralds;
     continues = back.continues;
