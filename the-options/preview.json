@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/670-the-options-in-c",
   "commit": "8d0f65791d78cda13cc3ccc3035f991f9ffc5a2a",
-  "made": "2026-11-07T03:59:09.039Z",
+  "made": "2026-11-07T04:00:19.513Z",
   "about": "The options screen, in C: its language, its two tests, Delete data, and the save it keeps. The main menu's choice leads to it, and Delete data starts the game again."
 }
