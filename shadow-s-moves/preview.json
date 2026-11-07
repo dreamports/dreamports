@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/460-shadows-moves",
   "commit": "ff764e75170cb675aee1f9e2bf76d8e1f06d210b",
-  "made": "2026-11-07T11:09:06.095Z",
+  "made": "2026-11-07T11:10:06.153Z",
   "about": "Shadow's moves, attacks, guard and special attacks now play and match the original in Training. The fight's start point can choose the player and the rival, every kind of thing the original drops to the floor does the same, and the HUD animation's 0x0100 step is priced so the Rouge recordings fully match again."
 }
