@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/976-secret-base-first-frames",
+  "commit": "5e38ea202c5d9fddf2cab57e667bdb3c91825c7d",
+  "made": "2026-11-07T20:54:49.548Z",
+  "about": "Secret Base Zone act 1 opens in C, with its spotlights."
+}
