@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/971-x-zone-act-engine",
+  "commit": "97f1498336236734c9233faf463214a8b72ae5ca",
+  "made": "2026-11-07T17:01:34.924Z",
+  "about": "X Zone's act engine in C: its first nine frames after the title card, with the HUD, every frame the same as the original."
+}
