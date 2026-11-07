@@ -1,10 +1,10 @@
 {
-  "game": "sonic-advance-3",
-  "title": "Sonic Advance 3 Dreamport",
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/305-the-character-select",
-  "commit": "bbe6b8c77f477dc6cc93571ba9973cad2a57baa4",
-  "made": "2026-11-05T04:45:32.145Z",
-  "about": "The character select: the main character's choice, the partner's, and the pair's announcement, matching the original on every frame."
+  "branch": "feat/732-the-character-select",
+  "commit": "50c7ef05f4e4a82722596d5497478246afd360ea",
+  "made": "2026-11-07T14:34:19.031Z",
+  "about": "The character select now proves in C from power-on: the act's music starts where the original starts it, so the part's last black frames match too."
 }
