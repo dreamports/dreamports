@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/628-fighter-attacks-c",
   "commit": "54f272439d3b43d51ffdef860ea9709838fa6b3c",
-  "made": "2026-11-07T11:33:08.449Z",
+  "made": "2026-11-07T11:34:28.135Z",
   "about": "Sonic's ground and air attacks, and his guard, now match the original in C, with the same recordings as the JavaScript version."
 }
