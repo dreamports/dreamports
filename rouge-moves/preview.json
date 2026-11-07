@@ -1,10 +1,10 @@
 {
-  "game": "sonic-battle",
-  "title": "Sonic Battle Dreamport",
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/455-rouge-moves",
-  "commit": "bc8db439f8c6339b2bb671f2e1c20cfa69d06f3d",
-  "made": "2026-11-07T06:02:24.289Z",
-  "about": "Rouge can now be picked as the player in a fight from a start point, and her moves, attacks and three ground special attacks are proven frame by frame."
+  "branch": "feat/633-rouge-moves-c",
+  "commit": "c5fd380d16592c7805afa475e0319d328ca8b48d",
+  "made": "2026-11-07T15:13:07.354Z",
+  "about": "Rouge's moves now play in C: her running, attacks, guarding and all three special attacks match the original every frame. A training start point now picks its fighters, arena and colours, as the recordings ask."
 }
