@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/456-knuckles-moves",
   "commit": "cd221fa5044a2dbedadc9650abc260821cf8bf7a",
-  "made": "2026-11-07T04:22:48.863Z",
+  "made": "2026-11-07T04:23:40.788Z",
   "about": "Knuckles is now playable in a fight: his own ground combo, air attack and three special attacks. Every recorded frame matches the original."
 }
