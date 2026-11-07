@@ -1,10 +1,10 @@
 {
-  "game": "sonic-advance-2",
-  "title": "Sonic Advance 2 Dreamport",
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/399-name-entry",
-  "commit": "e72b82b4c3debd99588c4c326d44a59639037d70",
-  "made": "2026-11-04T19:46:35.423Z",
-  "about": "The name entry at the first start: the letters, both marks, the pages, the end button, in all six languages, matching the original on every frame."
+  "branch": "feat/645-name-entry-at-first-start",
+  "commit": "dc3bb2cc15669f1da4106bf188201ae04e18be82",
+  "made": "2026-11-07T01:13:13.663Z",
+  "about": "The name entry at the first start, in C: the grid of letters, the cursor and its letter, typing a name, and the way on to the main menu."
 }

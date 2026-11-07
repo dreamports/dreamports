@@ -13,12 +13,15 @@
 // - `ready`: resolves once the game runs, which in play mode means it waits for its first frame
 // - `step(frame)`: in play mode, runs one frame with the buttons in `frame.held` held and those in
 //   `frame.pressed` just pressed (without `pressed`, those held now and not at the frame before), and resolves
-//   to what the screen shows after it, as ImageData; a frame at a time
+//   to what the screen shows after it, as ImageData; a frame at a time. `frame.next`, if given, is what the
+//   next frame holds, for a game that reads its buttons in the V-blank at the end of this one (input.js nextHeld)
 // - `heard`: in play mode, what the last frame sounded like: an Int16Array of its samples, left and right, at the
 //   console's mix rate (65536 a second) and in its 10-bit units around the bias, or null for a game with no sound
 // - `video`: in play mode, the video hardware (video.js) that drew the last frame, which prove compares with the original's
 // - `neverInPlay`: in play mode, why no player could ever see the last frame, as a game's code says with its own words when
 //   a start point has left it somewhere it never is in real play, or null; prove fails on it (tools/README.md, Start points)
+// - `pictures()`: in play mode, what every screen of the page shows, when it has several players (watch(screen, input, slot)),
+//   each as ImageData, in the order of their slots; `step({ players: [frame, …] })` gives each player's own frame
 // - `frames`: in record mode, what the game read at every frame so far, as { held, pressed }, ready for step()
 // - `replay(frames)`: in record mode, before the game starts, frames for it to play first, each { held } with the
 //   console's names for its buttons (or the game's own), as a recording has them; the player's buttons do nothing
@@ -35,6 +38,7 @@ export const proof = asked === null ? null : createProof(asked === 'record' ? 'r
 
 function createProof(mode) {
   let screen = null, wanted = null, running = null, drawn = null, started;
+  const slots = [];   // each player's screen and input, when a page has several of them on one link (watch())
   // the game's sound, which fills two lists of samples at `rate` with what plays next, and what the last frame played
   let sound = null, rate = 0, played = 0, heard = null, frameTime = FRAME_CYCLES / CPU_HZ;
   // what the frames wait for, such as the sound engine starting (wait())
@@ -64,10 +68,29 @@ function createProof(mode) {
     mode,
     /** the player's input whose buttons the proof holds or keeps (input.js) */
     input: null,
-    /** Names the game's screen and the player whose buttons a tool plays or records. */
-    watch(canvas, input) {
-      screen = canvas;
-      state.input = input;
+    /** Names the game's screen and the player whose buttons a tool plays or records; a page with several players
+     *  names each one's with its `slot`, the first being the one a tool records. */
+    watch(canvas, input, slot = 0) {
+      slots[slot] = { canvas, input };
+      if (slot === 0) {
+        screen = canvas;
+        state.input = input;
+      }
+    },
+    /** Which slot a player's input is, or -1 when no tool plays it. */
+    slotOf(input) { return slots.findIndex(s => s?.input === input); },
+    /** The frame running now for the player with `input`: in play mode what a tool gave it (without `players`, the first
+     *  player gets the frame and the others hold nothing), and in record mode the first player's next frame to replay. */
+    frameOf(input) {
+      const slot = state.slotOf(input);
+      if (mode === 'play') return slot < 0 || !running ? null : running.players ? running.players[slot] ?? { held: [] } : slot === 0 ? running : { held: [] };
+      return slot === 0 ? state.frame : null;
+    },
+    /** In play mode, what the next frame holds for the player with `input`, when the tool says. */
+    nextOf(input) {
+      const slot = state.slotOf(input);
+      if (mode !== 'play' || slot < 0) return null;
+      return (running?.players ? running.players[slot]?.next : slot === 0 ? running?.next : null) ?? null;
     },
     /** In play mode, the frames a clock runs now: the one a tool asked for, or none (clock.js). */
     take() {
@@ -98,6 +121,8 @@ function createProof(mode) {
       const next = replays[frames.length];
       return next ? { held: next.held.map(named) } : null;
     },
+    /** In play mode, what the next frame holds when the tool says (`step`'s `next`), or null. */
+    get next() { return mode === 'play' ? running?.next ?? null : null; },
     /** In record mode, keeps what the game read at a frame (input.js). */
     record(frame) { if (mode === 'record') { frames.push(frame); started(); } },
   };
@@ -111,10 +136,12 @@ function createProof(mode) {
     step(frame = {}) {
       if (mode !== 'play') return Promise.reject(new Error('step() runs a frame with ?proof in the address, not ?proof=record.'));
       if (wanted || drawn) return Promise.reject(new Error('A frame is already running: wait for it before the next.'));
-      wanted = { held: [...(frame.held ?? [])], ...(frame.pressed ? { pressed: [...frame.pressed] } : {}) };
+      const own = f => ({ held: [...(f.held ?? [])], ...(f.pressed ? { pressed: [...f.pressed] } : {}), ...(f.next ? { next: [...f.next] } : {}) });
+      wanted = { ...own(frame), ...(frame.players ? { players: frame.players.map(own) } : {}) };
       return new Promise(resolve => { drawn = resolve; });
     },
     frames,
+    pictures() { return slots.map(({ canvas }) => canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height)); },
     replay(list) {
       if (mode !== 'record') throw new Error('replay() gives frames to run first with ?proof=record in the address.');
       if (frames.length) throw new Error('The game has started: replay() gives its frames before it does.');
