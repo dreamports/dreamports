@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/981-casino-paradise-act-2-opening",
+  "commit": "faf67e2305f44842b00b46da5f69f56068d94146",
+  "made": "2026-11-07T19:56:22.264Z",
+  "about": "Casino Paradise Zone act 2's stage, background, palette animations and camera in C, with its opening drawn; the act's objects and the rest of it are still to come."
+}
