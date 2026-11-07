@@ -1,10 +1,10 @@
 {
-  "game": "sonic-battle",
-  "title": "Sonic Battle Dreamport",
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/208-the-options",
-  "commit": "6eac45bcd9b9ef6f56bfc3fc8383d52a414734c5",
-  "made": "2026-11-04T18:56:19.152Z",
-  "about": "The options screen: the language, the music and sound tests, and deleting the save, reached from the main menu."
+  "branch": "feat/670-the-options-in-c",
+  "commit": "8d0f65791d78cda13cc3ccc3035f991f9ffc5a2a",
+  "made": "2026-11-07T03:59:09.039Z",
+  "about": "The options screen, in C: its language, its two tests, Delete data, and the save it keeps. The main menu's choice leads to it, and Delete data starts the game again."
 }
