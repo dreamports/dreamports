@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/460-shadows-moves",
-  "commit": "66793aa1063bdd96c72aa9c382f798c2dd617079",
-  "made": "2026-11-07T08:18:30.547Z",
+  "commit": "c13da808bef467fb84ebeab38d3f4921ccd0ce49",
+  "made": "2026-11-07T09:59:13.139Z",
   "about": "Shadow's moves, attacks, guard and special attacks now play and match the original in Training. The fight's start point can choose the player and the rival, and every kind of thing the original drops to the floor does the same."
 }
