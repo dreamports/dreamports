@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/632-tails-moves",
   "commit": "a8b9ff2069076e6e7487c3b84b440981c5cefb72",
-  "made": "2026-11-07T15:24:36.648Z",
+  "made": "2026-11-07T15:30:08.324Z",
   "about": "Tails can now be picked from a fight's start point, so his movement, attacks, guard and special attacks play in C as they do in the original."
 }
