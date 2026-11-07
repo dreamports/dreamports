@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/735-neo-green-hill-act-2",
+  "commit": "642abfee134f8e02476fc60d2f7d45f09b2d9790",
+  "made": "2026-11-07T23:16:19.564Z",
+  "about": "Neo Green Hill Zone act 2's first 120 frames in C, plus the first pieces of Sonic's movement and the act's rings. The opening matches the original in every frame; the rest of the act is still being ported."
+}
