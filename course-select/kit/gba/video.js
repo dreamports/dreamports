@@ -331,6 +331,25 @@ export function createVideo() {
     return 1;
   }
 
+  // a picture put behind everything the scene draws (video.underlay: 240 × 160 words of colour, in the same layout as
+  // the frame): for a scene drawn over a picture the video doesn't draw, such as another game's screen. It is a
+  // background of the lowest priority (BG3), so the colour effects treat it as any layer: darkened with the rest,
+  // and a semi-transparent sprite over it takes the brightness effect when BG3 isn't a second target
+  const underlayBg = { index: 3, priority: 3, target1: false, target2: false };
+  function drawUnderlay(bldcnt, y, start, end, ctl) {
+    if (!(ctl & 8)) return;
+    underlayBg.target1 = (bldcnt & 8) !== 0;
+    underlayBg.target2 = (bldcnt & 0x800) !== 0;
+    const [flags, colors] = bgFlags(underlayBg, ctl), blend = (flags & TARGET_2) !== 0, lit = colors === variant;
+    const picture = video.underlay;
+    for (let x = start; x < end; x++) {
+      let c = picture[y * SCREEN_W + x] & 0xFFFFFF;
+      if (lit) c = effect === DARKEN ? darken(c, bldy) : brighten(c, bldy);
+      if (blend) blendInto(x, (c | flags) >>> 0);
+      else layInto(x, (c | flags) >>> 0);
+    }
+  }
+
   // the sprites of priority `priority` over the run [start, end)
   function compositeSprites(priority, start, end, ctl) {
     if (!(ctl & 0x10)) return;
@@ -481,6 +500,23 @@ export function createVideo() {
     }
   }
 
+  // mode 4's background over [start, end) of line y: a picture of one byte a pixel, in the page DISPCNT picks
+  function drawBitmap(bg, start, end, ctl) {
+    if (!(ctl & 4)) return;
+    const [flags, colors] = bgFlags(bg, ctl), blend = (flags & TARGET_2) !== 0, page = dispcnt & 0x10 ? 0xA000 : 0;
+    const r = REG.BG2PA >> 1, pa = (io[r] << 16) >> 16, pc = (io[r + 2] << 16) >> 16;
+    let x = cur[0][0] + (start - 1) * pa, y = cur[0][1] + (start - 1) * pc;
+    for (let outX = start; outX < end; outX++) {
+      x += pa; y += pc;
+      const lx = x >> 8, ly = y >> 8;
+      if (lx < 0 || ly < 0 || lx >= SCREEN_W || ly >= SCREEN_H) continue;
+      const pixel = vram[page + ly * SCREEN_W + lx], at = outX + ox;
+      if (!pixel || !(row[at] & WRITABLE)) continue;
+      if (blend) blendInto(at, (colors[pixel] | flags) >>> 0);
+      else layInto(at, (colors[pixel] | flags) >>> 0);
+    }
+  }
+
   function drawLine(y, out, outAt) {
     dispcnt = io[0];
     if (dispcnt & 0x80) { out.fill(0xFFFFFFFF, outAt, outAt + lineW); return; }
@@ -566,7 +602,9 @@ export function createVideo() {
             if (margin) drawTextWide(bg, y, start, end, ctl);
             else drawText(bg, y, start - ox, end - ox, ctl);
           } else if (affine && !marginLine) drawAffine(bg, start - ox, end - ox, ctl);
+          else if (bg.index === 2 && mode === 4 && !marginLine) drawBitmap(bg, start - ox, end - ox, ctl);
         }
+        if (p === 3 && video.underlay && !margin && !marginLine && !ox) drawUnderlay(bldcnt, y, start, end, ctl);
       }
     }
 
@@ -622,7 +660,8 @@ export function createVideo() {
 
   /**
    * Draws a frame into `out` (240 × 160 RGBA words, as an ImageData's buffer holds them). `hblank(y)` runs
-   * after line y is drawn, as the H-blank does, and may write registers for the next line. With `wide`, a
+   * after line y is drawn, as the H-blank does, and may write registers for the next line, and colours if it calls
+   * `updateColors()` after them. With `wide`, a
    * widescreen view of { w, h } (even numbers no smaller than the screen) instead, w × h words, with the scene's
    * `layers`, `sprites` and `windows` past the screen's edges (see drawTextWide, drawSprite and inWindow).
    * The registers are as they were before it afterwards, so a frame can be drawn again; the V-blank sets every
@@ -664,6 +703,6 @@ export function createVideo() {
     if (globalThis.dreamportsProof) dreamportsProof.video = video;
   }
 
-  const video = { vram, pal, oam, io, write, drawFrame, drawLine };
+  const video = { vram, pal, oam, io, write, drawFrame, drawLine, updateColors, underlay: null };
   return video;
 }
