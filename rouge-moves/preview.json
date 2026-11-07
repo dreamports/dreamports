@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/633-rouge-moves-c",
   "commit": "c5fd380d16592c7805afa475e0319d328ca8b48d",
-  "made": "2026-11-07T15:40:58.004Z",
+  "made": "2026-11-07T15:42:07.400Z",
   "about": "Rouge's moves now play in C: her running, attacks, guarding and all three special attacks match the original every frame. A training start point now picks its fighters, arena and colours, as the recordings ask."
 }
