@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/461-emerls-moves",
+  "commit": "c385c14efffb8ef9c65bfcc19f52852b4d876617",
+  "made": "2026-11-07T04:06:38.256Z",
+  "about": "Emerl now fights: his frame runs the script and animation of the character in each skill slot, and a fight's profiles and outfit come from the save as the mode-select screen leaves them."
+}
