@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/645-name-entry-at-first-start",
-  "commit": "24a1977ad41ac7f388bd8ef79d1fa9a549b495c2",
-  "made": "2026-11-07T01:52:59.851Z",
-  "about": "The name entry at the first start, in C: the grid of letters, the cursor and its letter, typing a name, and the way on to the main menu."
+  "commit": "840e3b39ff2150bd602de589e111bc630d98bc3c",
+  "made": "2026-11-07T02:39:42.761Z",
+  "about": "The name entry at the first start, in C: the grid of letters, the cursor and its letter, typing a name, and the way on to the main menu, with main's intro and title screen merged in."
 }
