@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/455-rouge-moves",
   "commit": "e6e8d008cf36056365b16f432433b3260f153d6a",
-  "made": "2026-11-07T05:36:04.201Z",
+  "made": "2026-11-07T05:37:14.787Z",
   "about": "Rouge can now be picked as the player in a fight from a start point, and her moves, attacks and three ground special attacks are proven frame by frame."
 }
