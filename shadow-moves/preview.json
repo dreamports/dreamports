@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/637-shadow-moves-in-c",
   "commit": "fae9cb28896a6306fbfa425b2a10a9fdab635387",
-  "made": "2026-11-07T15:37:31.904Z",
+  "made": "2026-11-07T15:38:36.068Z",
   "about": "Shadow's moves, attacks, guard and special attacks now play in C, every frame matching the original. A fight opened from a recording's start point now takes the fighter, the rival, the stage and the colours it asks for."
 }
