@@ -5,6 +5,6 @@
   "repository": "dreamports/dreamports",
   "branch": "feat/733-course-select-in-c",
   "commit": "955cc141d824a0f1464a34651d1fe5bf4e9244a2",
-  "made": "2026-11-07T16:05:15.582Z",
+  "made": "2026-11-07T16:15:42.963Z",
   "about": "The course select, translated from the JavaScript version: the acts and zones lists, their slide in, scrolling and the Moon Zone's row. A starts the act, which isn't in C yet."
 }
