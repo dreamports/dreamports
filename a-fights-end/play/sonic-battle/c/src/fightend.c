@@ -85,12 +85,12 @@ static int winnerSong(int character) {
 }
 
 /** The drawing every fight frame does after its wait: the view on the player, the HUD, the fighters and the arena. */
-static void drawFightFrame(int player) {
+static void drawFightFrameHud(int player, int hud) {
   followFighter(player);
   setHeightShift();
   layersFromCamera();
   clearQueue();
-  drawHud(0);
+  drawHud(hud);
   keepQueued();
   drawFighters(4);
   drawArenaThings();
@@ -99,6 +99,8 @@ static void drawFightFrame(int player) {
   drawSpritesNow();
   copyAtVblank();
 }
+
+static void drawFightFrame(int player) { drawFightFrameHud(player, 0); }
 
 /** 0x0801ad38: the countdown before a fight. The first frames set each fighter's side, then 0x08015858 counts the
  *  banner; when it ends, the fight's own frame starts. */
@@ -164,11 +166,13 @@ void battleAfterWait(void) {
     int winner = fightWinner(read8(SETUP_ + 4));
     write8(RESULT_WINNER, (uint8_t)winner);
     if (winner != 255) {
+      startHud(40);   // the Game Set banner, which the ending draws by the HUD's mode
       write8(SETUP_ + 135, 1);
       endFade();
       gba_sound_play(47);
       forgetKeys(player);
-      g.callback = endingFrame;
+      endingFrame();
+      return;
     }
   }
   drawFightFrame(player);
@@ -199,12 +203,13 @@ void endingFrame(void) {
     readFighterKeys(i);
     fighterAct(i);
   }
+  drawFightFrameHud((int)read32(PLAYER_), hudMode());
   g.after_wait = endingAfterWait;
 }
 
 void endingAfterWait(void) {
   int player = (int)read32(PLAYER_);
-  drawFightFrame(player);
+  drawFightFrameHud(player, hudMode());
   uint32_t at = SETUP_ + 114;
   write16(at, (uint16_t)(read16(at) + 1));
 }
@@ -239,7 +244,7 @@ void resultTransitionAfterWait(void) {
     return;
   }
   int shown = read8(SETUP_ + 136);
-  drawFightFrame(shown == 255 ? player : shown);
+  drawFightFrameHud(shown == 255 ? player : shown, hudMode());
 }
 
 /** The result screen, 0x0802b980, is not ported yet. A recording ends before this. */
