@@ -10,7 +10,7 @@
 
 import { proof } from '../proof.js';
 import { createM4A } from './m4a.js';
-import { createApu } from './apu.js';
+import { createApu, CPU_HZ } from './apu.js';
 
 const GAIN = 0.5;   // the GBA's full scale is loud next to other pages; half of it leaves headroom
 // the rate the console mixes its sound at once the sound library has started: every 256 cycles (apu.js)
@@ -43,7 +43,7 @@ async function onPage(worklet) {
  * the game calls `frameDone()`, so `frameCycles()` says the same in a player's browser as under the proof tools.
  */
 export function createSound({ worklet = new URL('./worklet.js', import.meta.url), calls = () => ({}), countCycles = false } = {}) {
-  let ctx = null, node = null, muted = false, held = false, songPlayers = null, count = 1;
+  let ctx = null, node = null, muted = false, held = false, songPlayers = null, count = 1, proofProcessor = null;
   let counter = null, counterApu = null;
   const counterCalls = [];
   const waiting = [], kept = new Map();
@@ -96,6 +96,10 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
       stopAll() { call('allStop'); },
       /** m4aMPlayAllContinue: every music player goes on from where it stopped */
       continueAll() { call('allContinue'); },
+      /** m4aSoundVSyncOff: the sound buffer cleared and the mixing held until vsyncOn, as a game does around a flash write */
+      vsyncOff() { call('vsyncOff'); },
+      /** m4aSoundVSyncOn */
+      vsyncOn() { call('vsyncOn'); },
       /** Queues any call for this GBA's engine, or for the game's music manager */
       call,
       ...calls(call, post),
@@ -128,6 +132,7 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
         // the game's frames wait while the engine starts, so it starts at the same frame every time
         const started = onPage(worklet).then(made => {
           node = made;
+          proofProcessor = made.processor;
           node.port.postMessage({ type: 'raw' });
           node.port.postMessage({ type: 'rom', rom: romBuffer, layout, count });
           for (const message of kept.values()) node.port.postMessage(message);
@@ -150,6 +155,9 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
       for (const msg of waiting.splice(0)) node.port.postMessage(msg);
       resume();
     },
+    /** The engine starts again from nothing, as the game's start does it (m4aSoundInit): every player, channel and
+     *  effect clean, with the sound chip as it was. A game that starts again from a soft reset calls it. */
+    reset() { post({ type: 'reset' }); },
     /** Sends `message` to the game's processor now if it runs, and each time the engine starts on a ROM after,
      *  such as the data an extra's sounds need; one of the same `type` takes the place of the last. */
     keep(message) { kept.set(message.type, message); node?.port.postMessage(message); },
@@ -162,6 +170,25 @@ export function createSound({ worklet = new URL('./worklet.js', import.meta.url)
       for (const [name, args] of counterCalls.splice(0)) counter[name](...args);
       counterApu.run(FRAME_CYCLES);
       counter.frame();
+    },
+
+    /** With `countCycles`, `frames` frames of SoundMain with nothing playing, for a start point that leaves out what led to it. */
+    framesGoneBy(frames) {
+      if (!counter) return;
+      for (let i = 0; i < frames; i++) { counterApu.run(FRAME_CYCLES); counter.frame(); }
+    },
+    /**
+     * Under a proof tool, `frames` frames of the game's sound played and let go, for a start point that leaves out
+     * what led to it: the worklet's processor runs them so the sound the next frame hears is that many frames on.
+     */
+    skipFrames(frames) {
+      if (!proofProcessor) return;
+      const step = PROOF_RATE * FRAME_CYCLES / CPU_HZ;
+      for (let i = 0; i < frames; i++) {
+        const count = Math.floor((i + 1) * step) - Math.floor(i * step);
+        const left = new Float32Array(count), right = new Float32Array(count);
+        proofProcessor.process([], [[left, right]]);
+      }
     },
 
     get muted() { return muted; },

@@ -14,12 +14,13 @@ import { createSettings } from '../../../kit/gba/ui/settings.js';
 import { createTouch } from '../../../kit/gba/ui/touch.js';
 import { createSound } from '../../../kit/gba/sound/audio.js';
 import { cartridgeSave } from '../../../kit/gba/save.js';
-import { createCore, hblank, step } from './core.js';
+import { createCore, hblank, step, KEY } from './core.js';
 import { logos } from './logos.js';
 import { intro } from './intro.js';
 import { keptName } from './name-entry.js';
 import { skills } from './skills.js';
 import { soundLayout } from './sound.js';
+import { startFight } from './fight.js';
 
 // the game as its cartridge's header names it, and the version the Dreamport is built from: the USA one, whose
 // addresses the code reads at
@@ -48,9 +49,9 @@ proof?.watch(screen, input);   // for the proof tools: ?proof plays recorded but
 // with the controls the layout gives and what a button does so far
 const touch = createTouch(stage, input, { screen, key: 'sonic-battle' });
 createSettings(stage, input, { what: {
-  a: 'A: adds a letter to your name, and chooses on the main menu and the Mini-games screen',
-  b: 'B: takes the last letter off your name, and goes back from the Mini-games screen',
-  start: 'Start: skips the SEGA and Sonic Team logos and the intro, leaves the title screen, and keeps your name',
+  a: 'A: adds a letter to your name, chooses on the main menu and the Mini-games screen, and plays a song or sound in the options',
+  b: 'B: takes the last letter off your name, and goes back from the Mini-games screen and the options',
+  start: 'Start: skips the SEGA and Sonic Team logos and the intro, leaves the title screen, keeps your name, and goes back from the options',
 }, touch });
 let rom = null, romBuffer = null;
 
@@ -74,17 +75,25 @@ createRomSetup(picker, {
   onPlay: start,
 });
 
-// The game so far: the logos, the intro, the title screen, the name entry, the main menu and the Mini-games screen, with
-// Emerl's screen's menu from a start point. What the rest of their choices lead to isn't ported yet, so the screen stays
-// black there. The proof tools keep no name between runs, as a new cartridge wouldn't have one, and `name` in the address
-// is what a recording's start point gives the game for a saved one, and `open` for the entries a save has opened on the
-// Mini-games screen.
+// The game so far: the logos, the intro, the title screen, the name entry, the main menu, the Mini-games screen and the options,
+// with Emerl's screen's menu and a fight's opening from start points. What the rest of their choices lead to isn't ported
+// yet, so the screen stays black there. The proof tools keep no name between runs, as a new cartridge wouldn't have one,
+// and `name` in the address is what a recording's start point gives the game for a saved one, and `open` for the entries
+// a save has opened on the Mini-games screen.
 function createGame(video, rom, sound) {
   const core = createCore(video, rom, sound);
   core.nameSave = cartridgeSave('sonic-battle-name', proof ? null : undefined);
   keptName(core);
+  core.languageSave = cartridgeSave('sonic-battle-language', proof ? null : undefined);
+  core.language = core.savedLanguage = core.languageSave.read()?.[0] ?? core.language;
   const saved = new URLSearchParams(location.search).get('name');
   if (saved !== null) core.name[0] = Number(saved) & 0xFFFF;
+  // a recording's start point for a saved language: the original is given it 40 frames in, past where it reads its save, and plays those alone
+  const language = new URLSearchParams(location.search).get('language');
+  if (language !== null) {
+    core.language = core.savedLanguage = Number(language) & 0xFF;
+    core.startUp -= 40;
+  }
   const open = new URLSearchParams(location.search).get('open');
   if (open !== null) core.miniGamesOpen = Number(open) & 0xFF;
   core.main = c => logos(c, intro);
@@ -93,10 +102,42 @@ function createGame(video, rom, sound) {
     core.startUp = 1;
     core.main = skills;
   }
+  // a recording's start point, as nothing leads to a fight yet: fight=training&vblanks=<count> opens one (fight.js),
+  // with &action=<n> for the Rival's Action Training's screen offers, 0 (Do Nothing) unless it says, &you=<n> and
+  // &rival=<n> for the characters Training's screen picks, Sonic (0) unless it says, &arena=<n> for the Training
+  // map, Emerald Beach (0) unless it says, and &colour=<n> for the colour rows Training's screen gives a character
+  // whose colours come from its choices, such as Chaos. &opening=<n> plays the opening's first n frames before the
+  // recording starts, with &choice=<1 or 2> for the Right presses that pick a ground special other than the first,
+  // so a part after the opening needs no start point of its own. It places no fighter: the fight's own opening drops
+  // them in, and it's what's proven, so no neverInPlay is needed.
+  const asked = new URLSearchParams(location.search);
+  if (asked.get('fight') === 'training') {
+    core.startUp = 1;
+    core.main = c => startFight(c, Number(asked.get('vblanks')), Number(asked.get('action') ?? 0) & 0xFF,
+      Number(asked.get('you') ?? 0) & 0xFF, Number(asked.get('rival') ?? 0) & 0xFF,
+      Number(asked.get('arena') ?? 0) & 0xFF, asked.has('colour') ? Number(asked.get('colour')) & 0xFF : 255);
+  }
+  const opening = Number(asked.get('opening') ?? 0) & 0xFFFF;
+  const choice = Number(asked.get('choice') ?? 0) & 0xFF;
+  let opened = false;
   return {
     step(keys) {
       step(core, keys);
       sound.frameDone();
+      if (opening > 0 && !opened) {
+        // the start-up has just made the fight, so the opening's own presses run now, as a player makes them: the
+        // special's choice, then the three presses of A. Its sound runs on, as a start point's does.
+        opened = true;
+        for (let f = 0; f < opening; f++) {
+          let held = 0;
+          if (choice >= 1 && f === 60) held |= KEY.RIGHT;
+          if (choice >= 2 && f === 66) held |= KEY.RIGHT;
+          if (f === 70 || f === 100 || f === 130) held |= KEY.A;
+          step(core, held);
+          sound.frameDone();
+          sound.skipFrames(1);
+        }
+      }
     },
     hblank(line) { hblank(core, line); },
   };

@@ -10,6 +10,7 @@ const DPAD = { up: 12, down: 13, left: 14, right: 15 };
 const DEAD_ZONE = 0.5;
 const XBOX = /xbox|xinput|045e|microsoft/i;   // the names browsers give Microsoft's controllers
 const SETTINGS_COMBO = [8, 9];                 // View + Menu (Select + Start) together open the settings, not the game's
+const RESET_BUTTONS = [0, 1];                  // with A and B too, they're the game's soft reset (Sonic Advance's) instead
 const COMBO_WAIT = 4;                          // steps a controller's Start or Select waits for the other to join it
 
 /** The Game Boy Advance's buttons, as its KEYINPUT register has them, a bit each. */
@@ -18,8 +19,9 @@ export const KEY = { A: 0x1, B: 0x2, SELECT: 0x4, START: 0x8, RIGHT: 0x10, LEFT:
 /** The connected controllers in the browser's order. */
 export const connectedPads = () => [...(navigator.getGamepads?.() ?? [])].filter(p => p?.connected);
 
-/** Whether `pad` holds View and Menu together, which open or close the settings; the game sees neither then. */
-export const holdsSettingsCombo = pad => SETTINGS_COMBO.every(i => pad.buttons[i]?.pressed);
+/** Whether `pad` holds View and Menu together, which open or close the settings; the game sees neither then. With A
+ *  and B held too they are the soft reset's four buttons, which the game sees. */
+export const holdsSettingsCombo = pad => SETTINGS_COMBO.every(i => pad.buttons[i]?.pressed) && !RESET_BUTTONS.every(i => pad.buttons[i]?.pressed);
 
 /** Whether an Xbox controller is connected. */
 export const xboxConnected = () => connectedPads().some(p => XBOX.test(p.id));
@@ -69,8 +71,8 @@ export function createInput(layout, { keys = layout.keys, pads = connectedPads }
   const waiting = {};                   // Start or Select just pressed alone: the steps left before the game sees it
   // a proof tool runs the game on this player's buttons (proof.js): in play mode its frames hold them, and in record
   // mode what the game read at each frame is kept, after any frames it gave to replay first, which hold them too
-  const proofs = () => proof?.input === input;
-  const played = () => proofs() && (proof.mode === 'play' || !!proof.frame);
+  const proofs = () => proof?.slotOf(input) >= 0;
+  const played = () => proofs() && (proof.mode === 'play' || !!proof.frameOf(input));
   let replayed = false;                 // a proof tool's frame held the buttons at the last step
 
   function set(button, quiet) {
@@ -99,6 +101,18 @@ export function createInput(layout, { keys = layout.keys, pads = connectedPads }
       set(b, true);
       if (edges.includes(b)) input[`${b}Pressed`] = false;
     }
+  };
+
+  /**
+   * The buttons the V-blank at the end of this step finds held, as a set of the game's names, for a game that reads
+   * them there as well as at the start of its steps (VBlankIntr's soft reset). The keys can change in between, so
+   * it's what is held now; a proof tool says what the next frame holds, which is what the original's V-blank
+   * sees, as its frames are counted from the V-blank before them (proof.js `next`).
+   */
+  input.nextHeld = () => {
+    const next = proofs() && proof.mode === 'play' && proof.nextOf(input);
+    if (next) return new Set(next);
+    return new Set(buttons.filter(b => input[b]));
   };
 
   /** The console's buttons held, a bit each as KEY has them, for those the layout says are one: set while held,
@@ -141,7 +155,7 @@ export function createInput(layout, { keys = layout.keys, pads = connectedPads }
    *  A controller plugged in mid-game is read from then on; one unplugged lets go of its buttons. */
   input.poll = () => {
     if (played()) {
-      play(proof.frame ?? undefined);
+      play(proof.frameOf(input) ?? undefined);
       replayed = true;
     } else {
       // the tool's frames are over and the player takes over, with the buttons they hold now
@@ -149,7 +163,7 @@ export function createInput(layout, { keys = layout.keys, pads = connectedPads }
       replayed = false;
       read();
     }
-    if (proofs()) proof.record(seen());
+    if (proofs() && proof.input === input) proof.record(seen());
   };
   function read() {
     if (!input.enabled) return;
