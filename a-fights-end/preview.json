@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/630-a-fights-end",
+  "commit": "cb909a564b7e3f259eb6569e75a6c313ee64206f",
+  "made": "2026-11-07T20:32:28.319Z",
+  "about": "A fighter's health running out, the knockout, and the way to the fight's result, with the last 403 frames matching the original in picture and sound."
+}
