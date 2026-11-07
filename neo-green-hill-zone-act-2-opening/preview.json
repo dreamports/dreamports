@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/735-neo-green-hill-act-2",
+  "commit": "f1f4142a06e96a94f047c7f1ca404a7932fbabc3",
+  "made": "2026-11-07T22:21:53.628Z",
+  "about": "Neo Green Hill Zone act 2's first 120 frames in C, after its title card: the stage, its animation frames and palettes, the camera, Sonic standing at the act's spawn, the HUD and its music."
+}
