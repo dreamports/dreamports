@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle",
+  "title": "Sonic Battle Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/463-gammas-moves",
+  "commit": "3077dd539142efad65869fbe6d1de52b987edfd1",
+  "made": "2026-11-07T07:12:43.027Z",
+  "about": "Gamma is the eighth fighter, with his own moves, attacks and special attacks."
+}
