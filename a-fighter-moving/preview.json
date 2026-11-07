@@ -1,10 +1,10 @@
 {
-  "game": "sonic-battle",
-  "title": "Sonic Battle Dreamport",
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/448-a-fighter-moving",
-  "commit": "dd111de592982b180474e854f6d8d8e5bb4f34f3",
-  "made": "2026-11-05T03:51:33.565Z",
-  "about": "Sonic running, turning, jumping, dashing and landing in Training, with the view following and the arena's walls and edges in the way"
+  "branch": "feat/627-fighter-moving",
+  "commit": "e48506fab5c55b7c5a56866ab9bec5daf9859631",
+  "made": "2026-11-07T07:48:21.751Z",
+  "about": "Sonic walks, turns, runs, jumps and lands in C, with the view following and the arena's floors and walls in the way."
 }
