@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/634-knuckles-moves",
-  "commit": "a6a634e1f326bc1ac0de5c4a4f05e1bc349324e0",
-  "made": "2026-11-07T18:47:40.706Z",
+  "commit": "ed2e6ee2693414eae3c07cbc0ad3470131f24b4b",
+  "made": "2026-11-08T00:13:59.271Z",
   "about": "Knuckles now fights in C: his ground and air moves and all three specials match the original, and the fight's opening shows the fighter the start point picks. The animation step now counts its cycles as the JavaScript does, and the start point takes the player, rival, arena and colour."
 }
