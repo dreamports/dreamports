@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance",
+  "title": "Sonic Advance Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/98-team-play",
+  "commit": "a3e5584811d5c418f4ce11672b316b1d559c4eca",
+  "made": "2026-11-08T02:03:45.826Z",
+  "about": "Chao Hunt's team screen: four players choose sides before the stage"
+}
