@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/638-emerl-moves-c",
+  "commit": "f91458e9da11f67a5578ef57c02653ea96057518",
+  "made": "2026-11-08T21:30:24.690Z",
+  "about": "Emerl's moves in C: he runs the script of the character in each of his skill slots, as the original does, so his run, jump, air attack, ground combo and special match every frame."
+}
