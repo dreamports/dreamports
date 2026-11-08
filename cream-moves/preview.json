@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/636-creams-moves-in-c",
+  "commit": "4aa9e43e5b47749d3811f4825fb01391242d1a82",
+  "made": "2026-11-08T03:30:48.330Z",
+  "about": "Cream's moves, attacks and Shot and Set specials in C, with her idle voice and the fight's opening's sound."
+}
