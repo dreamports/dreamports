@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/640-chaos-moves-c",
+  "commit": "875a414c6215985a8d97deb42890c49ed2de2651",
+  "made": "2026-11-08T21:33:47.671Z",
+  "about": "Chaos's Power, Shot and Set specials now play in C, so all five of Chaos's recordings match the original on every frame."
+}
