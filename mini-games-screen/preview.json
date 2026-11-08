@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/668-mini-games-in-c",
+  "commit": "99b395eaaf145e76bd038ab6413659e8958ac76f",
+  "made": "2026-11-08T21:39:23.007Z",
+  "about": "The Mini-games screen and its waiting screen in C"
+}
