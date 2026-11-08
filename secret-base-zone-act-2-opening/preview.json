@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/1002-secret-base-act-2-opening-in-c",
-  "commit": "9468576327a857d329fd011f5e9ea9694c1c5870",
-  "made": "2026-11-07T21:05:12.460Z",
-  "about": "Secret Base Zone act 2's opening in C: the stage's line-scrolled background, its palette animations, the HUD, its rings and steam exhausts, and Sonic's first frames, all from the course select's hand-over."
+  "commit": "47c6f30349897fb48df250f62f7034bb0227f116",
+  "made": "2026-11-08T17:04:51.074Z",
+  "about": "Secret Base Zone act 2's opening in C, and the X Zone opening's clip from #973, now on main."
 }
