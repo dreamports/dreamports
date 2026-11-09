@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "first-start",
+  "recordingFile": "games/sonic-advance-3/proof/recordings/first-start.json",
+  "recordingSha1": "4e536229432759f12b444ba4ffc2a9421eed708b",
+  "commit": "508d4212da27c435d3b3c7c64f463c348e4f5475",
+  "base": "39fd7c2a47ff0b79d04740547a7e63e9b50c2434",
+  "sideBySide": true,
+  "video": "6f075d9d3268e243e1daaca6c67f92120637fd86",
+  "measures": {
+    "from": 0,
+    "to": 299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 7,
+    "same": 6,
+    "changed": {
+      "frame": 0,
+      "why": "as main has no proof of this version yet"
+    },
+    "newFrames": 300,
+    "base": "39fd7c2a47ff0b79d04740547a7e63e9b50c2434"
+  }
+}
