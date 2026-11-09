@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "chaos-special-set",
+  "recordingFile": "games/sonic-battle/proof/recordings/chaos-special-set.json",
+  "recordingSha1": "e938ec43253f106cfdde4ca2032604b5988265c4",
+  "commit": "c0b88a2771b80482ecc86b52ebe57486bfae15f9",
+  "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
+  "sideBySide": true,
+  "video": "c1a2bd9290edfc2ac4b99690606ebb3dc8aaf060",
+  "measures": {
+    "from": 380,
+    "to": 679,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 0,
+    "same": 186,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "b2c4830e1faa5bcb4aef735db560e6832924410c"
+  }
+}
