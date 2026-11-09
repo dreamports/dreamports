@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "course-select-first-act",
+  "recordingFile": "games/sonic-advance/proof/recordings/course-select-first-act.json",
+  "recordingSha1": "f0e190e113fb455098e21b5f066da9930dae99c3",
+  "commit": "a678f8aadbe1b6175c0e87f73eae1b1f3614f782",
+  "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
+  "sideBySide": true,
+  "video": "56d021edc82110c0a7df1e2b34efa4652975e6fe",
+  "measures": {
+    "from": 3760,
+    "to": 4059,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 2,
+    "same": 75,
+    "changed": {
+      "frame": 3886,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 174,
+    "base": "b2c4830e1faa5bcb4aef735db560e6832924410c"
+  }
+}

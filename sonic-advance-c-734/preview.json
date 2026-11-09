@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/734-neo-green-hill-act-1",
-  "commit": "b58f5456d2d84629c23c65e2e11fc31906b4d8ba",
-  "made": "2026-11-09T05:16:01.181Z",
-  "about": "Neo Green Hill act 1's brake dust, act music start and results in C"
+  "commit": "a678f8aadbe1b6175c0e87f73eae1b1f3614f782",
+  "made": "2026-11-09T15:06:18.116Z",
+  "about": "Neo Green Hill act 1 in C: the character select now keeps a start point's progress, so it reaches the course select as the original does."
 }

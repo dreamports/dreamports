@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "character-select-to-course",
+  "recordingFile": "games/sonic-advance/proof/recordings/character-select-to-course.json",
+  "recordingSha1": "afb709f6d7b4d375dda6a38f2046a9ffee6e662c",
+  "commit": "a678f8aadbe1b6175c0e87f73eae1b1f3614f782",
+  "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
+  "sideBySide": true,
+  "video": "69f21b5a39dcd4eaf59a0a6ea31d0b07eca50485",
+  "measures": {
+    "from": 1760,
+    "to": 2059,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 4,
+    "same": 63,
+    "changed": {
+      "frame": 1825,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 235,
+    "base": "b2c4830e1faa5bcb4aef735db560e6832924410c"
+  }
+}
