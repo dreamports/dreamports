@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "chaos-special-power",
+  "recordingFile": "games/sonic-battle/proof/recordings/chaos-special-power.json",
+  "recordingSha1": "ac4c833608f6ce479413d43957b75c5e461b23ef",
+  "commit": "c8b861c35869cf0a96a749ff2cbfe99f2407e3f0",
+  "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
+  "sideBySide": true,
+  "video": "39fb7e12d76f665d19109482b0ee42dbb5e8aaf3",
+  "measures": {
+    "from": 320,
+    "to": 619,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 0,
+    "same": 184,
+    "changed": {
+      "frame": 469,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 151,
+    "base": "b2c4830e1faa5bcb4aef735db560e6832924410c"
+  }
+}
