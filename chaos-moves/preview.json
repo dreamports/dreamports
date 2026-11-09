@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/640-chaos-moves-c",
-  "commit": "c8b861c35869cf0a96a749ff2cbfe99f2407e3f0",
-  "made": "2026-11-09T06:30:31.919Z",
+  "commit": "c0b88a2771b80482ecc86b52ebe57486bfae15f9",
+  "made": "2026-11-09T06:33:18.945Z",
   "about": "Chaos's Power, Shot and Set specials now play in C, so all five of Chaos's recordings match the original on every frame."
 }
