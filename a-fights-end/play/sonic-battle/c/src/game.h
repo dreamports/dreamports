@@ -82,6 +82,9 @@ typedef struct {
   void (*vblank_work)(void);
   int fight_vblank;
   int hold_queue;
+  // a start point that opens a fight a few frames before its end: how many of its own frames are left before it ends,
+  // plus one, so nothing counts down on a screen no start point opens
+  int fight_end_in;
 
   // a screen's counters and the colour effect's target
   int counter, blend_target, blend;
@@ -132,6 +135,7 @@ static inline int16_t s16(int32_t v) { return (int16_t)v; }
 
 // core.js
 void step(uint16_t held);
+void runFightSetup(int count);
 void hblank(int line);
 void fightVblank(void);
 void queueCopy(uint32_t to, uint32_t from, uint32_t bytes);
@@ -270,11 +274,14 @@ void battleReadyFrame(void);
 void battleReadyAfterWait(void);
 void battleFrame(void);
 void battleAfterWait(void);
+void beginEnding(void);
 void endingFrame(void);
 void endingAfterWait(void);
 void resultTransition(void);
 void resultTransitionAfterWait(void);
 void resultScreen(void);
+void fightEndAfter(int frames);
+void fightEndNow(void);
 
 // fight.js
 void startFight(int vblanks, int action, int you, int rival, int arena, int colour, int battle);

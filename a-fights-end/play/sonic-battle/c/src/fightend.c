@@ -137,7 +137,8 @@ void battleReadyAfterWait(void) {
   drawFightFrame((int)read32(PLAYER_));
 }
 
-/** 0x0801b394: a fight's frame. It runs every fighter, then its wait, then the winner check. */
+/** 0x0801b394: a fight's frame. It runs every fighter, then its wait, then the winner check. A win hands the next
+ *  frame to the ending and starts the Game Set banner, whose first frame the wait below draws. */
 void battleFrame(void) {
   int player = (int)read32(PLAYER_);
   readAllKeys(player);
@@ -156,30 +157,36 @@ void battleFrame(void) {
     readFighterKeys(i);
     fighterAct(i);
   }
+  if (read8(SETUP_ + 135) == 0 && read8(SETUP_ + 116) == 0) {
+    int winner = fightWinner(read8(SETUP_ + 4));
+    write8(RESULT_WINNER, (uint8_t)winner);
+    if (winner != 255) beginEnding();
+  }
   g.after_wait = battleAfterWait;
+}
+
+/** 0x0801b394's win branch: the Game Set banner, the ending's next frame, and the sound the win plays. */
+void beginEnding(void) {
+  int player = (int)read32(PLAYER_);
+  startHud(40);   // the Game Set banner, which the ending draws by the HUD's mode
+  g.callback = endingFrame;
+  write8(SETUP_ + 135, 1);
+  endFade();
+  gba_sound_play(47);
+  forgetKeys(player);
 }
 
 void battleAfterWait(void) {
   int player = (int)read32(PLAYER_);
   if ((pressedKeys(player) & 8) && countUntilDone() == 30) unsupported();   // 0x0801c8f0, pausing
-  if (read8(SETUP_ + 135) == 0 && read8(SETUP_ + 116) == 0) {
-    int winner = fightWinner(read8(SETUP_ + 4));
-    write8(RESULT_WINNER, (uint8_t)winner);
-    if (winner != 255) {
-      startHud(40);   // the Game Set banner, which the ending draws by the HUD's mode
-      write8(SETUP_ + 135, 1);
-      endFade();
-      gba_sound_play(47);
-      forgetKeys(player);
-      endingFrame();
-      return;
-    }
-  }
-  drawFightFrame(player);
+  // 0x0801bb1a, the way 0x0801b394 draws after a win: the fight's frame with the ending's HUD mode, whose first
+  // draw only marks the banner as started
+  drawFightFrameHud(player, read8(SETUP_ + 135) != 0 ? hudMode() : 0);
 }
 
 /** 0x0801afc4: the ending after someone has won. 0x080158c0 counts its frames; when it ends, the winner's song plays
- *  and the way to the result starts. The fighters keep their scripts and the view keeps following them. */
+ *  and the way to the result starts. The fighters keep their scripts and the view keeps following them, and the wait
+ *  below draws the frame, as the original's wait does. */
 void endingFrame(void) {
   for (int i = 0; i < 4; i++) forgetKeys(i);
   if (countSlides()) {
@@ -203,7 +210,6 @@ void endingFrame(void) {
     readFighterKeys(i);
     fighterAct(i);
   }
-  drawFightFrameHud((int)read32(PLAYER_), hudMode());
   g.after_wait = endingAfterWait;
 }
 
@@ -247,5 +253,25 @@ void resultTransitionAfterWait(void) {
   drawFightFrameHud(shown == 255 ? player : shown, hudMode());
 }
 
-/** The result screen, 0x0802b980, is not ported yet. A recording ends before this. */
+/** A start point that opens just before the end counts its own frames down, then ends the fight as the original's
+ *  win frame does: the rival out of health, the player's point on, the win frame's after-wait and the banner's first
+ *  frame. */
+void fightEndNow(void) {
+  write8(SETUP_ + 125, 1);
+  write8(SETUP_ + 4, 2);
+  write8(SETUP_ + 6, 1);
+  write8(SETUP_ + 51, 1);
+  write8(FIGHTERS + 147, 72);
+  write8(FIGHTERS + 149, 1);
+  write8(FIGHTERS + RECORD + HEALTH, 0);
+  write16(FIGHTERS + RECORD + STATE, 253);
+  battleFrame();   // the win frame's own logic, which finds the winner and starts the ending
+  battleAfterWait();
+  g.after_wait = 0;
+}
+
+/** The number of the Dreamport's own frames a start point opens before the end. */
+void fightEndAfter(int frames) { g.fight_end_in = frames + 1; }
+
+/** The result screen is not part of this foundation and is not ported: reaching it here stops the game. */
 void resultScreen(void) { unsupported(); }

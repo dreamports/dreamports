@@ -33,6 +33,8 @@
 #define BLDY 0x54
 #define NO_FIGHTER 255
 
+void dp_sound_skip_frames(int frames);   // the kit's sound engine, run without rendering (kit/gba/c/sound.c)
+
 static int setup(int at) { return read8(SETUP_ + (uint32_t)at); }
 
 /** 0x08020840: the colour effect's fade in from black, over `frames` frames. */
@@ -212,7 +214,9 @@ void choosingAfterWait(void) {
 void startFight(int vblanks, int action, int you, int rival, int arena, int colour, int battle) {
   g.vblanks = vblanks;
   int end = (int)gba_start_number("end", -1);
-  setFightEndAt(end >= 0 ? vblanks + end + 2 : -1);   // the two V-blanks startFight and the first step count
+  int lead = (int)gba_start_number("lead", 0);
+  g.fight_end_in = 0;
+  setFightEndAt(end > 0 ? vblanks + end + 2 : -1);   // the two V-blanks startFight and the first step count
   g.line_one = playQueuedEffects;
   for (int i = 0; i < 512; i++) gba_pal[i] = 0;
   write8(SAVE_ + 119, 1);   // the language the save keeps: English in the USA copy (menu.c)
@@ -250,6 +254,7 @@ void startFight(int vblanks, int action, int you, int rival, int arena, int colo
   write8(SONG_, (uint8_t)ARENA_SONGS[setup(3 + setup(1))]);
   startHud(10);
   setUpFighters();
+  int direct = (int)gba_start_number("direct", 0);
   if (battle) {
     // the rule and score Battle's screen leaves, and a full Ichikoro gauge for the player, as a start point may give
     write8(SETUP_ + 4, 2);
@@ -258,9 +263,39 @@ void startFight(int vblanks, int action, int you, int rival, int arena, int colo
     for (int i = 0; i < 4; i++) write8(SETUP_ + 51 + i, 0);
     write8(FIGHTERS + 147, 72);
     write8(FIGHTERS + 149, 1);
+    if (direct) write8(FIGHTERS + 141, 0x39);   // the three picks the choice screen's first three A presses leave
   }
   gba_sound_frames_gone_by(vblanks - 2);
   gba_sound_play(read8(SONG_));
   fightVblank();
-  g.callback = choosing;
+  if (end == 0 && lead == 0) {
+    // a start point at the fight's end replays the way there before the recording opens: the choice screen's
+    // three A presses at 70, 100 and 130, then the fight's own frames up to the knockout. Its last frame, which finds
+    // the fight won, runs here too, so the recording opens on the ending's first frame as the original does.
+    g.callback = choosing;
+    g.after_wait = 0;
+    runFightSetup(400);
+    dp_sound_skip_frames(400);   // the hidden frames' sounds play while they run, not after the recording opens
+    fightEndNow();   // the win frame's after-wait draw, which starts the banner's first frame
+    return;
+  }
+  if (lead > 0) {
+    // a start point a few frames before the end runs the way there up to those frames, then lets the recording play
+    // them before the win frame ends the fight, so the clip can start on the fight the end follows. The Dreamport's
+    // own way there starts two frames after the original's, as its choice screen hands over, so it stops two frames
+    // sooner to meet the same fight frame.
+    int hidden = 400 - lead - 2;
+    g.callback = choosing;
+    g.after_wait = 0;
+    runFightSetup(hidden);
+    dp_sound_skip_frames(hidden);
+    g.callback = trainingFrame;
+    fightEndAfter(lead);
+    return;
+  }
+  if (battle && direct) {
+    // the original's setup frame hands the next frame to the fight; run its first half here so the two line up
+    g.callback = battleFrame;
+    battleFrame();
+  } else g.callback = choosing;
 }
