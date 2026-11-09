@@ -110,6 +110,8 @@ void act_frame_now(void);
 void act_start(int level, int cardSkip, int preFrames);
 void act_queue(int level, int cardSkip, int preFrames);
 void act_song_playing(void);
+/** Whether the C version has `level`'s act. */
+int act_level_ported(int level);
 void act_task(Task *t);
 uint32_t front_frame(void);
 

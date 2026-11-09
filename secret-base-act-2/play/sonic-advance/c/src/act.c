@@ -463,8 +463,15 @@ void act_stage_results(void) {
 // score, the lives and the game's random numbers carried over (GameStageStart leaves them). Its first frame runs at
 // once, then it loads for NEXT_LEVEL_LOAD frames (act_task)
 enum { NEXT_LEVEL_LOAD = 2 };
+int act_level_ported(int level) {
+  return level == ACT_LEVEL_SECRET_BASE_2 || level == 4 || level == ACT_LEVEL_X_ZONE;   // 4 is Casino Paradise act 1
+}
+
 static int nextLevel;
 static void next_act(void) {
+  // a next act that isn't in C yet stops the game there, with the screen as it was, rather than load with another
+  // act's music and background
+  if (!act_level_ported(nextLevel)) { act_active = 0; ctx.done = 1; return; }
   int lives = act.lives, score = act.score;
   uint32_t seed = act.seed;
   act_start(nextLevel, -1, 0);
@@ -730,7 +737,7 @@ void act_start(int level, int cardSkip, int preFrames) {
 
   // the title card's graphics. An act a start point opens runs the card to its end and its few frames after it with
   // no picture, as its recording starts there; one the course select opens shows the card from its first frame
-  titlecard_start(level, 0);
+  titlecard_start(level, ctx.character);
   objects_start(level, act.stage.paletteCount > 0);
   if (gba_start_point("level")) {
     pre_run(cardSkip, preFrames);
