@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "casino-2-opening",
+  "recordingFile": "games/sonic-advance/proof/recordings/casino-2-opening.json",
+  "recordingSha1": "463619351aa76ed51b0b747cadec6ba6fe747e37",
+  "commit": "e822ed83917d80bd1d425e89929fdd907c87e837",
+  "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
+  "sideBySide": true,
+  "video": "5751ad971cab3025d4e3bb82982a87419e5ab5a0",
+  "measures": {
+    "from": 4767,
+    "to": 5066,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 50,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 4767,
+      "why": "where the original first runs code main's proof doesn't count, at 0803EA8C"
+    },
+    "newFrames": 300,
+    "base": "b2c4830e1faa5bcb4aef735db560e6832924410c"
+  }
+}

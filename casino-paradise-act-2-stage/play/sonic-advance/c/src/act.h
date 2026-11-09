@@ -1,5 +1,6 @@
-// The act: X Zone's stage, the camera, Sonic and the HUD, translated from the JavaScript version's engine/game.js,
-// engine/player.js, engine/camera.js, engine/terrain.js, engine/stage.js, engine/hud.js and rom/extract.js.
+// The acts: their stages, the camera, Sonic, the HUD and the title card, translated from the JavaScript version's
+// engine/game.js, engine/player.js, engine/camera.js, engine/terrain.js, engine/stage.js, engine/hud.js,
+// engine/titlecard.js and rom/extract.js.
 
 #ifndef SA_ACT_H
 #define SA_ACT_H
@@ -8,6 +9,7 @@
 
 #define ACT_LEVEL_CASINO_2 5
 #define ACT_LEVEL_X_ZONE 12
+#define ACT_LEVEL_SECRET_BASE_2 3
 #define ACT_TILES 3072          // the largest metatile count of the acts' collision, with room to spare
 #define ACT_LEVEL_BLOCKS 8192   // the largest layer, in 96 × 96 px blocks
 #define ACT_TILE_ENTRIES (ACT_TILES * 144)
@@ -23,7 +25,7 @@ typedef struct {
 } Collision;
 
 typedef struct {
-  int level, zone, act, music, hudFlash;
+  int level, zone, act, music, hudFlash, scroll;
   Tilemap front, back, background;
   Collision collision;
   int32_t spawnX, spawnY;
