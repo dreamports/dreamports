@@ -1,8 +1,8 @@
 {
   "clip": "dreamports",
-  "recording": "neo-green-hill-act-2-itembox",
-  "recordingFile": "games/sonic-advance/proof/recordings/neo-green-hill-act-2-itembox.json",
-  "recordingSha1": "bdade3db731f8d629039dee651119725681c0021",
+  "recording": "neo-green-hill-act-2-run",
+  "recordingFile": "games/sonic-advance/proof/recordings/neo-green-hill-act-2-run.json",
+  "recordingSha1": "731ed86d5d6cb02c3749d8bac3381397fc0666f1",
   "commit": "2e736664b9f7fa307b05b099e87b0bbf1bfe7967",
   "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
   "sideBySide": true,
