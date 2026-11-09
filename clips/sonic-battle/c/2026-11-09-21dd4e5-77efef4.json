@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "mini-games-open",
+  "recordingFile": "games/sonic-battle/proof/recordings/mini-games-open.json",
+  "recordingSha1": "8fd4f3a57bb64572bf63993cf35bc42bf738acc9",
+  "commit": "21dd4e5adf2b6066cb2c099587984fe5b86609fd",
+  "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
+  "sideBySide": true,
+  "video": "77efef453f6d80b0467c2d2500c3948183dde11f",
+  "measures": {
+    "from": 1200,
+    "to": 1499,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 1135,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "b2c4830e1faa5bcb4aef735db560e6832924410c"
+  }
+}
