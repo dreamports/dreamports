@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/631-other-fighter-c",
-  "commit": "6d50db7354d0b19f4dd11c01ead2dbeb2116c8f8",
-  "made": "2026-11-08T05:22:18.297Z",
-  "about": "The other fighter's brain in C: its Training fight turns its rival into a computer, which walks at Sonic."
+  "commit": "23e29e1b5c16611f7df93afb0d822d855cb1276b",
+  "made": "2026-11-09T05:25:17.746Z",
+  "about": "The other fighter's brain in C: Battle mode's four-fighter fight, its rivals computers, in the Dreamport only. The original's path is the real Battle menu; its choice screen and fight camera are not in C yet."
 }

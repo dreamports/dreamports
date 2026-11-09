@@ -34,6 +34,10 @@
 #define NO_FIGHTER 255
 
 static int setup(int at) { return read8(SETUP_ + (uint32_t)at); }
+static int battle_mode;
+
+/** A start point may open Battle's fight directly, with a computer rival, instead of Training's choice screen. */
+void setBattleMode(int on) { battle_mode = on; }
 
 /** 0x08020840: the colour effect's fade in from black, over `frames` frames. */
 static void startFadeIn(int frames) {
@@ -167,6 +171,14 @@ void choosing(void) {
   if (chosen > 8) {
     write8(CHOSEN_, 0);
     for (int i = 0; i < 4; i++) forgetKeys(i);
+    if (battle_mode) {
+      startHud(20);
+      g.callback = battleReadyFrame;
+      battleReadyFrame();
+      battleReadyAfterWait();
+      g.after_wait = 0;
+      return;
+    }
     if (setup(125) != 4) __builtin_trap();
     g.callback = trainingFrame;
   } else if (chosen != 0) write8(CHOSEN_, chosen + 1);
@@ -219,14 +231,14 @@ void startFight(int vblanks, int action, int you, int rival, int arena, int colo
   for (int at = 6; at <= 11; at++) write8(SETUP_ + (uint32_t)at, 0);
   write8(SETUP_ + 36, 2);
   write8(SETUP_ + 20, (uint8_t)you);   // Training's first choice, Sonic, unless the start point picks another
-  write8(SETUP_ + 21, NO_FIGHTER);
-  write8(SETUP_ + 22, NO_FIGHTER);
-  write8(SETUP_ + 23, (uint8_t)rival);
+  write8(SETUP_ + 21, battle_mode ? 1 : NO_FIGHTER);
+  write8(SETUP_ + 22, battle_mode ? 2 : NO_FIGHTER);
+  write8(SETUP_ + 23, battle_mode ? 3 : (uint8_t)rival);
   write8(SETUP_ + 1, 0);
   write8(SETUP_ + 2, 1);
   write8(SETUP_ + 3, (uint8_t)arena);   // the arena, Emerald Beach (0) unless a start point picks another of Training's maps
   write8(SETUP_ + 38, (uint8_t)action);   // the Rival's Action, Do Nothing first
-  write8(SETUP_ + 125, 4);
+  write8(SETUP_ + 125, battle_mode ? 1 : 4);
   write8(SETUP_ + 0, 0);
   write32(PLAYER_, 0);
   loadProfiles();   // 0x080215a8 and 0x08029cfc, as the mode-select screen leaves them
@@ -242,11 +254,24 @@ void startFight(int vblanks, int action, int you, int rival, int arena, int colo
     for (int i = 0; i < 3; i++) write8(CHOICES_ + (uint32_t)rows[i], (uint8_t)colour);
   }
   setUpFight();
+  if (battle_mode) {
+    write8(FIGHTERS + 141, 0x39);
+    write8(FIGHTERS + RECORD + 141, 0x39);
+    write8(FIGHTERS + 2 * RECORD + 141, 0x39);
+    write8(FIGHTERS + 3 * RECORD + 141, 0x39);
+  }
   write8(SONG_, (uint8_t)ARENA_SONGS[setup(3 + setup(1))]);
   startHud(10);
   setUpFighters();
   gba_sound_frames_gone_by(vblanks - 2);
   gba_sound_play(read8(SONG_));
   fightVblank();
+  if (battle_mode) {
+    // Battle's opening: the rule and the computer fighters' kinds, then the choice of specials as the original's
+    // Battle mode runs it. When the choice ends, choosing hands over to the countdown and the fight's own frame.
+    write8(SETUP_ + 4, 2);
+    write8(SETUP_ + 6, 1);
+    for (int i = 0; i < 4; i++) write8(SETUP_ + 28 + i, i == 0 ? 0 : 1);
+  }
   g.callback = choosing;
 }

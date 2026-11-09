@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "other-fighter",
+  "recordingFile": "games/sonic-battle/proof/recordings/other-fighter.json",
+  "recordingSha1": "bb73870115fca58df2a4caf3b61a9073770ae304",
+  "commit": "23e29e1b5c16611f7df93afb0d822d855cb1276b",
+  "base": "b2c4830e1faa5bcb4aef735db560e6832924410c",
+  "sideBySide": false,
+  "video": "af5b0fa95f2bb99e86c33bec13fb5c82727feeb8",
+  "measures": {
+    "from": 163,
+    "to": 462,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 92,
+    "oneColour": 0,
+    "same": 149,
+    "changed": {
+      "frame": 163,
+      "why": "where the original first runs code main's proof doesn't count, at 0801AD38"
+    },
+    "newFrames": 300,
+    "base": "b2c4830e1faa5bcb4aef735db560e6832924410c"
+  }
+}

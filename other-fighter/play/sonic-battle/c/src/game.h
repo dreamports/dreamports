@@ -135,7 +135,6 @@ void step(uint16_t held);
 void hblank(int line);
 void fightVblank(void);
 void queueCopy(uint32_t to, uint32_t from, uint32_t bytes);
-void applyCopies(void);
 void queueDecompress(uint32_t to, uint32_t from);
 void hideSpriteBuffer(void);
 void clearSprites(void);
@@ -225,7 +224,7 @@ void battleFrame(void);
 void battleAfterWait(void);
 void battleStoryFrame(void);
 void battleStoryAfterWait(void);
-void setCpuAt(int vblank);
+void setBattleMode(int on);
 void queueFrameAtTile(uint32_t sheet, int tile, int frame);
 void queueFighterFrame(uint32_t sheet, int slot, int frame);
 

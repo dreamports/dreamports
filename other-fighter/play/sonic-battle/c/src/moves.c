@@ -17,6 +17,8 @@
 #define KEYS_NOW 60
 #define SCRIPTS 0x08ED68A8u
 #define SCRIPTS_PER_CHARACTER 280
+#define CHOICES 0x030013B0u   // each player's skills, stats and outfit
+#define CHOICE_SIZE 156
 #define DIRECTIONS 0x0806B2D4u
 #define CAMERA_TURN 0x0300204Cu
 #define RANDOM 0x0300019Cu
@@ -242,9 +244,11 @@ void fighterThink(int i) {
     clearFlags(rec, FLAG_NEW_STATE);
   }
   int character = read8(rec + CHARACTER);
-  if (character == 9) notPorted("0800964C");
   int slot = scriptOf(read16(rec + STATE));
   if (slot < 0) return;
+  // 0x0800964C: Emerl (character 9) runs the script of the character his skill slot holds, in his player's record
+  // of choices, and the frame ends there, as the ordinary switch does for every other character
+  if (character == 9) character = read8(CHOICES + (uint32_t)i * CHOICE_SIZE + (uint32_t)slot);
   runScript(read32(SCRIPTS + (uint32_t)character * SCRIPTS_PER_CHARACTER + (uint32_t)slot * 4), i);
   write8(rec + ANIMATION, (uint8_t)slot);
 }
@@ -1853,25 +1857,8 @@ void followFighter(int i) {
   zoomCamera(0x200);
 }
 
-static int cpu_vblank = -1, cpu_brain;
-
-/** A start point may make the rival a computer at a chosen frame, so the other fighter's play can be proven in
- * Training's own view. The original's frame is patched to call its brain (0x0801d5d4) there; this one calls it too. */
-void setCpuAt(int vblank) { cpu_vblank = vblank; }
-
 void trainingFrame(void) {
-  if (cpu_vblank >= 0 && g.vblanks >= cpu_vblank) {
-    cpu_vblank = -1;
-    cpu_brain = 1;
-    write8(SETUP_ + 28, 0);
-    write8(SETUP_ + 31, 1);
-  }
   dummyKeys();
-  if (cpu_brain)
-    for (int i = 0; i < 4; i++) {
-      uint8_t kind = read8(SETUP_ + 28 + i);
-      if (kind != 0 && kind != 255) brainTick(i);
-    }
   int player = (int)read32(PLAYER_);
   readAllKeys(player);
   int state = read16(record(player) + STATE);
@@ -1898,7 +1885,6 @@ void trainingFrame(void) {
     readFighterKeys(i);
     fighterAct(i);
   }
-  if (cpu_brain) applyCopies();
   g.after_wait = trainingAfterWait;
 }
 
@@ -1918,5 +1904,4 @@ void trainingAfterWait(void) {
   sortQueue();
   drawSpritesNow();
   copyAtVblank();
-  if (cpu_brain) applyCopies();
 }
