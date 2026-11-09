@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "amy-secret-base-act-2",
+  "recordingFile": "games/sonic-advance/proof/recordings/amy-secret-base-act-2.json",
+  "recordingSha1": "17e2d3141bba3bf57ff84e5576f9ae68c0d4d471",
+  "commit": "b869b9c4cb1817692088f71cee027ad42093c768",
+  "base": "3f6c0bc39b4f4318411c0f568412cbc4a7ce3470",
+  "sideBySide": true,
+  "video": "5aef5a9c7eb013afd6151610c7e5dbf57040873d",
+  "measures": {
+    "from": 2242,
+    "to": 2541,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 1957,
+      "why": "the first that matched on main and differs now"
+    },
+    "newFrames": 300,
+    "base": "3f6c0bc39b4f4318411c0f568412cbc4a7ce3470"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/737-secret-base-act-2",
+  "commit": "b869b9c4cb1817692088f71cee027ad42093c768",
+  "made": "2026-11-09T01:53:07.366Z",
+  "about": "Secret Base Zone act 2 runs in C from its first frame to its last, with its boss and capsule, every frame matching the original in picture and sound."
+}

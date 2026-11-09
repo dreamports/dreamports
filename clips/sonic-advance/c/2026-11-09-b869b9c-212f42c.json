@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "neo-green-hill-act-1",
+  "recordingFile": "games/sonic-advance/proof/recordings/neo-green-hill-act-1.json",
+  "recordingSha1": "83664f5903c95925c68c2b3b8cc7e64071f00de2",
+  "commit": "b869b9c4cb1817692088f71cee027ad42093c768",
+  "base": "3f6c0bc39b4f4318411c0f568412cbc4a7ce3470",
+  "sideBySide": true,
+  "video": "212f42c4140b234d944265179956f20f5c980bdd",
+  "measures": {
+    "from": 2227,
+    "to": 2526,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 1779,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "3f6c0bc39b4f4318411c0f568412cbc4a7ce3470"
+  }
+}
