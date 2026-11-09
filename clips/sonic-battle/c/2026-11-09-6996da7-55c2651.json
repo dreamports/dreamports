@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "fight-end",
+  "recordingFile": "games/sonic-battle/proof/recordings/fight-end.json",
+  "recordingSha1": "b6565d57049b3849c11d2d54179d910b2db733e8",
+  "commit": "6996da7c89984966e7b73f321a1ab081d0848023",
+  "base": "9a0fa6b7f21da64862c6ec09a04a09d1e50c795d",
+  "sideBySide": true,
+  "video": "55c26510d95e8ac73485dfe77531a60dd90f9c0e",
+  "measures": {
+    "from": 0,
+    "to": 299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 12,
+    "same": 204,
+    "changed": {
+      "frame": 0,
+      "why": "where the original first runs code main's proof doesn't count, at 0801B394"
+    },
+    "newFrames": 300,
+    "base": "9a0fa6b7f21da64862c6ec09a04a09d1e50c795d"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "game": "sonic-battle/c",
+  "title": "Sonic Battle Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/630-a-fights-end",
+  "commit": "6996da7c89984966e7b73f321a1ab081d0848023",
+  "made": "2026-11-09T09:45:09.886Z",
+  "about": "The fight's end now runs into the result screen's fade in."
+}
