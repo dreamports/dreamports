@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/734-neo-green-hill-act-1",
-  "commit": "24fe5047ae1e4bd339c6ba9c224543a1b02b6b51",
-  "made": "2026-11-09T19:17:21.291Z",
-  "about": "Neo Green Hill act 1 in C: the character select now keeps a start point's progress, so it reaches the course select as the original does."
+  "commit": "86607693170879afc440f6703bc5652368a66a43",
+  "made": "2026-11-09T19:58:58.406Z",
+  "about": "Neo Green Hill act 1 in C: other characters stop before the act, and enemy hits now use Coll_DamagePlayer."
 }
