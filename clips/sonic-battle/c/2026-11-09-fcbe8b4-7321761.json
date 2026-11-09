@@ -1,0 +1,25 @@
+{
+  "clip": "dreamports",
+  "recording": "gamma-air",
+  "recordingFile": "games/sonic-battle/proof/recordings/gamma-air.json",
+  "recordingSha1": "e64812838ec8aea055aab9938169e2b03bf2b4f4",
+  "commit": "fcbe8b4b4ce22cceb154b634d19de40dca484882",
+  "base": "9a0fa6b7f21da64862c6ec09a04a09d1e50c795d",
+  "sideBySide": true,
+  "video": "7321761da3361e824db9c748cd7571dd76554fb6",
+  "measures": {
+    "from": 0,
+    "to": 299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "oneColour": 0,
+    "same": 174,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "9a0fa6b7f21da64862c6ec09a04a09d1e50c795d"
+  }
+}

@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/639-gammas-moves-in-c",
-  "commit": "8f54ee5ffdc221c1ceb685af36b0841a28eb548d",
-  "made": "2026-11-08T21:44:11.382Z",
+  "commit": "fcbe8b4b4ce22cceb154b634d19de40dca484882",
+  "made": "2026-11-09T08:14:58.813Z",
   "about": "Gamma's Shot and Set specials and his air attack play as the original's in C, with Gamma's own charge steps and his Set's thing."
 }
