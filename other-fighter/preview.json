@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/631-other-fighter-c",
-  "commit": "23e29e1b5c16611f7df93afb0d822d855cb1276b",
-  "made": "2026-11-09T05:25:17.746Z",
-  "about": "The other fighter's brain in C: Battle mode's four-fighter fight, its rivals computers, in the Dreamport only. The original's path is the real Battle menu; its choice screen and fight camera are not in C yet."
+  "commit": "7fed5fa152d577063015cd6cfb08f07e9ff3023e",
+  "made": "2026-11-09T19:15:40.855Z",
+  "about": "The title's demo fight in C, where the other fighters' brains play."
 }
