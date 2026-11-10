@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/742-angel-island-act-1-in-c",
+  "commit": "4610abaf77b304c79322f24874c73c79e1b7edf6",
+  "made": "2026-11-10T22:14:52.431Z",
+  "about": "Angel Island Zone act 1 now plays in C, matching the original in every frame from the course select to the fade into act 2. It adds the act's background and the objects and enemies it has that C lacked, and fixes Angel Island's waterfalls, the ramp's somersault and a roll that runs into a wall."
+}
