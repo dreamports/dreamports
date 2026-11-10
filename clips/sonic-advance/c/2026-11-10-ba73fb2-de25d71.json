@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "secret-base-act-1-first-frames",
+  "recordingFile": "games/sonic-advance/proof/recordings/secret-base-act-1-first-frames.json",
+  "recordingSha1": "d2bb3a56c86df7d9fb1944f102b11ea01a01897f",
+  "commit": "ba73fb27273062a688c924f07db0616fd18b5fc4",
+  "base": "30786566622a4d4ee04ca53ace0e62a7da70f330",
+  "sideBySide": true,
+  "video": "de25d71408e1a4387dff6ef1d56bfc6999ea3572",
+  "measures": {
+    "from": 1831,
+    "to": 2130,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 47,
+    "changed": {
+      "frame": 1891,
+      "why": "where the original first runs code main's proof doesn't count, at 0803F820"
+    },
+    "newFrames": 240,
+    "base": "30786566622a4d4ee04ca53ace0e62a7da70f330"
+  }
+}
