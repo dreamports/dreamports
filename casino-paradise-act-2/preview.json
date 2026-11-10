@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/739-casino-paradise-act-2",
+  "commit": "24c786f91df7d703881f3c3c0729c3b85ca243f9",
+  "made": "2026-11-10T22:29:38.910Z",
+  "about": "Casino Paradise Zone act 2 plays in C, from the course select through the Egg Ball and the results to Ice Mountain."
+}
