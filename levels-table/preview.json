@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "enh/1057-levels-table",
+  "commit": "da05830a2cfa5a5764a8b2ba2e63ac584bf55a0c",
+  "made": "2026-11-10T20:08:49.572Z",
+  "about": "Each level of the game has a row of its own. Nothing it does changes."
+}
