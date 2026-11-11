@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "flier",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/flier.json",
+  "recordingSha1": "b9c64ef56c26a857bd750e64dd0b7b4b7f08ef4f",
+  "commit": "26041ff4a5c263a3e5358ec37596740986190cc3",
+  "base": "cc1a73161f5335b8e2f614cc6b2fad1a38be804b",
+  "sideBySide": true,
+  "video": "ad24af541d9a4a2e0600655db2137c2e4aefc743",
+  "measures": {
+    "from": 3040,
+    "to": 3339,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 44,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "cc1a73161f5335b8e2f614cc6b2fad1a38be804b"
+  }
+}
