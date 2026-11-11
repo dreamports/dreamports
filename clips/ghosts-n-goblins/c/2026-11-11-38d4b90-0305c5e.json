@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "plant-burns",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/plant-burns.json",
+  "recordingSha1": "0f993531b69860f1bbed821cbd8b167872678636",
+  "commit": "38d4b902adcb1d94315961bb7f007a5ec1addecd",
+  "base": "a23e6ef2647384b4ac55edda562edec1cc4a4add",
+  "sideBySide": true,
+  "video": "0305c5e17fea0f80b48c07940f5aaa3103a7daaf",
+  "measures": {
+    "from": 2130,
+    "to": 2429,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 9,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "a23e6ef2647384b4ac55edda562edec1cc4a4add"
+  }
+}

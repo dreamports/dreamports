@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/978-crouch-and-climb",
-  "commit": "506d15b39c6bb38f7fe0cc324f83dd8328f33413",
-  "made": "2026-11-11T19:18:33.230Z",
-  "about": "Arthur climbs the first stage's ladder, gets over its top, and crouches."
+  "branch": "feat/983-plants-death",
+  "commit": "38d4b902adcb1d94315961bb7f007a5ec1addecd",
+  "made": "2026-11-11T19:55:14.520Z",
+  "about": "A plant that Arthur's lance kills burns away."
 }
