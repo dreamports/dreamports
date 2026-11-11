@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "neo-green-hill-act-2",
+  "recordingFile": "games/sonic-advance/proof/recordings/neo-green-hill-act-2.json",
+  "recordingSha1": "e8be4043344eb94ffcced087f08ff2ea6d7d0e35",
+  "commit": "0f8e2ab611b3e239b9fb8d2ef3e93126fe8a1881",
+  "base": "add53e3ae23f1ea9b12fb500cd460df3d52f726a",
+  "sideBySide": true,
+  "video": "1166e0ef818a96bee27cfc7b98d4117d9f47298c",
+  "measures": {
+    "from": 2330,
+    "to": 2629,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2341,
+      "why": "where the original first runs code main's proof doesn't count, at 08047538"
+    },
+    "newFrames": 289,
+    "base": "add53e3ae23f1ea9b12fb500cd460df3d52f726a"
+  }
+}

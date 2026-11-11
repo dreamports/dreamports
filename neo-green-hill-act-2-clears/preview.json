@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "fix/1120-neo-green-hill-act-2-recording",
+  "commit": "0f8e2ab611b3e239b9fb8d2ef3e93126fe8a1881",
+  "made": "2026-11-11T23:34:08.641Z",
+  "about": "Neo Green Hill Zone act 2's recording now plays the whole act, with its boss and results."
+}
