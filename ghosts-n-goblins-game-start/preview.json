@@ -1,0 +1,10 @@
+{
+  "game": "ghosts-n-goblins/c",
+  "title": "Ghosts'n Goblins Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1005-game-start",
+  "commit": "c5f1555a71ade0b02b6c17538f1010ef6ed426f2",
+  "made": "2026-11-11T02:39:16.742Z",
+  "about": "Start on the title screen now leads to the screen that says whose turn it is and the opening scene, with its music, as far as Satan reaching the princess."
+}
