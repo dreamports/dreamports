@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/745-cosmic-angel-zone-in-c",
+  "commit": "199d766ad146c852640a87cb8874148ec28e8cc1",
+  "made": "2026-11-11T21:26:01.572Z",
+  "about": "Cosmic Angel Zone in C."
+}
