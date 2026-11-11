@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "ladder",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/ladder.json",
+  "recordingSha1": "f3d9605547f54fa04f823455112ecf71e0392fbe",
+  "commit": "506d15b39c6bb38f7fe0cc324f83dd8328f33413",
+  "base": "6665d455ef190ef357105df8f54c39c73062e241",
+  "sideBySide": true,
+  "video": "7736fce2947137294ae40c3550299856cbe5c156",
+  "measures": {
+    "from": 2120,
+    "to": 2419,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 4,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "6665d455ef190ef357105df8f54c39c73062e241"
+  }
+}
