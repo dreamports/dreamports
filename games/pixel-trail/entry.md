@@ -15,6 +15,11 @@ ownCopy:
     - label: Play
       href: https://dreamports.net/play/pixel-trail/
       icon: play
+screen:
+  clip: /media/pixel-trail-dreamport
+  still: /media/pixel-trail-dreamport-still.webp
+  pixelated: true
+share: /media/pixel-trail-dreamport-share.png
 ---
 
 ## Credits
