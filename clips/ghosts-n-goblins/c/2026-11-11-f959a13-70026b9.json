@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "walk-on",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/walk-on.json",
+  "recordingSha1": "88333948114b1adb90a9e5934829c80d5d02af73",
+  "commit": "f959a13d4408942a7e6e5d3e1096cf58a7f141bb",
+  "base": "f9f9f8a2360f8893d44b5e2a02560bef765b5810",
+  "sideBySide": true,
+  "video": "70026b95a0d56ac1e39f25d2306b9aeb91faed10",
+  "measures": {
+    "from": 1950,
+    "to": 2249,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 5,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "f9f9f8a2360f8893d44b5e2a02560bef765b5810"
+  }
+}
