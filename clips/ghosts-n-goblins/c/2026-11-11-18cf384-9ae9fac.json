@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "walk-across",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/walk-across.json",
+  "recordingSha1": "e025fc392aa592a4818823e0688b025e94c0e2bf",
+  "commit": "18cf384240f82660dd87576277268279aa8a405c",
+  "base": "5af340d5ec96b403c189f804c5e72c45aee63f73",
+  "sideBySide": true,
+  "video": "9ae9fac12905903f0a19e5f6c53ab000cd237394",
+  "measures": {
+    "from": 2740,
+    "to": 3039,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 20,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "5af340d5ec96b403c189f804c5e72c45aee63f73"
+  }
+}
