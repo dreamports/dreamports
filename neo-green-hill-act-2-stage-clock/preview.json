@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/735-act-2-through-its-boss",
-  "commit": "3cf4552aefd8489526dccde2874993fe8c6d025f",
-  "made": "2026-11-11T07:28:27.055Z",
-  "about": ""
+  "commit": "fdf06d2144245038ee87ab0f3fb5edbbc9d9ce14",
+  "made": "2026-11-11T15:20:47.052Z",
+  "about": "Neo Green Hill Zone act 2 now plays in C from its first frame through the Egg Hammer Tank, its act clear and its results, with every frame and sound matching the original. The act's Buzzer that the original never spawns is left out, the tank's body hurts Sonic as the original does, and the bushes react only as Sonic enters them."
 }

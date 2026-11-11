@@ -13,7 +13,7 @@ enum {
   LEAVES_ORDER = 0, LEAVES_PRIORITY = 0,
   LEAVES_FRAMES = 52,   // the counter it destroys them at, a frame before it would show the 52nd
   SE_SHRUBBERY = 178,
-  PLAYERS = 2,
+  PLAYERS = 1,          // only Sonic is in this version; the original reads gNumSingleplayerCharacters
 };
 
 typedef struct { Object o; int inside[PLAYERS]; } Shrub;
@@ -40,17 +40,20 @@ static void leaves(int x, int y) {
 static int shrub_run(ActTask *t) {
   Shrub *s = (Shrub *)t->data;
   const Entity *e = &s->o.slot->e;
-  Player *p[PLAYERS] = { &act.player, &act.player };   // the CPU partner isn't here, so only Sonic's box is read
+  Player *p[PLAYERS] = { &act.player };   // the CPU partner isn't here, so only Sonic's box is read
   int right = e->x + e->d[2] * 8, bottom = e->y + e->d[3] * 8;
   for (int i = 0; i < PLAYERS; i++) {
     int x = (int)__builtin_floor(p[i]->x), y = (int)__builtin_floor(p[i]->y);
     if (x >= e->x && x <= right && y >= e->y && y <= bottom) {
       if (!p[i]->dead) {
-        uint32_t r = act_random();
-        int lx = x + (int)((r & 0x1F00) >> 8) - 16;
-        int ly = y + (int)((act_random() & 0x0F00) >> 8) - 8;
-        leaves(lx, ly);
-        play_song(SE_SHRUBBERY);
+        // the bush reacts the frame he first gets into it, not every frame he stays in it
+        if (!s->inside[i]) {
+          uint32_t r = act_random();
+          int lx = x + (int)((r & 0x1F00) >> 8) - 16;
+          int ly = y + (int)((act_random() & 0x0F00) >> 8) - 8;
+          leaves(lx, ly);
+          play_song(SE_SHRUBBERY);
+        }
         s->inside[i] = 1;
       }
     } else s->inside[i] = 0;
