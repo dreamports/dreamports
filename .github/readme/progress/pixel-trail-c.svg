@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="388" viewBox="0 0 480 388">
+<title>Pixel Trail Dreamport’s progress in C. Code ported: 0% (0/59 bytes). Gameplay proven: no list of parts yet.</title>
+<style>text{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', monospace}</style>
+<rect x="0" width="66.6" height="20" fill="#1f2d63"/>
+<rect x="66.6" width="18.8" height="20" fill="#2f55c8"/>
+<text x="6" y="14" font-size="11" fill="#eef4ff">Language</text>
+<text x="72.6" y="14" font-size="11" font-weight="700" fill="#ffffff">C</text>
+<rect x="91.4" width="87" height="20" fill="#1f2d63"/>
+<rect x="178.4" width="25.6" height="20" fill="#b54708"/>
+<text x="97.4" y="14" font-size="11" fill="#eef4ff">Code ported</text>
+<text x="184.4" y="14" font-size="11" font-weight="700" fill="#ffffff">0%</text>
+<rect x="210" width="114.3" height="20" fill="#1f2d63"/>
+<rect x="324.3" width="59.7" height="20" fill="#1f2d63"/>
+<text x="216" y="14" font-size="11" fill="#eef4ff">Gameplay proven</text>
+<text x="330.3" y="14" font-size="11" font-weight="700" fill="#ffffff">not yet</text>
+<rect y="30" width="480" height="294" fill="#050a24"/>
+<text x="10" y="47" font-size="13" fill="#eef4ff">Code ported: 0% (0/59 bytes)</text>
+<g><title>00000000 to 0000FFFF: 3 functions, 59 bytes, 0% ported</title>
+<rect x="5.5" y="57.5" width="469" height="261" fill="#0f1847"/>
+<text x="9.5" y="68.5" font-size="10" fill="#a9b8e6">00000000</text>
+</g>
+<path fill="#454c63" d="M7.8 72.8h314.6v243.3h-314.6zM323.1 72.8h149v153.4h-149zM323.1 227h149v89.2h-149z"/>
+<path fill="#3fb950" d=""/>
+<rect y="334" width="480" height="54" fill="#050a24"/>
+<text x="10" y="351" font-size="13" fill="#eef4ff">Gameplay proven: no list of parts yet</text>
+<text x="10" y="376" font-size="11" fill="#a9b8e6">Its lead lists its parts in proof/parts.json.</text>
+</svg>

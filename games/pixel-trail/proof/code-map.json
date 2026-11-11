@@ -1,0 +1,9 @@
+{
+  "original": "f5e74803b30471e565eb91ac60d57aec2532e26f",
+  "from": "Found in the copy by the proof tools (tools/nes/functions.mjs)",
+  "functions": [
+    ["00008010",12],
+    ["0000801C",40],
+    ["00008044",7]
+  ]
+}
