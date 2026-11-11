@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "walk-and-jump",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/walk-and-jump.json",
+  "recordingSha1": "52ff8a74de8608260aa8214509e86f2b270f0646",
+  "commit": "6fc56a4a131b19d928e83617002163658ce6d7a8",
+  "base": "a2f531b5b3f0cd95638b890e278acbf349034d93",
+  "sideBySide": true,
+  "video": "116609239afcd3954ee05b6279ae3a0b4d592119",
+  "measures": {
+    "from": 1000,
+    "to": 1299,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 73,
+    "same": 72,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "a2f531b5b3f0cd95638b890e278acbf349034d93"
+  }
+}
