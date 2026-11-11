@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "platform",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/platform.json",
+  "recordingSha1": "ec4c54d1a35d4387c0105d227902e488bbb2e393",
+  "commit": "f0fba2557ce47787867ac8de7a90d40117e41d01",
+  "base": "182aaab1541df30fb02f91afdfabac6626e74b0d",
+  "sideBySide": true,
+  "video": "a73db6f1a495f5bccaa21afcc583a8f2677becb6",
+  "measures": {
+    "from": 3600,
+    "to": 3899,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 34,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "182aaab1541df30fb02f91afdfabac6626e74b0d"
+  }
+}

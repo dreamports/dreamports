@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-second-kind-in-view",
-  "commit": "26041ff4a5c263a3e5358ec37596740986190cc3",
-  "made": "2026-11-11T21:25:35.311Z",
-  "about": "The flier on the first stage's sixth screen wakes, takes off, dives at Arthur and lands."
+  "branch": "feat/983-boss",
+  "commit": "f0fba2557ce47787867ac8de7a90d40117e41d01",
+  "made": "2026-11-11T23:52:50.766Z",
+  "about": "A moving platform carries Arthur over the water at the end of the first stage's graveyard."
 }
