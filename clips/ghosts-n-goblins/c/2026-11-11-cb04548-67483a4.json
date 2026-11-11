@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "lance-throw",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/lance-throw.json",
+  "recordingSha1": "8e3b4066f11462e02951c412486a739b479a5b39",
+  "commit": "cb04548d19d834f52969c126d450291375b396ed",
+  "base": "11a2052e530ad7f3301041b6e3f50a616e421445",
+  "sideBySide": true,
+  "video": "67483a44c490ac94c021ca6218d1b0da3b8aec9e",
+  "measures": {
+    "from": 1000,
+    "to": 1299,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 73,
+    "same": 90,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "11a2052e530ad7f3301041b6e3f50a616e421445"
+  }
+}
