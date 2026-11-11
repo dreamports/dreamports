@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "x-zone-the-moon-opens",
+  "recordingFile": "games/sonic-advance/proof/recordings/x-zone-the-moon-opens.json",
+  "recordingSha1": "44ec99e274af566ec25c79def5f40a5bef2ecf38",
+  "commit": "a9db6ce2151de7afd33fcef61b78f67a5319c986",
+  "base": "f4f959ffd5607ebe6ba5ba24cc96124b931d3cec",
+  "sideBySide": true,
+  "video": "255f5bed7e95401379ff56cdded68669be13bf83",
+  "measures": {
+    "from": 8950,
+    "to": 9249,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 104,
+    "changed": {
+      "frame": 2548,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "f4f959ffd5607ebe6ba5ba24cc96124b931d3cec"
+  }
+}
