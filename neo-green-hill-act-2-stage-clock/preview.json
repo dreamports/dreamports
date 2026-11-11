@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/735-act-2-through-its-boss",
+  "commit": "9e426f4b556be2450ec8224fbcb441da4b60e9fa",
+  "made": "2026-11-11T05:47:50.524Z",
+  "about": "Neo Green Hill act 2's stage clock now follows the original's both in its rings' spin and in the thin platforms that swing with it, its brake dust falls on the original's frames, and the act gains its mini loops, its water bridge and its shrubbery."
+}

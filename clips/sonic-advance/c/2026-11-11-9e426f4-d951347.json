@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "neo-green-hill-act-2-slope",
+  "recordingFile": "games/sonic-advance/proof/recordings/neo-green-hill-act-2-slope.json",
+  "recordingSha1": "1f8da1b023489f0a4e537d4e0a77c9e64329c75f",
+  "commit": "9e426f4b556be2450ec8224fbcb441da4b60e9fa",
+  "base": "ca869d298b6d8d78857cad7f3c3e42c207c0f79c",
+  "sideBySide": true,
+  "video": "d951347db50d80cf39bb037218c1b952993d5216",
+  "measures": {
+    "from": 399,
+    "to": 698,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 89,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "ca869d298b6d8d78857cad7f3c3e42c207c0f79c"
+  }
+}
