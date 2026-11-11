@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1089-angel-island-act-2-opening",
+  "commit": "7f02ae10bc5ee7541d266b2dd6d0f34285dc95a5",
+  "made": "2026-11-11T05:13:46.049Z",
+  "about": "Angel Island Zone act 2 now opens in C: its stage, clouds and title card load, and Sonic stands at its spawn. The first 2,610 frames after the course select match the original in picture and sound."
+}

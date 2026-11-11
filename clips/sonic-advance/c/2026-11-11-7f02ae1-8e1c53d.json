@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "angel-island-act-2-opening",
+  "recordingFile": "games/sonic-advance/proof/recordings/angel-island-act-2-opening.json",
+  "recordingSha1": "a4f77dc71f20dc1cda4a08b092050ed9c83ca5e6",
+  "commit": "7f02ae10bc5ee7541d266b2dd6d0f34285dc95a5",
+  "base": "df865328387917c0ba6136be5d5c7975e144cf6a",
+  "sideBySide": true,
+  "video": "8e1c53d343e41fb5c63caa57dcdf6f84a09e335b",
+  "measures": {
+    "from": 2049,
+    "to": 2348,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 2,
+    "same": 49,
+    "changed": {
+      "frame": 2109,
+      "why": "where the original first runs code main's proof doesn't count, at 0803DE74"
+    },
+    "newFrames": 240,
+    "base": "df865328387917c0ba6136be5d5c7975e144cf6a"
+  }
+}
