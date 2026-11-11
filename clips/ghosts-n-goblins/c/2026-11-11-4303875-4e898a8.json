@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "game-start",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/game-start.json",
+  "recordingSha1": "39a85528a02e8674020b3f2a844620ad67e8ec54",
+  "commit": "43038758ee7894397d9a0449df2fbe9faab36c8b",
+  "base": "08cafc11c73f6b44f559aaab9e35096e528d2d37",
+  "sideBySide": true,
+  "video": "4e898a8f809b34574770f2950dea3241cba2db10",
+  "measures": {
+    "from": 1000,
+    "to": 1299,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 73,
+    "same": 72,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "08cafc11c73f6b44f559aaab9e35096e528d2d37"
+  }
+}
