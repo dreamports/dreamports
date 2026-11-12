@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "enh/1155-sound-dips",
+  "commit": "a6e1c7fd7e62dc2f8a1a756a8f21a902fd3c0300",
+  "made": "2026-11-12T18:50:18.766Z",
+  "about": "Cosmic Angel Zone in C, where two voices on one note cancel for a moment"
+}

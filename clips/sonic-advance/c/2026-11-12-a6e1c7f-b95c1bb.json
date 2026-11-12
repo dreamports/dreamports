@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-cosmic-angel",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-cosmic-angel.json",
+  "recordingSha1": "bdf0a19cf7ab93a87e0c646c6a447706cc04df71",
+  "commit": "a6e1c7fd7e62dc2f8a1a756a8f21a902fd3c0300",
+  "base": "fee8af5feba8da413df8a56305413a3cf5ac45d0",
+  "sideBySide": true,
+  "video": "b95c1bb161f17ba673a8b4e0f1adbc7a238fcf94",
+  "measures": {
+    "from": 2987,
+    "to": 3286,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 3047,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 240,
+    "base": "fee8af5feba8da413df8a56305413a3cf5ac45d0"
+  }
+}
