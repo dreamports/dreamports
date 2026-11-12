@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-ice-mountain",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-ice-mountain.json",
+  "recordingSha1": "e57e273d09f356a4900eae31f41fc6f372c6081b",
+  "commit": "604f505905f092028aaed008758556db4a5ccd70",
+  "base": "355b74f225cccfda9f238ed8c729c251330e8698",
+  "sideBySide": true,
+  "video": "3df0dd0f06f208722d448094090d85f22bba4622",
+  "measures": {
+    "from": 9000,
+    "to": 9299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 16,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "355b74f225cccfda9f238ed8c729c251330e8698"
+  }
+}
