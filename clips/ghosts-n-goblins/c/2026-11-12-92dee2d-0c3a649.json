@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "boss-dodges",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/boss-dodges.json",
+  "recordingSha1": "815ced3be2dd599c374b5d5cc0df4e43c38dec0b",
+  "commit": "92dee2df1dd890c0ad1b5a7244f4d799a3acc854",
+  "base": "5c47395cbaca5ba9994abe312689b32dabc48669",
+  "sideBySide": true,
+  "video": "0c3a6493fee24c1f749dfd25c8a0123b6dbf732b",
+  "measures": {
+    "from": 5990,
+    "to": 6289,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 26,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "5c47395cbaca5ba9994abe312689b32dabc48669"
+  }
+}
