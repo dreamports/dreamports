@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "fix/1136-nes-sound-time",
-  "commit": "06c40f60ade592903cc2b9cb88cacfeda5284b34",
-  "made": "2026-11-12T02:39:03.420Z",
-  "about": "The NES kit's sound loses the time the emulator's does, so its triangle stays in step with it."
+  "branch": "feat/983-second-part-objects",
+  "commit": "c648b320d396911de1ebfff9737d6149e7465e68",
+  "made": "2026-11-12T03:02:42.177Z",
+  "about": "Arthur walks on through the first stage's second part, to its tenth screen."
 }
