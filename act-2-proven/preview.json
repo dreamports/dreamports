@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/735-act-2-proven",
+  "commit": "ed5685cb392d6e2086a05a889aaa87e686599660",
+  "made": "2026-11-12T15:07:08.282Z",
+  "about": "Neo Green Hill Zone act 2 in C matches its whole recording"
+}
