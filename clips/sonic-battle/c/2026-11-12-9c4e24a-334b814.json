@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "skills-every-screen",
+  "recordingFile": "games/sonic-battle/proof/recordings/skills-every-screen.json",
+  "recordingSha1": "34cbbe9c330704b17f64600c0234319b2e701a06",
+  "commit": "9c4e24ae182282eb590d49d990e2f75337e57160",
+  "base": "c46ce77bad2e97e7b1ec2c3e11d396ca1e86101c",
+  "sideBySide": true,
+  "video": "334b814293f613d0e69a0d4a7ae74548c80d1d7b",
+  "measures": {
+    "from": 300,
+    "to": 659,
+    "frames": 360,
+    "seconds": 6.03,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 228,
+    "changed": {
+      "frame": 1,
+      "why": "where the original first runs code main's proof doesn't count, at 08021A84"
+    },
+    "newFrames": 360,
+    "base": "c46ce77bad2e97e7b1ec2c3e11d396ca1e86101c"
+  }
+}
