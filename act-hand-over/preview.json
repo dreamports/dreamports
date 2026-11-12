@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "fix/1186-act-hand-over",
-  "commit": "604f505905f092028aaed008758556db4a5ccd70",
-  "made": "2026-11-12T21:53:30.966Z",
+  "commit": "3684fead3ef8d7f9b9f050de053a9d615686ea43",
+  "made": "2026-11-12T22:52:15.089Z",
   "about": "One act hands over to the next as the original does, in C"
 }
