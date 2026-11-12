@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "game-over",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/game-over.json",
+  "recordingSha1": "ca0bf364a3a204cff1182080f15f0b5f5fff256c",
+  "commit": "04715e17fab4367bb5c33a770d38161ddb8a9d78",
+  "base": "a039a0ac2d9d3eceb3d647a44bb815c9ed73d3d2",
+  "sideBySide": true,
+  "video": "8bd690380eee00df9dd706f291b812c8b30eee46",
+  "measures": {
+    "from": 3700,
+    "to": 3999,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 31,
+    "same": 94,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "a039a0ac2d9d3eceb3d647a44bb815c9ed73d3d2"
+  }
+}
