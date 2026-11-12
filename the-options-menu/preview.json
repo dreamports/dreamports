@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/763-options-menu",
+  "commit": "6d8aab6fd3cf3d9c0f9cf5ccd37c54ec26175d63",
+  "made": "2026-11-12T01:22:46.859Z",
+  "about": "The Options menu in C: LEVEL, TIME UP, BUTTON CONFIG and DELETE GAME DATA work as in the original, and END fades back to the main menu. PLAYER DATA, SOUND TEST and LANGUAGE aren't in C yet."
+}
