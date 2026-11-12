@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "towers",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/towers.json",
+  "recordingSha1": "e3cc1169cbcb059516814e560297db730544607f",
+  "commit": "bd01d9eb22af241a7505e6905b2025dfab98bfc9",
+  "base": "c64e78da02f75e3774232ef58643a925a7cfdbf8",
+  "sideBySide": true,
+  "video": "3fa1b951e03403f90389c4e7cef78cbc4070680e",
+  "measures": {
+    "from": 7520,
+    "to": 7819,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "c64e78da02f75e3774232ef58643a925a7cfdbf8"
+  }
+}

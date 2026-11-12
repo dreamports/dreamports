@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/991-stage-2-begins",
-  "commit": "ab5d060c86ea74c11b14e2e67996d4760861dd06",
-  "made": "2026-11-12T19:00:08.602Z",
-  "about": "The second stage begins, in C: its list's new kinds are placed, its screens are found in a stage two screens high, and its small blue devils wake, fly, hover and dive at Arthur. A new recording, stage-2-begins, stands still through it until he dies."
+  "branch": "feat/991-towers",
+  "commit": "bd01d9eb22af241a7505e6905b2025dfab98bfc9",
+  "made": "2026-11-12T19:49:06.658Z",
+  "about": "Arthur crosses the second stage's first towers, in C: the view scrolls up and down, drawing rows of tiles as well as columns, a lance kills a devil, and the stage's small ledges go up and down in the picture. A new recording, towers, plays it to the stage's first gap."
 }
