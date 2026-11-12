@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-casino-paradise",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-casino-paradise.json",
+  "recordingSha1": "206a79ac8d63817f17706e8f6a04acfab0a42e6e",
+  "commit": "8f8bbc76d899254b7d01ecf049dfc525a63c2e9c",
+  "base": "355b74f225cccfda9f238ed8c729c251330e8698",
+  "sideBySide": true,
+  "video": "8f73c88ddb52facc47d13a1f988e7cbd22bfcb34",
+  "measures": {
+    "from": 2266,
+    "to": 2565,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "355b74f225cccfda9f238ed8c729c251330e8698"
+  }
+}
