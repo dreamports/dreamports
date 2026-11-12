@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "boss-walks",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/boss-walks.json",
+  "recordingSha1": "5ba53d7acb79280af4c3cff62c02935f12907a3c",
+  "commit": "d536ab7d7798b7a9879c5a27e81dbd51e2545dfc",
+  "base": "73099f7e1ba1379060277e9bab9e316917ffe67f",
+  "sideBySide": true,
+  "video": "16531ac9d609151ac9ab21861190d49a3abc2588",
+  "measures": {
+    "from": 6050,
+    "to": 6349,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 3,
+    "same": 101,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "73099f7e1ba1379060277e9bab9e316917ffe67f"
+  }
+}

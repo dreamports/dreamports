@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/983-boss-walks",
-  "commit": "dbce583429a063840226eb967aade4d4c1457f55",
-  "made": "2026-11-12T14:48:48.237Z",
-  "about": "The first stage's boss awake: it walks up and down in front of Arthur, shoots, and runs at him. He dies, and the next life starts back in the stage's second part."
+  "commit": "d536ab7d7798b7a9879c5a27e81dbd51e2545dfc",
+  "made": "2026-11-12T14:51:13.914Z",
+  "about": "The first stage's boss awake: it walks towards Arthur and shoots, and its shot kills him, while it walks on, shoots again and starts to run. The next life starts back in the stage's second part."
 }
