@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "x-zone-credits-an-emerald-short",
+  "recordingFile": "games/sonic-advance/proof/recordings/x-zone-credits-an-emerald-short.json",
+  "recordingSha1": "cd817b72adcfa5b45c701560e19f66359eb9d008",
+  "commit": "e002102da965bbbd38f1d61ab77247ec47dce242",
+  "base": "c64e78da02f75e3774232ef58643a925a7cfdbf8",
+  "sideBySide": true,
+  "video": "cb822289dd2dcebd75b3fa8f34eba336007d08bd",
+  "measures": {
+    "from": 19400,
+    "to": 19699,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 266,
+    "changed": {
+      "frame": 8724,
+      "why": "where the original first runs code main's proof doesn't count, at 08065850"
+    },
+    "newFrames": 300,
+    "base": "c64e78da02f75e3774232ef58643a925a7cfdbf8"
+  }
+}
