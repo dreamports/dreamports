@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "knights",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/knights.json",
+  "recordingSha1": "fb44967c26e37eac3725dcd7fd77c2d1d18d3041",
+  "commit": "b0cc98e4082576d7e6a11c67b4d0138fa8575ca3",
+  "base": "53917a12c19397ccbaf6c98a3a7faaa597ed5932",
+  "sideBySide": true,
+  "video": "b816834b707381f1a9eceb65830993321bf4d41c",
+  "measures": {
+    "from": 3900,
+    "to": 4199,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 31,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "53917a12c19397ccbaf6c98a3a7faaa597ed5932"
+  }
+}

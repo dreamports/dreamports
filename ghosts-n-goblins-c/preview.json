@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-boss",
-  "commit": "f0fba2557ce47787867ac8de7a90d40117e41d01",
-  "made": "2026-11-11T23:52:50.766Z",
-  "about": "A moving platform carries Arthur over the water at the end of the first stage's graveyard."
+  "branch": "feat/983-eighth-screen",
+  "commit": "b0cc98e4082576d7e6a11c67b4d0138fa8575ca3",
+  "made": "2026-11-12T01:13:45.185Z",
+  "about": "The first stage's flying knights come in threes behind their shields."
 }
