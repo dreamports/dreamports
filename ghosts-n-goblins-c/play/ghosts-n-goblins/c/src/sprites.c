@@ -198,11 +198,9 @@ wait sprites_task(void) {
   task_step[TASK_SPRITES] = LATER;
   took(SPRITES_TASK_BEGINS);
   switch_bank(4);
-  took(SPRITES_TASK_BANK_SET);
   list_sprites();
   list_sprites_backwards();
-  took(SPRITES_TASK_ENDS);
   switch_bank(BANK_HOME);
-  took(SPRITES_TASK_BANK_BACK);
+  took(SPRITES_TASK_ENDS);
   return YIELDS;
 }
