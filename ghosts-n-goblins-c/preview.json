@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "fix/991-sprites-swap-order",
-  "commit": "94294b88de9390c4f8578113966a098ddb706f94",
-  "made": "2026-11-12T20:48:54.664Z",
-  "about": "The sprites' task counts the two instructions after its first swap of two objects after that swap, as the original runs them, where it counted them before. Inside the swap the port was four cycles late, which left one byte of work memory behind the original's at two frame ends of towers. No picture or sound changes."
+  "branch": "feat/991-ledge",
+  "commit": "97d21f0ae0781bd50edd3d427da1c8f8cbcab014",
+  "made": "2026-11-12T21:25:23.217Z",
+  "about": "The second stage's small ledge that goes up and down holds Arthur and carries him, in C. A new recording, ledge, has him jump onto the first one from the long ledge's end and ride it down and up."
 }
