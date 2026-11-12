@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/990-stage-1-proven",
-  "commit": "518bce45c05c005c2e1780decda4577657a56687",
-  "made": "2026-11-12T17:52:54.539Z",
-  "about": "The recording stage-clear is named as the proof of Stage 1: The graveyard, frames 1073 to 6781, so gameplay proven in C goes from 1 to 2 of 14 parts. No game code changes."
+  "branch": "feat/991-stage-2-begins",
+  "commit": "ab5d060c86ea74c11b14e2e67996d4760861dd06",
+  "made": "2026-11-12T19:00:08.602Z",
+  "about": "The second stage begins, in C: its list's new kinds are placed, its screens are found in a stage two screens high, and its small blue devils wake, fly, hover and dive at Arthur. A new recording, stage-2-begins, stands still through it until he dies."
 }
