@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "edit-skills",
+  "recordingFile": "games/sonic-battle/proof/recordings/edit-skills.json",
+  "recordingSha1": "1675dc9c62aa90ae669e0be9318d0487bec6dbcb",
+  "commit": "4af5a351f984a0f21f7c964ea7ae1b82b70073be",
+  "base": "79bc5739e435b36545f3efe4dbd6553871d3844d",
+  "sideBySide": true,
+  "video": "d1f10345b3ebe77c7d4b87183cc54977a872b413",
+  "measures": {
+    "from": 0,
+    "to": 299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 204,
+    "changed": {
+      "frame": 0,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "79bc5739e435b36545f3efe4dbd6553871d3844d"
+  }
+}

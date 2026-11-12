@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "skills-screen",
+  "recordingFile": "games/sonic-battle/proof/recordings/skills-screen.json",
+  "recordingSha1": "afc8b573341a29f5f2bcbd374f8553f8afe07413",
+  "commit": "4af5a351f984a0f21f7c964ea7ae1b82b70073be",
+  "base": "79bc5739e435b36545f3efe4dbd6553871d3844d",
+  "sideBySide": true,
+  "video": "0700eeb999835fcc32f48b714e55cd8833ee18be",
+  "measures": {
+    "from": 30,
+    "to": 329,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 220,
+    "changed": {
+      "frame": 0,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "79bc5739e435b36545f3efe4dbd6553871d3844d"
+  }
+}
