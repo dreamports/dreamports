@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-second-part-objects",
-  "commit": "c648b320d396911de1ebfff9737d6149e7465e68",
-  "made": "2026-11-12T03:02:42.177Z",
-  "about": "Arthur walks on through the first stage's second part, to its tenth screen."
+  "branch": "feat/983-forest-enemy",
+  "commit": "c013d77b2b9b7b0b9b4363cecc9440352be099a3",
+  "made": "2026-11-12T03:25:47.206Z",
+  "about": "The forest's enemy appears, flies towards Arthur and turns round."
 }

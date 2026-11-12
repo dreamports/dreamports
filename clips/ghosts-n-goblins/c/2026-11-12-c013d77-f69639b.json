@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "forest-enemy",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/forest-enemy.json",
+  "recordingSha1": "2af8c9a6cd43217e280024b2d1652842b66639a4",
+  "commit": "c013d77b2b9b7b0b9b4363cecc9440352be099a3",
+  "base": "98b5384d9e9b3776eaaa1b10f1b209aefa22a5e9",
+  "sideBySide": true,
+  "video": "f69639b230012124b093edd6c4cb7f4e11c617e1",
+  "measures": {
+    "from": 5000,
+    "to": 5299,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 157,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "98b5384d9e9b3776eaaa1b10f1b209aefa22a5e9"
+  }
+}
