@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-forest-enemy",
-  "commit": "c013d77b2b9b7b0b9b4363cecc9440352be099a3",
-  "made": "2026-11-12T03:25:47.206Z",
-  "about": "The forest's enemy appears, flies towards Arthur and turns round."
+  "branch": "feat/983-forest-enemy-shot",
+  "commit": "7fb3c1f1f620e5a06c192a18dd32dfdadc0f88df",
+  "made": "2026-11-12T04:43:01.942Z",
+  "about": "The forest enemy's shot: Arthur walks back a little way under the forest's enemies, and one of them lets go a long white shot that flies level over his head and out of the picture."
 }

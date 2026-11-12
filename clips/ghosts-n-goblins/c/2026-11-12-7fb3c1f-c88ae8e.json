@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "forest-shot",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/forest-shot.json",
+  "recordingSha1": "43c6a493b8f3136b46a2fd49b68c662b6c125e9e",
+  "commit": "7fb3c1f1f620e5a06c192a18dd32dfdadc0f88df",
+  "base": "073030c83bb30c1a98003aaaffc2503f3687e506",
+  "sideBySide": true,
+  "video": "c88ae8e96010a88d64d3b09e34d8a5aad2704f43",
+  "measures": {
+    "from": 5260,
+    "to": 5559,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 64,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "073030c83bb30c1a98003aaaffc2503f3687e506"
+  }
+}
