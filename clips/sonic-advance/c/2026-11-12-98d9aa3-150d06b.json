@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "vs-mode-select",
+  "recordingFile": "games/sonic-advance/proof/recordings/vs-mode-select.json",
+  "recordingSha1": "a9a0c85735325d9d91798ad4d78ccee52f51f460",
+  "commit": "98d9aa3263a13933fc49e8d2ca8321a3cd199abd",
+  "base": "53917a12c19397ccbaf6c98a3a7faaa597ed5932",
+  "sideBySide": true,
+  "video": "150d06bd8f09df793741003d9c58c8d7ffc7400a",
+  "measures": {
+    "from": 2207,
+    "to": 2506,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 149,
+    "changed": {
+      "frame": 2267,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 240,
+    "base": "53917a12c19397ccbaf6c98a3a7faaa597ed5932"
+  }
+}
