@@ -1,0 +1,10 @@
+{
+  "game": "ghosts-n-goblins/c",
+  "title": "Ghosts'n Goblins Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "enh/1190-gng-c-bank-labels",
+  "commit": "329870ae931e04d5b94d83e7cbf35902b3705bcc",
+  "made": "2026-11-12T22:45:41.208Z",
+  "about": "The comments name the switched banks' routines as labels"
+}
