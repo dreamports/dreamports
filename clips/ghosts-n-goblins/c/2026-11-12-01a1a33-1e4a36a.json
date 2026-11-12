@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "second-part",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/second-part.json",
+  "recordingSha1": "fffc80dc7b004dbc145c091b02b1ce19f31eb5d5",
+  "commit": "01a1a3347c4f0dc5f438cac613f5eb5a33baf24a",
+  "base": "1b2832ccf2ad5027b742021b9a8d8b5b6c569d21",
+  "sideBySide": true,
+  "video": "1e4a36a2b47a247db67e2df344f49c6f14d04895",
+  "measures": {
+    "from": 3900,
+    "to": 4199,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 51,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "1b2832ccf2ad5027b742021b9a8d8b5b6c569d21"
+  }
+}

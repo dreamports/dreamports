@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-eighth-screen",
-  "commit": "b0cc98e4082576d7e6a11c67b4d0138fa8575ca3",
-  "made": "2026-11-12T01:13:45.185Z",
-  "about": "The first stage's flying knights come in threes behind their shields."
+  "branch": "feat/983-stage-second-part",
+  "commit": "01a1a3347c4f0dc5f438cac613f5eb5a33baf24a",
+  "made": "2026-11-12T02:00:06.254Z",
+  "about": "The first stage goes on to its second part on the eighth screen."
 }
