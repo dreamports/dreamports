@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-stage-end",
-  "commit": "a0f54bbf378679647c192e7e4ca63bf99b6ac888",
-  "made": "2026-11-12T05:42:49.612Z",
-  "about": "The first stage's boss: Arthur goes on through the forest to the stone gate at the stage's end, where the boss comes into the picture, stands still, and wakes."
+  "branch": "feat/983-boss-walks",
+  "commit": "dbce583429a063840226eb967aade4d4c1457f55",
+  "made": "2026-11-12T14:48:48.237Z",
+  "about": "The first stage's boss awake: it walks up and down in front of Arthur, shoots, and runs at him. He dies, and the next life starts back in the stage's second part."
 }
