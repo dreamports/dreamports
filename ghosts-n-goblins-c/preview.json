@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/991-ledge",
-  "commit": "4824ed875a920c9edb4220cca549288ca3047781",
-  "made": "2026-11-12T21:27:39.780Z",
-  "about": "The second stage's small ledge that goes up and down holds Arthur and carries him, in C. A new recording, ledge, has him jump onto the first one from the long ledge's end and ride it down and up."
+  "branch": "feat/991-past-the-ledge",
+  "commit": "6a17ab010e5642ea637b9890e89da3b626a368c9",
+  "made": "2026-11-12T21:47:09.375Z",
+  "about": "The recording ledge goes on: Arthur walks to the small ledge's right side, throwing lances, rides it down and up, and jumps off onto the next tower's ledge. No game code changes: everything it plays was ported already."
 }
