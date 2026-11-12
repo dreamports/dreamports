@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "ledge",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/ledge.json",
+  "recordingSha1": "ea39c69edfa79cd3913ea542ac7674147b940d5a",
+  "commit": "4824ed875a920c9edb4220cca549288ca3047781",
+  "base": "355b74f225cccfda9f238ed8c729c251330e8698",
+  "sideBySide": true,
+  "video": "4e4326d95e903b1c54e9508f28e92e3bae66fa38",
+  "measures": {
+    "from": 7860,
+    "to": 8159,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "355b74f225cccfda9f238ed8c729c251330e8698"
+  }
+}
