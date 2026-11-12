@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "egg-rocket",
+  "recordingFile": "games/sonic-advance/proof/recordings/egg-rocket.json",
+  "recordingSha1": "eee96f53e94173a001ca41f6fe37ee00b9be598f",
+  "commit": "565a5cdd402222d5c5f1c2c877d4b74329802274",
+  "base": "79bc5739e435b36545f3efe4dbd6553871d3844d",
+  "sideBySide": true,
+  "video": "b03fb441271d8bc4390771c589a700918044c0a2",
+  "measures": {
+    "from": 2066,
+    "to": 2365,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 2,
+    "same": 46,
+    "changed": {
+      "frame": 2126,
+      "why": "where the original first runs code main's proof doesn't count, at 0803EE50"
+    },
+    "newFrames": 240,
+    "base": "79bc5739e435b36545f3efe4dbd6553871d3844d"
+  }
+}
