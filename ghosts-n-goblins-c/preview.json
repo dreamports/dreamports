@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/991-towers",
-  "commit": "bd01d9eb22af241a7505e6905b2025dfab98bfc9",
-  "made": "2026-11-12T19:49:06.658Z",
-  "about": "Arthur crosses the second stage's first towers, in C: the view scrolls up and down, drawing rows of tiles as well as columns, a lance kills a devil, and the stage's small ledges go up and down in the picture. A new recording, towers, plays it to the stage's first gap."
+  "branch": "fix/991-sprites-swap-order",
+  "commit": "94294b88de9390c4f8578113966a098ddb706f94",
+  "made": "2026-11-12T20:48:54.664Z",
+  "about": "The sprites' task counts the two instructions after its first swap of two objects after that swap, as the original runs them, where it counted them before. Inside the swap the port was four cycles late, which left one byte of work memory behind the original's at two frame ends of towers. No picture or sound changes."
 }
