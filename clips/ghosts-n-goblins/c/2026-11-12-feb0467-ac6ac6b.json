@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "boss-dies",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/boss-dies.json",
+  "recordingSha1": "e799fe1c28ae191d299b420ffc9d162aa4cc90af",
+  "commit": "feb0467bfa04fb32f8370b19c57a3a35c57e485c",
+  "base": "101bc944a334aee887c657dcfa7b438b8af6d5a8",
+  "sideBySide": true,
+  "video": "ac6ac6bdcaaa4a0f863dc5919291f58f4d11254b",
+  "measures": {
+    "from": 6200,
+    "to": 6499,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 52,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "101bc944a334aee887c657dcfa7b438b8af6d5a8"
+  }
+}

@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-boss-dodges",
-  "commit": "92dee2df1dd890c0ad1b5a7244f4d799a3acc854",
-  "made": "2026-11-12T15:06:19.523Z",
-  "about": "The first stage's boss dodges: Arthur throws lances at it, the third wakes it, and it jumps high out of their way while its shot kills him."
+  "branch": "feat/983-boss-dies-key",
+  "commit": "feb0467bfa04fb32f8370b19c57a3a35c57e485c",
+  "made": "2026-11-12T15:35:24.976Z",
+  "about": "The first stage's boss dies: Arthur's tenth lance kills it, it burns away, and a key comes down from the top of the picture and lies on the ground."
 }
