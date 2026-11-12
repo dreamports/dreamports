@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/980-game-over",
-  "commit": "04715e17fab4367bb5c33a770d38161ddb8a9d78",
-  "made": "2026-11-12T23:29:57.917Z",
-  "about": "The game ends with the last life lost, and the title screen's third line goes on from there."
+  "branch": "feat/984-time-runs-out",
+  "commit": "182868222113318148d4f893ff5019c7886aad03",
+  "made": "2026-11-12T23:34:40.214Z",
+  "about": "The stage's time runs all the way down: the tune that hurries Arthur, and his death at 0:00."
 }

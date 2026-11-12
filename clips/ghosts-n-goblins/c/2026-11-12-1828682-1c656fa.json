@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "time-runs-out",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/time-runs-out.json",
+  "recordingSha1": "361fb7d76825155f8ade75f0a2bd1d0a057f63f6",
+  "commit": "182868222113318148d4f893ff5019c7886aad03",
+  "base": "a039a0ac2d9d3eceb3d647a44bb815c9ed73d3d2",
+  "sideBySide": true,
+  "video": "1c656facc1192fd6d401bfae9d4d813ebdd18aae",
+  "measures": {
+    "from": 13470,
+    "to": 13769,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 30,
+    "same": 227,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "a039a0ac2d9d3eceb3d647a44bb815c9ed73d3d2"
+  }
+}
