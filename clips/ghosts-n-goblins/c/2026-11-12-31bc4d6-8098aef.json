@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "forest-life",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/forest-life.json",
+  "recordingSha1": "45461b3982a2cbb65fded49334040f926d06800c",
+  "commit": "31bc4d6a6cf11f2e75676924502b55872adc71ab",
+  "base": "c46ce77bad2e97e7b1ec2c3e11d396ca1e86101c",
+  "sideBySide": true,
+  "video": "8098aef14fb2134f4eabd521b60cb62f912dbbda",
+  "measures": {
+    "from": 6400,
+    "to": 6699,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 54,
+    "same": 60,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "c46ce77bad2e97e7b1ec2c3e11d396ca1e86101c"
+  }
+}
