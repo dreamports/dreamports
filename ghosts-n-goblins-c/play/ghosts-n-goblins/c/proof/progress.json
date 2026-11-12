@@ -28,6 +28,12 @@
       "differs": [],
       "functions": []
     },
+    "falling-ledge": {
+      "frames": 8860,
+      "matched": 8860,
+      "differs": [],
+      "functions": []
+    },
     "flier": {
       "frames": 3390,
       "matched": 3390,
@@ -115,12 +121,6 @@
     "stage-clear": {
       "frames": 7320,
       "matched": 7320,
-      "differs": [],
-      "functions": []
-    },
-    "time-runs-out": {
-      "frames": 14600,
-      "matched": 14600,
       "differs": [],
       "functions": []
     },
