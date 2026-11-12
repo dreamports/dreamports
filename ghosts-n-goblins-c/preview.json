@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/983-stage-clear",
-  "commit": "e1f477fe4f92740befd6c18cdabb9f16ee202660",
-  "made": "2026-11-12T15:52:20.563Z",
-  "about": "The first stage is cleared: Arthur takes the key, gets his armour back, the gate opens in two steps and he walks in. The map follows."
+  "branch": "feat/990-stage-1-proven",
+  "commit": "518bce45c05c005c2e1780decda4577657a56687",
+  "made": "2026-11-12T17:52:54.539Z",
+  "about": "The recording stage-clear is named as the proof of Stage 1: The graveyard, frames 1073 to 6781, so gameplay proven in C goes from 1 to 2 of 14 parts. No game code changes."
 }
