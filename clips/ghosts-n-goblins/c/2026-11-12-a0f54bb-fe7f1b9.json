@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "boss-wakes",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/boss-wakes.json",
+  "recordingSha1": "5285d124172d8b786be6c0f7c371176673301519",
+  "commit": "a0f54bbf378679647c192e7e4ca63bf99b6ac888",
+  "base": "6029af74ca32a4f5733bacc36dde48f65c1f6fd4",
+  "sideBySide": true,
+  "video": "fe7f1b967432828f1e837ad0017453a2d675497f",
+  "measures": {
+    "from": 5838,
+    "to": 6137,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 132,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "6029af74ca32a4f5733bacc36dde48f65c1f6fd4"
+  }
+}
