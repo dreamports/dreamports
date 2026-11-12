@@ -1,0 +1,13 @@
+{
+  "proof": "dreamports",
+  "version": "ghosts-n-goblins/c",
+  "recordings": 24,
+  "progress": "fe93b4c2e37a8db9b703a5bfdd9fef2894e9b342",
+  "same": true,
+  "trees": {
+    "game": "5197bd7d9bf139ed8c3ede1c6112c1dc6b619483",
+    "kit": "b5f906df5fb6acb1dccfd6bfff5867a2495adc43"
+  },
+  "commit": "3ac493e92c6778ff3286ecc761e3780d6ae167ff",
+  "base": "4f2858c7c0ec1fc9c4ad7d8188c4c1a82b3ea9e3"
+}
