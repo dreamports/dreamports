@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tails-x-zone",
+  "recordingFile": "games/sonic-advance/proof/recordings/tails-x-zone.json",
+  "recordingSha1": "df0180f8d33e796ac4d6387368d1d61b071477e6",
+  "commit": "4ad9eb4701ee6ecc51ad8cf09c4d6a0087ff6657",
+  "base": "6460c76bd497661fd9116c007e9c166389cce752",
+  "sideBySide": true,
+  "video": "33619c7a38e83814bb94d32eadc1e891d2a97d1b",
+  "measures": {
+    "from": 7040,
+    "to": 7339,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 70,
+    "same": 84,
+    "changed": {
+      "frame": 7037,
+      "why": "where the original first runs code main's proof doesn't count, at 08055D9C"
+    },
+    "newFrames": 300,
+    "base": "6460c76bd497661fd9116c007e9c166389cce752"
+  }
+}
