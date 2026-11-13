@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "frog-pot",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/frog-pot.json",
+  "recordingSha1": "338d692272ee1a2a78912912af94265bc466e40f",
+  "commit": "10b4aa580e6f9f531361243508864b5b78b9ad96",
+  "base": "459901d6743dcb3444bebe1827c9e035a4ec09ff",
+  "sideBySide": true,
+  "video": "9f857a6099e3fd168ac995e68e814016919f9700",
+  "measures": {
+    "from": 30260,
+    "to": 30559,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "459901d6743dcb3444bebe1827c9e035a4ec09ff"
+  }
+}
