@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "amy-casino-paradise",
+  "recordingFile": "games/sonic-advance/proof/recordings/amy-casino-paradise.json",
+  "recordingSha1": "6fea92381614e5d61c44430055790654c35553e5",
+  "commit": "cbde8d7e5b5be135f43db486b2dbf879050e475a",
+  "base": "c2b04d3dd5ebe06a6e5e8b6d2a15d7e978e283e4",
+  "sideBySide": true,
+  "video": "3e784206efd04c19d97188bf28ba0128f758282e",
+  "measures": {
+    "from": 2266,
+    "to": 2565,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2003,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "c2b04d3dd5ebe06a6e5e8b6d2a15d7e978e283e4"
+  }
+}

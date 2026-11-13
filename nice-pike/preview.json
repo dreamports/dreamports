@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/760-amy-in-c",
+  "commit": "cbde8d7e5b5be135f43db486b2dbf879050e475a",
+  "made": "2026-11-13T15:24:08.621Z",
+  "about": "Amy is played with the pad in C: her hammer's two swings and its hearts, the hammer in the air and swirled down, the leap off it, her dive with its slam and slide, and every object's case for her (springs her hammer hits, bounce blocks, ice blocks, grind rails, lifts, run wheels, bosses). Seven of her eight act recordings match every frame and amy-neo-green-hill proves Playing as Amy; amy-x-zone differs in one frame of sound, where two square channels play one note and their phase isn't the original's."
+}
