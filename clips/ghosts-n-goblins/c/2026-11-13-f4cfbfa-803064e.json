@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "falling-ledge",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/falling-ledge.json",
+  "recordingSha1": "bd06ca9304f6621019314cef64ce1e73146f906e",
+  "commit": "f4cfbfad3bc58685f1da68e206db6b160cab3a27",
+  "base": "cc59d0bc5ebe11b34a7e595a093f2fa44af71373",
+  "sideBySide": true,
+  "video": "803064e2b20ea9a9b91808722ddbdac4d3f769e3",
+  "measures": {
+    "from": 8480,
+    "to": 8779,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 1,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "cc59d0bc5ebe11b34a7e595a093f2fa44af71373"
+  }
+}
