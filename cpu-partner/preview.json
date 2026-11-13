@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1202-cpu-partner-in-c",
-  "commit": "862a6d7fb6efdef69a485bbfb7d9e81b7c986f6d",
-  "made": "2026-11-13T03:33:18.493Z",
-  "about": "Tails follows Sonic as the CPU partner in Neo Green Hill, in C"
+  "branch": "feat/1202-partner-objects",
+  "commit": "d6c67a86e0064ea83b3f152bebde68852495bfcb",
+  "made": "2026-11-13T03:54:46.669Z",
+  "about": "Tails meets enemies, item boxes, springs, spikes and the results as the CPU partner, in C"
 }
