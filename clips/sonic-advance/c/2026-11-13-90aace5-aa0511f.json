@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "amy-x-zone",
+  "recordingFile": "games/sonic-advance/proof/recordings/amy-x-zone.json",
+  "recordingSha1": "bbedbc8b94baf808d89858d20e238e7847b5e5b9",
+  "commit": "90aace53ca578ceccd66dd8e8393820c19175627",
+  "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d",
+  "sideBySide": true,
+  "video": "aa0511fe446df7365db23fae35e9067534613a2c",
+  "measures": {
+    "from": 2624,
+    "to": 2923,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d"
+  }
+}

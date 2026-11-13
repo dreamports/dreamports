@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tails-special-stage",
+  "recordingFile": "games/sonic-advance/proof/recordings/tails-special-stage.json",
+  "recordingSha1": "797090f60878b3f27fe48e40447951d99a1d4c25",
+  "commit": "90aace53ca578ceccd66dd8e8393820c19175627",
+  "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d",
+  "sideBySide": true,
+  "video": "00c94be0ec50fd897ec4601a437199940b55a853",
+  "measures": {
+    "from": 0,
+    "to": 299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 31,
+    "same": 74,
+    "changed": {
+      "frame": 0,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d"
+  }
+}

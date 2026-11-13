@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "soft-reset-special-stage",
+  "recordingFile": "games/sonic-advance/proof/recordings/soft-reset-special-stage.json",
+  "recordingSha1": "97e9e735e60a2bcf5916b752b609296c6a733844",
+  "commit": "90aace53ca578ceccd66dd8e8393820c19175627",
+  "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d",
+  "sideBySide": true,
+  "video": "89e3a72f2e6ec5e30aa4315062b119c1553ed356",
+  "measures": {
+    "from": 3274,
+    "to": 3573,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 7,
+    "same": 166,
+    "changed": {
+      "frame": 2194,
+      "why": "where the original first runs code main's proof doesn't count, at 080931FC"
+    },
+    "newFrames": 300,
+    "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "enh/1240-sound-cycle-costs",
+  "commit": "90aace53ca578ceccd66dd8e8393820c19175627",
+  "made": "2026-11-13T22:21:42.142Z",
+  "about": "The squares' notes are written on the original's cycles from power-on, so their sound keeps the original's phase; Secret Base act 1 and the special stage's soft reset now play from power-on, with the soft reset and special stage 1 in C."
+}

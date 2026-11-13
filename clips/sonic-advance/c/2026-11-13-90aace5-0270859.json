@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "knuckles-special-stage",
+  "recordingFile": "games/sonic-advance/proof/recordings/knuckles-special-stage.json",
+  "recordingSha1": "d42217f9e6a0ef3154c8eb3688938c708b641775",
+  "commit": "90aace53ca578ceccd66dd8e8393820c19175627",
+  "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d",
+  "sideBySide": true,
+  "video": "02708594d21ab27a56904a8b098d11b979fae4a0",
+  "measures": {
+    "from": 0,
+    "to": 299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 31,
+    "same": 75,
+    "changed": {
+      "frame": 0,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d"
+  }
+}
