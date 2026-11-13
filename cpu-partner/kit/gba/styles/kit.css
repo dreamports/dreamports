@@ -1,0 +1,809 @@
+/* The look of a game's page on the kit: its start screen (ui/rom-setup.js), the game's screen with the settings
+   button and, on touch screens, the controller drawn around it, the unlock popup, the settings and the views they
+   grow into (ui/sheet.js), and the asset viewer, drawn like the dreamports.net launcher, light or dark as it is. */
+
+:root {
+  color-scheme: dark;
+  --bg: #050a24;
+  --bg-2: #0b1240;
+  --panel: rgba(14, 24, 78, .78);
+  --line: rgba(127, 180, 255, .28);
+  --ink: #eef4ff;
+  --muted: #a9b8e6;
+  --accent: #ffd23f;
+  --blue: #4f86ff;
+  --error: #ff8a8a;
+  --ok: #4ade80;
+  --radius: 16px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+/* nothing zooms: fingers only scroll. Every element says so itself, as a container that scrolls forgets what the ones
+   around it said. The page's viewport tag and the site's /no-zoom.js stop the other ways of zooming */
+* { touch-action: pan-x pan-y; }
+/* a page never scrolls as a whole, however far it's zoomed in: what doesn't fit scrolls inside the container it's in */
+html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
+body {
+  background: radial-gradient(1200px 600px at 50% -10%, #1a3cb8 0%, transparent 60%), var(--bg);
+  color: var(--ink); font: 16px/1.5 var(--font);
+}
+a { color: #9cc3ff; }
+button { font: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* the start screen's section */
+.picker, .assets { position: fixed; inset: 0; overflow: hidden auto; scrollbar-width: none; }
+.picker::-webkit-scrollbar, .assets::-webkit-scrollbar { display: none; }
+.picker { display: grid; place-items: center; padding: 24px 16px; }
+.picker[hidden] { display: none; }
+.link { padding: 0; border: 0; background: none; color: #9cc3ff; text-decoration: underline; cursor: pointer; }
+.link[hidden] { display: none; }
+
+/* the page starts on the launcher's Opening screen, with the mark (.opening-door), the font and the look all there on its first frame,
+   so what the launcher was showing goes on showing, in the same place. The start screen fades in over it (rom-setup.js).
+   The head of the page reads the launcher's look and motion into the root's data-theme and data-motion. */
+.opening {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  padding: 0 max(24px, env(safe-area-inset-right, 0px)) 0 max(24px, env(safe-area-inset-left, 0px));
+  background: radial-gradient(900px 560px at 50% 0, #ddefff, rgba(221, 239, 255, 0) 80%), #fff;
+  color: #1a4fb0; font: 14px/20px Monocraft, var(--mono); text-align: center;
+  font-variant-ligatures: none; font-synthesis: none; -webkit-font-smoothing: antialiased;
+}
+main:has(> .stage:not([hidden])) > .opening { display: none; }
+.opening-in { display: grid; justify-items: center; gap: 18px; max-width: 32em; }
+.opening-door { display: block; width: 64px; height: 64px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-38.2 -8.6 568 568'%3E%3Cdefs%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='98.3' y1='0' x2='368.7' y2='550.9'%3E%3Cstop stop-color='%237ccbff'/%3E%3Cstop offset='.5' stop-color='%231f5fd0'/%3E%3Cstop offset='1' stop-color='%230a2a66'/%3E%3C/linearGradient%3E%3ClinearGradient id='w' gradientUnits='userSpaceOnUse' x1='0' y1='165.3' x2='491.7' y2='550.9'%3E%3Cstop stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23b9dcff'/%3E%3C/linearGradient%3E%3ClinearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='491.7' y2='275.4'%3E%3Cstop stop-color='%23d9f0ff'/%3E%3Cstop offset='.5' stop-color='%238fd1ff'/%3E%3Cstop offset='1' stop-color='%234f9df0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23b)' d='M236.4 10.4C225.5 11.5 215.1 12.1 204.2 14C189.1 16.6 175.1 23.7 159.8 23.9C156.1 23.9 152.7 23.5 149.1 22.7C136.1 19.9 123.8 15 110.6 13C99.4 11.4 88.7 11.1 77.4 12.1C68.7 12.9 60.5 14.3 52.3 17.4C48 19 43.7 20.8 39.8 23.3C37.3 24.9 35.1 26.6 33.3 29C31.2 31.6 30 34.2 29.7 37.5C29.4 40.5 29.9 43 31.3 45.6C32.6 48 34.2 49.7 36.2 51.4C40.6 55 45.9 57 50.4 60.4C52.8 62.1 54.9 64.1 56.7 66.5C59.1 69.7 60.7 73.2 61.7 77.1C62.7 80.6 63.1 84 62.8 87.7C62.4 92.7 60.8 97.2 58.5 101.7C50.3 118.1 38.9 132.5 31.3 149.1C28.1 156.1 25 163 22.3 170.2C20.5 175.2 19.1 180.3 17.7 185.5C16 192.2 14.4 199 13.2 205.9C11.8 214.1 10.6 221.9 10.1 230.2C9.5 240.9 9.6 251.3 10.1 262C10.5 268.6 11.4 274.8 12.4 281.4C13.8 290.9 16.2 300.2 19 309.4C21.8 318.6 25.3 327.6 29.2 336.4C32.3 343.5 35.8 350.2 39.7 356.8C44.1 364.2 48.9 371.4 54.2 378.3C60.5 386.5 66.9 394.3 74.2 401.6C81.2 408.7 88.9 414.8 96.9 420.8C106.5 428 116.8 434.1 127.2 440.1C137.3 445.9 149.7 447.4 157.6 456C159.4 458 160.4 460 161.2 462.5C164.1 471.4 163.9 480.4 167.1 489.2C169.5 496.1 172.4 502.8 176.5 508.9C180.5 515 185.4 520.3 191 525C197.4 530.4 204.2 535.1 211.9 538.3C214.4 539.4 216.7 540.3 219.3 540.7C221.3 540.9 222.8 541 224.7 540.5C226.6 540 227.7 539.4 229.1 537.9C230.5 536.5 231 535.2 231.5 533.3C233.5 524.9 228.5 517.1 228.7 508.4C228.7 500.7 231 493.6 231.6 485.9C232.3 476.6 226.9 468.1 231.8 460.2C236.4 452.8 246.1 453.6 253.2 448.6C261.9 442.4 268.1 433.4 277 427.6C283.4 423.4 291.5 423.1 296.8 417.6C298 416.4 298.6 415.6 299.1 414C299.7 412.4 299.7 411.4 299.5 409.7C299.1 406.4 297.5 404.2 295.1 401.8C292.1 398.7 288.4 396.7 284.5 394.8C279.7 392.5 274.7 390.7 269.5 389.4C260.5 387.1 251.3 387.3 242 387.8C234.3 388.2 226.9 390.1 219.7 392.5C210.8 395.4 203.5 401.4 194.8 404.8C191.7 406.1 188.7 406.7 185.4 406.6C181.1 406.3 177.3 404.7 173.7 402.4C169.4 399.7 166 396.2 163.1 392.2C159.9 387.9 157.3 383.3 155.1 378.4C153.2 373.9 151.6 369.2 150.9 364.3C149.7 357.3 150 350.6 150.4 343.6C150.6 339.3 151.4 335.2 152.5 331C154.3 324.3 156.8 317.8 159.9 311.5C162.7 305.9 166.3 300.8 169.9 295.6C177.7 284.4 187.3 274.9 197.4 265.7C200.6 262.8 203.5 260 207.3 258C209.7 256.7 210.4 255.8 212.8 257C215.1 258.2 214.8 259.3 214.9 262C215.1 267.6 212.6 272.5 213.5 278.1C213.8 280.4 214.4 282.1 215.7 284C216.9 285.7 218 286.7 219.7 287.8C221.4 288.8 223 289.4 224.9 289.8C228.9 290.6 232.4 289.8 236.2 288.4C241.5 286.4 246.1 283.3 250.6 279.8C255.3 276.1 259.3 271.8 263 267.1C266.5 262.6 269.6 257.9 272.2 252.9C276.3 244.9 276.2 235.2 282.8 229.1C284.8 227.3 286.7 226.7 289.2 226C293.7 224.7 298.1 224.5 302.7 224C310.7 223.2 318.3 224 326.2 225.1C335.1 226.2 343.8 228 352.4 230.4C363.6 233.6 374.5 237.6 385.5 241.7C398.9 246.8 411.7 253 425.2 257.8C433 260.5 440.6 263.7 448.9 264.3C453.9 264.6 458.8 264.4 463.6 263.1C467.5 262.1 470.8 260.5 473.9 257.8C476.9 255.2 478.9 252.1 480.2 248.3C481.8 243.9 482 239.4 481.3 234.8C480.9 231.5 479.9 228.5 478.3 225.6C476.5 222.4 474.2 219.8 471.5 217.3C464.1 210.5 455.7 205.2 447.6 199.4C439.2 193.4 430.8 187.5 422.7 181C416.5 176 410 171.5 405.6 164.8C403.8 162 402.7 159.4 402.2 156.1C400.6 145.5 402.2 135.5 400.1 125.1C398.2 115.9 395.8 107 392.1 98.5C389.8 93.3 387.3 88.3 384.3 83.4C381.4 78.6 378 74.1 374.5 69.6C368.6 62 361.3 55.7 354.1 49.2C347 42.8 338.9 37.6 330.5 32.8C321.5 27.8 312.2 23.6 302.4 20.3C291.9 16.8 281.4 14.3 270.5 12.6C259 10.9 248 9.2 236.4 10.4Z'/%3E%3Cpath fill='url(%23w)' d='M273.5 174.5C277.2 174.2 280.6 174.1 284.3 174.2C286.9 174.3 289.4 174.5 292 175C296.7 175.7 301.1 176.8 305.6 178C309.2 179 312.6 180.2 316 181.7C318.7 182.9 321.3 184.3 323.7 186C328.7 189.4 332.8 193.6 337.7 197.1C341.2 199.6 344.9 201.7 348.7 203.8C358.1 208.8 367.7 213.1 377.3 217.7C387.2 222.5 397.3 226.5 407.1 231.4C412.8 234.2 424.4 235 418.9 238.2C414.9 240.6 413.8 237 409.4 235.5C394.9 230.3 381 224 366.4 219.3C356.8 216.2 347.2 213.5 337.3 211.8C331.4 210.8 325.7 210.3 319.7 210.1C313.4 209.8 307.3 209.7 301 209.9C291.7 210.2 282.7 211.5 273.6 213.4C267.7 214.6 261.9 216.2 256.2 218C250.1 219.9 244.2 222 238.3 224.4C233.4 226.4 228.5 228.4 223.7 230.8C218.1 233.7 212.6 236.8 207.3 240.3C196.5 247.5 186.6 255.4 177.3 264.5C172.5 269.1 168.4 274.1 164.2 279.3C161.1 283.2 158.4 287.1 155.6 291.2C153.4 294.2 151.5 297.1 149.8 300.3C146.5 306.5 143.2 312.5 140.7 319C139.3 322.4 138.3 325.9 137.6 329.5C136.8 333.1 136.4 336.6 136.3 340.2C136 347.6 135.8 354.6 136.2 361.9C136.4 364.9 136.8 367.7 137.4 370.7C138.7 375.9 140.3 380.8 142.4 385.7C144.8 391.2 148.3 395.1 150.9 400.5C151.9 402.7 153.3 402.4 151.4 403.8C149.4 405.1 149.8 403.9 147.7 402.7C145.4 401.4 143.7 400.1 141.7 398.3C137.7 394.8 134.7 390.6 131.7 386.2C128.1 380.9 125.2 375.3 122.6 369.6C120 363.8 117.8 357.8 116.2 351.7C114.5 345.3 113.1 338.8 112.2 332.2C111.8 329.3 111.6 326.4 111.8 323.4C112.1 316.4 113.7 309.8 115.2 303C116.6 296.8 117.2 290.6 120.2 285C121 283.6 121.7 282.6 122.9 281.5C124.1 280.4 125.2 279.9 126.7 279.3C133.2 276.6 140 276.9 146.7 274.8C152.1 273.1 157.3 270.8 162.2 268.1C166.9 265.5 171.1 262.6 175.3 259.3C180 255.6 184.2 251.6 188.6 247.5C191.7 244.5 194.8 241.6 197.5 238.3C200.9 234.1 203.8 229.8 206.5 225.2C208.9 221.2 210.9 217.1 212.6 212.7C214.9 206.8 215.7 200.6 218.7 195C219.9 192.6 221.3 190.9 223.4 189.3C225.8 187.5 228.5 186.5 231.2 185.4C236.5 183.2 241.8 181.3 247.2 179.7C251.4 178.4 255.6 177.4 259.8 176.5C264.4 175.7 268.9 175 273.5 174.5Z'/%3E%3Cpath fill='none' stroke='%230a2a66' stroke-linecap='round' stroke-linejoin='round' stroke-opacity='.6' stroke-width='10.5' d='M144 193.4C143.5 195.5 142.3 201.7 141.2 205.8C140.1 210 138.8 214.1 137.2 218.2C135.7 222.3 134 226.4 132.1 230.5C130.1 234.5 128 238.6 125.7 242.6C123.3 246.6 120.8 250.6 118 254.6C115.3 258.6 110.7 264.5 109.2 266.5'/%3E%3Cpath fill='none' stroke='%230a2a66' stroke-linecap='round' stroke-linejoin='round' stroke-width='8' d='M304.7 164.9C305.4 166.2 307.5 170.3 309.1 172.3C310.8 174.3 312 175.1 314.8 176.9C317.5 178.7 322.1 180.4 325.9 182.8C329.6 185.3 333.3 188.8 337.1 191.4C340.8 194.1 344.2 196.5 348.1 198.8C352 201 356.1 202.8 360.2 204.8C364.3 206.9 368.7 208.9 372.9 211C377 213.1 381.1 215.1 385.2 217.3C389.3 219.5 393.3 221.8 397.3 224.1C401.4 226.4 406.4 229.3 409.3 231.1C412.3 232.9 413.5 234 415 234.9C416.4 235.9 417.5 236.3 418 236.6'/%3E%3Cpath fill='%23061a44' d='M288.4 120.9C286.2 121.6 284.2 122.9 282.4 124.4C280.4 126.1 278.7 128.1 277.4 130.5C276.2 132.5 275.5 134.7 275.1 137C274.6 139.6 274.3 142.4 275.3 144.9C275.7 145.8 275.9 146.6 276.7 147.2C277.2 147.7 277.6 147.8 278.2 148.1C281.5 149.6 285.4 148.2 289 149C290.9 149.4 292.8 150.1 294.6 151C296.1 151.7 297.3 152.9 298.8 153.5C299.8 153.9 300.4 154.6 301.4 154.6C302.1 154.7 302.6 154.7 303.2 154.5C304.2 154.3 304.8 153.6 305.6 153C306.6 152.1 307.3 151 308 149.9C309.5 147.3 310.4 144.4 310.7 141.4C310.9 138.7 310.6 136.1 309.8 133.6C309 131 307.8 128.7 306.2 126.6C305.1 125.3 304 124.1 302.7 123.2C300.7 121.9 298.6 121.1 296.3 120.7C293.7 120.2 291 120.2 288.4 120.9Z'/%3E%3Ccircle fill='%23fff' cx='298' cy='133' r='6.2'/%3E%3Cpath fill='url(%23s)' d='M432 24Q438.7 59.3 474 66Q438.7 72.7 432 108Q425.3 72.7 390 66Q425.3 59.3 432 24Z'/%3E%3Ccircle fill='url(%23b)' cx='318' cy='462' r='16'/%3E%3Ccircle fill='url(%23b)' cx='366' cy='424' r='11'/%3E%3Ccircle fill='url(%23b)' cx='352' cy='506' r='8'/%3E%3C/svg%3E") center / 100% no-repeat; }
+.opening p { margin: 0; }
+.opening .dp-tag { padding: .15em .6em; background: #cde3f8; color: #0a1738; line-height: 1.5; }
+.opening-dots { display: inline-block; width: 3ch; text-align: left; }
+.opening-dots::after { content: ''; animation: opening-dots 1.2s steps(1, end) infinite; }
+@keyframes opening-dots { 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+:root[data-motion="calm"] .opening-dots::after { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion="full"]) .opening-dots::after { animation: none; } }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .opening { background: radial-gradient(1200px 600px at 50% -10%, #1a3cb8 0%, rgba(26, 60, 184, 0) 60%), #050a24; color: #7aa7ff; }
+  :root:not([data-theme="light"]) .opening .dp-tag { background: #1f2d63; color: #eef4ff; }
+  :root:not([data-theme="light"]) .opening-door { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-38.2 -8.6 568 568'%3E%3Cdefs%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='98.3' y1='0' x2='368.7' y2='550.9'%3E%3Cstop stop-color='%23b5e2ff'/%3E%3Cstop offset='.5' stop-color='%234f8df0'/%3E%3Cstop offset='1' stop-color='%231a4fb0'/%3E%3C/linearGradient%3E%3ClinearGradient id='w' gradientUnits='userSpaceOnUse' x1='0' y1='165.3' x2='491.7' y2='550.9'%3E%3Cstop stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23b9dcff'/%3E%3C/linearGradient%3E%3ClinearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='491.7' y2='275.4'%3E%3Cstop stop-color='%23ffffff'/%3E%3Cstop offset='.5' stop-color='%23bfe6ff'/%3E%3Cstop offset='1' stop-color='%238fd1ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23b)' d='M236.4 10.4C225.5 11.5 215.1 12.1 204.2 14C189.1 16.6 175.1 23.7 159.8 23.9C156.1 23.9 152.7 23.5 149.1 22.7C136.1 19.9 123.8 15 110.6 13C99.4 11.4 88.7 11.1 77.4 12.1C68.7 12.9 60.5 14.3 52.3 17.4C48 19 43.7 20.8 39.8 23.3C37.3 24.9 35.1 26.6 33.3 29C31.2 31.6 30 34.2 29.7 37.5C29.4 40.5 29.9 43 31.3 45.6C32.6 48 34.2 49.7 36.2 51.4C40.6 55 45.9 57 50.4 60.4C52.8 62.1 54.9 64.1 56.7 66.5C59.1 69.7 60.7 73.2 61.7 77.1C62.7 80.6 63.1 84 62.8 87.7C62.4 92.7 60.8 97.2 58.5 101.7C50.3 118.1 38.9 132.5 31.3 149.1C28.1 156.1 25 163 22.3 170.2C20.5 175.2 19.1 180.3 17.7 185.5C16 192.2 14.4 199 13.2 205.9C11.8 214.1 10.6 221.9 10.1 230.2C9.5 240.9 9.6 251.3 10.1 262C10.5 268.6 11.4 274.8 12.4 281.4C13.8 290.9 16.2 300.2 19 309.4C21.8 318.6 25.3 327.6 29.2 336.4C32.3 343.5 35.8 350.2 39.7 356.8C44.1 364.2 48.9 371.4 54.2 378.3C60.5 386.5 66.9 394.3 74.2 401.6C81.2 408.7 88.9 414.8 96.9 420.8C106.5 428 116.8 434.1 127.2 440.1C137.3 445.9 149.7 447.4 157.6 456C159.4 458 160.4 460 161.2 462.5C164.1 471.4 163.9 480.4 167.1 489.2C169.5 496.1 172.4 502.8 176.5 508.9C180.5 515 185.4 520.3 191 525C197.4 530.4 204.2 535.1 211.9 538.3C214.4 539.4 216.7 540.3 219.3 540.7C221.3 540.9 222.8 541 224.7 540.5C226.6 540 227.7 539.4 229.1 537.9C230.5 536.5 231 535.2 231.5 533.3C233.5 524.9 228.5 517.1 228.7 508.4C228.7 500.7 231 493.6 231.6 485.9C232.3 476.6 226.9 468.1 231.8 460.2C236.4 452.8 246.1 453.6 253.2 448.6C261.9 442.4 268.1 433.4 277 427.6C283.4 423.4 291.5 423.1 296.8 417.6C298 416.4 298.6 415.6 299.1 414C299.7 412.4 299.7 411.4 299.5 409.7C299.1 406.4 297.5 404.2 295.1 401.8C292.1 398.7 288.4 396.7 284.5 394.8C279.7 392.5 274.7 390.7 269.5 389.4C260.5 387.1 251.3 387.3 242 387.8C234.3 388.2 226.9 390.1 219.7 392.5C210.8 395.4 203.5 401.4 194.8 404.8C191.7 406.1 188.7 406.7 185.4 406.6C181.1 406.3 177.3 404.7 173.7 402.4C169.4 399.7 166 396.2 163.1 392.2C159.9 387.9 157.3 383.3 155.1 378.4C153.2 373.9 151.6 369.2 150.9 364.3C149.7 357.3 150 350.6 150.4 343.6C150.6 339.3 151.4 335.2 152.5 331C154.3 324.3 156.8 317.8 159.9 311.5C162.7 305.9 166.3 300.8 169.9 295.6C177.7 284.4 187.3 274.9 197.4 265.7C200.6 262.8 203.5 260 207.3 258C209.7 256.7 210.4 255.8 212.8 257C215.1 258.2 214.8 259.3 214.9 262C215.1 267.6 212.6 272.5 213.5 278.1C213.8 280.4 214.4 282.1 215.7 284C216.9 285.7 218 286.7 219.7 287.8C221.4 288.8 223 289.4 224.9 289.8C228.9 290.6 232.4 289.8 236.2 288.4C241.5 286.4 246.1 283.3 250.6 279.8C255.3 276.1 259.3 271.8 263 267.1C266.5 262.6 269.6 257.9 272.2 252.9C276.3 244.9 276.2 235.2 282.8 229.1C284.8 227.3 286.7 226.7 289.2 226C293.7 224.7 298.1 224.5 302.7 224C310.7 223.2 318.3 224 326.2 225.1C335.1 226.2 343.8 228 352.4 230.4C363.6 233.6 374.5 237.6 385.5 241.7C398.9 246.8 411.7 253 425.2 257.8C433 260.5 440.6 263.7 448.9 264.3C453.9 264.6 458.8 264.4 463.6 263.1C467.5 262.1 470.8 260.5 473.9 257.8C476.9 255.2 478.9 252.1 480.2 248.3C481.8 243.9 482 239.4 481.3 234.8C480.9 231.5 479.9 228.5 478.3 225.6C476.5 222.4 474.2 219.8 471.5 217.3C464.1 210.5 455.7 205.2 447.6 199.4C439.2 193.4 430.8 187.5 422.7 181C416.5 176 410 171.5 405.6 164.8C403.8 162 402.7 159.4 402.2 156.1C400.6 145.5 402.2 135.5 400.1 125.1C398.2 115.9 395.8 107 392.1 98.5C389.8 93.3 387.3 88.3 384.3 83.4C381.4 78.6 378 74.1 374.5 69.6C368.6 62 361.3 55.7 354.1 49.2C347 42.8 338.9 37.6 330.5 32.8C321.5 27.8 312.2 23.6 302.4 20.3C291.9 16.8 281.4 14.3 270.5 12.6C259 10.9 248 9.2 236.4 10.4Z'/%3E%3Cpath fill='url(%23w)' d='M273.5 174.5C277.2 174.2 280.6 174.1 284.3 174.2C286.9 174.3 289.4 174.5 292 175C296.7 175.7 301.1 176.8 305.6 178C309.2 179 312.6 180.2 316 181.7C318.7 182.9 321.3 184.3 323.7 186C328.7 189.4 332.8 193.6 337.7 197.1C341.2 199.6 344.9 201.7 348.7 203.8C358.1 208.8 367.7 213.1 377.3 217.7C387.2 222.5 397.3 226.5 407.1 231.4C412.8 234.2 424.4 235 418.9 238.2C414.9 240.6 413.8 237 409.4 235.5C394.9 230.3 381 224 366.4 219.3C356.8 216.2 347.2 213.5 337.3 211.8C331.4 210.8 325.7 210.3 319.7 210.1C313.4 209.8 307.3 209.7 301 209.9C291.7 210.2 282.7 211.5 273.6 213.4C267.7 214.6 261.9 216.2 256.2 218C250.1 219.9 244.2 222 238.3 224.4C233.4 226.4 228.5 228.4 223.7 230.8C218.1 233.7 212.6 236.8 207.3 240.3C196.5 247.5 186.6 255.4 177.3 264.5C172.5 269.1 168.4 274.1 164.2 279.3C161.1 283.2 158.4 287.1 155.6 291.2C153.4 294.2 151.5 297.1 149.8 300.3C146.5 306.5 143.2 312.5 140.7 319C139.3 322.4 138.3 325.9 137.6 329.5C136.8 333.1 136.4 336.6 136.3 340.2C136 347.6 135.8 354.6 136.2 361.9C136.4 364.9 136.8 367.7 137.4 370.7C138.7 375.9 140.3 380.8 142.4 385.7C144.8 391.2 148.3 395.1 150.9 400.5C151.9 402.7 153.3 402.4 151.4 403.8C149.4 405.1 149.8 403.9 147.7 402.7C145.4 401.4 143.7 400.1 141.7 398.3C137.7 394.8 134.7 390.6 131.7 386.2C128.1 380.9 125.2 375.3 122.6 369.6C120 363.8 117.8 357.8 116.2 351.7C114.5 345.3 113.1 338.8 112.2 332.2C111.8 329.3 111.6 326.4 111.8 323.4C112.1 316.4 113.7 309.8 115.2 303C116.6 296.8 117.2 290.6 120.2 285C121 283.6 121.7 282.6 122.9 281.5C124.1 280.4 125.2 279.9 126.7 279.3C133.2 276.6 140 276.9 146.7 274.8C152.1 273.1 157.3 270.8 162.2 268.1C166.9 265.5 171.1 262.6 175.3 259.3C180 255.6 184.2 251.6 188.6 247.5C191.7 244.5 194.8 241.6 197.5 238.3C200.9 234.1 203.8 229.8 206.5 225.2C208.9 221.2 210.9 217.1 212.6 212.7C214.9 206.8 215.7 200.6 218.7 195C219.9 192.6 221.3 190.9 223.4 189.3C225.8 187.5 228.5 186.5 231.2 185.4C236.5 183.2 241.8 181.3 247.2 179.7C251.4 178.4 255.6 177.4 259.8 176.5C264.4 175.7 268.9 175 273.5 174.5Z'/%3E%3Cpath fill='none' stroke='%23123a8c' stroke-linecap='round' stroke-linejoin='round' stroke-opacity='.6' stroke-width='10.5' d='M144 193.4C143.5 195.5 142.3 201.7 141.2 205.8C140.1 210 138.8 214.1 137.2 218.2C135.7 222.3 134 226.4 132.1 230.5C130.1 234.5 128 238.6 125.7 242.6C123.3 246.6 120.8 250.6 118 254.6C115.3 258.6 110.7 264.5 109.2 266.5'/%3E%3Cpath fill='none' stroke='%23123a8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='8' d='M304.7 164.9C305.4 166.2 307.5 170.3 309.1 172.3C310.8 174.3 312 175.1 314.8 176.9C317.5 178.7 322.1 180.4 325.9 182.8C329.6 185.3 333.3 188.8 337.1 191.4C340.8 194.1 344.2 196.5 348.1 198.8C352 201 356.1 202.8 360.2 204.8C364.3 206.9 368.7 208.9 372.9 211C377 213.1 381.1 215.1 385.2 217.3C389.3 219.5 393.3 221.8 397.3 224.1C401.4 226.4 406.4 229.3 409.3 231.1C412.3 232.9 413.5 234 415 234.9C416.4 235.9 417.5 236.3 418 236.6'/%3E%3Cpath fill='%23061a44' d='M288.4 120.9C286.2 121.6 284.2 122.9 282.4 124.4C280.4 126.1 278.7 128.1 277.4 130.5C276.2 132.5 275.5 134.7 275.1 137C274.6 139.6 274.3 142.4 275.3 144.9C275.7 145.8 275.9 146.6 276.7 147.2C277.2 147.7 277.6 147.8 278.2 148.1C281.5 149.6 285.4 148.2 289 149C290.9 149.4 292.8 150.1 294.6 151C296.1 151.7 297.3 152.9 298.8 153.5C299.8 153.9 300.4 154.6 301.4 154.6C302.1 154.7 302.6 154.7 303.2 154.5C304.2 154.3 304.8 153.6 305.6 153C306.6 152.1 307.3 151 308 149.9C309.5 147.3 310.4 144.4 310.7 141.4C310.9 138.7 310.6 136.1 309.8 133.6C309 131 307.8 128.7 306.2 126.6C305.1 125.3 304 124.1 302.7 123.2C300.7 121.9 298.6 121.1 296.3 120.7C293.7 120.2 291 120.2 288.4 120.9Z'/%3E%3Ccircle fill='%23fff' cx='298' cy='133' r='6.2'/%3E%3Cpath fill='url(%23s)' d='M432 24Q438.7 59.3 474 66Q438.7 72.7 432 108Q425.3 72.7 390 66Q425.3 59.3 432 24Z'/%3E%3Ccircle fill='url(%23b)' cx='318' cy='462' r='16'/%3E%3Ccircle fill='url(%23b)' cx='366' cy='424' r='11'/%3E%3Ccircle fill='url(%23b)' cx='352' cy='506' r='8'/%3E%3C/svg%3E"); }
+}
+:root[data-theme="dark"] .opening { background: radial-gradient(1200px 600px at 50% -10%, #1a3cb8 0%, rgba(26, 60, 184, 0) 60%), #050a24; color: #7aa7ff; }
+:root[data-theme="dark"] .opening .dp-tag { background: #1f2d63; color: #eef4ff; }
+:root[data-theme="dark"] .opening-door { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-38.2 -8.6 568 568'%3E%3Cdefs%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='98.3' y1='0' x2='368.7' y2='550.9'%3E%3Cstop stop-color='%23b5e2ff'/%3E%3Cstop offset='.5' stop-color='%234f8df0'/%3E%3Cstop offset='1' stop-color='%231a4fb0'/%3E%3C/linearGradient%3E%3ClinearGradient id='w' gradientUnits='userSpaceOnUse' x1='0' y1='165.3' x2='491.7' y2='550.9'%3E%3Cstop stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23b9dcff'/%3E%3C/linearGradient%3E%3ClinearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='491.7' y2='275.4'%3E%3Cstop stop-color='%23ffffff'/%3E%3Cstop offset='.5' stop-color='%23bfe6ff'/%3E%3Cstop offset='1' stop-color='%238fd1ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23b)' d='M236.4 10.4C225.5 11.5 215.1 12.1 204.2 14C189.1 16.6 175.1 23.7 159.8 23.9C156.1 23.9 152.7 23.5 149.1 22.7C136.1 19.9 123.8 15 110.6 13C99.4 11.4 88.7 11.1 77.4 12.1C68.7 12.9 60.5 14.3 52.3 17.4C48 19 43.7 20.8 39.8 23.3C37.3 24.9 35.1 26.6 33.3 29C31.2 31.6 30 34.2 29.7 37.5C29.4 40.5 29.9 43 31.3 45.6C32.6 48 34.2 49.7 36.2 51.4C40.6 55 45.9 57 50.4 60.4C52.8 62.1 54.9 64.1 56.7 66.5C59.1 69.7 60.7 73.2 61.7 77.1C62.7 80.6 63.1 84 62.8 87.7C62.4 92.7 60.8 97.2 58.5 101.7C50.3 118.1 38.9 132.5 31.3 149.1C28.1 156.1 25 163 22.3 170.2C20.5 175.2 19.1 180.3 17.7 185.5C16 192.2 14.4 199 13.2 205.9C11.8 214.1 10.6 221.9 10.1 230.2C9.5 240.9 9.6 251.3 10.1 262C10.5 268.6 11.4 274.8 12.4 281.4C13.8 290.9 16.2 300.2 19 309.4C21.8 318.6 25.3 327.6 29.2 336.4C32.3 343.5 35.8 350.2 39.7 356.8C44.1 364.2 48.9 371.4 54.2 378.3C60.5 386.5 66.9 394.3 74.2 401.6C81.2 408.7 88.9 414.8 96.9 420.8C106.5 428 116.8 434.1 127.2 440.1C137.3 445.9 149.7 447.4 157.6 456C159.4 458 160.4 460 161.2 462.5C164.1 471.4 163.9 480.4 167.1 489.2C169.5 496.1 172.4 502.8 176.5 508.9C180.5 515 185.4 520.3 191 525C197.4 530.4 204.2 535.1 211.9 538.3C214.4 539.4 216.7 540.3 219.3 540.7C221.3 540.9 222.8 541 224.7 540.5C226.6 540 227.7 539.4 229.1 537.9C230.5 536.5 231 535.2 231.5 533.3C233.5 524.9 228.5 517.1 228.7 508.4C228.7 500.7 231 493.6 231.6 485.9C232.3 476.6 226.9 468.1 231.8 460.2C236.4 452.8 246.1 453.6 253.2 448.6C261.9 442.4 268.1 433.4 277 427.6C283.4 423.4 291.5 423.1 296.8 417.6C298 416.4 298.6 415.6 299.1 414C299.7 412.4 299.7 411.4 299.5 409.7C299.1 406.4 297.5 404.2 295.1 401.8C292.1 398.7 288.4 396.7 284.5 394.8C279.7 392.5 274.7 390.7 269.5 389.4C260.5 387.1 251.3 387.3 242 387.8C234.3 388.2 226.9 390.1 219.7 392.5C210.8 395.4 203.5 401.4 194.8 404.8C191.7 406.1 188.7 406.7 185.4 406.6C181.1 406.3 177.3 404.7 173.7 402.4C169.4 399.7 166 396.2 163.1 392.2C159.9 387.9 157.3 383.3 155.1 378.4C153.2 373.9 151.6 369.2 150.9 364.3C149.7 357.3 150 350.6 150.4 343.6C150.6 339.3 151.4 335.2 152.5 331C154.3 324.3 156.8 317.8 159.9 311.5C162.7 305.9 166.3 300.8 169.9 295.6C177.7 284.4 187.3 274.9 197.4 265.7C200.6 262.8 203.5 260 207.3 258C209.7 256.7 210.4 255.8 212.8 257C215.1 258.2 214.8 259.3 214.9 262C215.1 267.6 212.6 272.5 213.5 278.1C213.8 280.4 214.4 282.1 215.7 284C216.9 285.7 218 286.7 219.7 287.8C221.4 288.8 223 289.4 224.9 289.8C228.9 290.6 232.4 289.8 236.2 288.4C241.5 286.4 246.1 283.3 250.6 279.8C255.3 276.1 259.3 271.8 263 267.1C266.5 262.6 269.6 257.9 272.2 252.9C276.3 244.9 276.2 235.2 282.8 229.1C284.8 227.3 286.7 226.7 289.2 226C293.7 224.7 298.1 224.5 302.7 224C310.7 223.2 318.3 224 326.2 225.1C335.1 226.2 343.8 228 352.4 230.4C363.6 233.6 374.5 237.6 385.5 241.7C398.9 246.8 411.7 253 425.2 257.8C433 260.5 440.6 263.7 448.9 264.3C453.9 264.6 458.8 264.4 463.6 263.1C467.5 262.1 470.8 260.5 473.9 257.8C476.9 255.2 478.9 252.1 480.2 248.3C481.8 243.9 482 239.4 481.3 234.8C480.9 231.5 479.9 228.5 478.3 225.6C476.5 222.4 474.2 219.8 471.5 217.3C464.1 210.5 455.7 205.2 447.6 199.4C439.2 193.4 430.8 187.5 422.7 181C416.5 176 410 171.5 405.6 164.8C403.8 162 402.7 159.4 402.2 156.1C400.6 145.5 402.2 135.5 400.1 125.1C398.2 115.9 395.8 107 392.1 98.5C389.8 93.3 387.3 88.3 384.3 83.4C381.4 78.6 378 74.1 374.5 69.6C368.6 62 361.3 55.7 354.1 49.2C347 42.8 338.9 37.6 330.5 32.8C321.5 27.8 312.2 23.6 302.4 20.3C291.9 16.8 281.4 14.3 270.5 12.6C259 10.9 248 9.2 236.4 10.4Z'/%3E%3Cpath fill='url(%23w)' d='M273.5 174.5C277.2 174.2 280.6 174.1 284.3 174.2C286.9 174.3 289.4 174.5 292 175C296.7 175.7 301.1 176.8 305.6 178C309.2 179 312.6 180.2 316 181.7C318.7 182.9 321.3 184.3 323.7 186C328.7 189.4 332.8 193.6 337.7 197.1C341.2 199.6 344.9 201.7 348.7 203.8C358.1 208.8 367.7 213.1 377.3 217.7C387.2 222.5 397.3 226.5 407.1 231.4C412.8 234.2 424.4 235 418.9 238.2C414.9 240.6 413.8 237 409.4 235.5C394.9 230.3 381 224 366.4 219.3C356.8 216.2 347.2 213.5 337.3 211.8C331.4 210.8 325.7 210.3 319.7 210.1C313.4 209.8 307.3 209.7 301 209.9C291.7 210.2 282.7 211.5 273.6 213.4C267.7 214.6 261.9 216.2 256.2 218C250.1 219.9 244.2 222 238.3 224.4C233.4 226.4 228.5 228.4 223.7 230.8C218.1 233.7 212.6 236.8 207.3 240.3C196.5 247.5 186.6 255.4 177.3 264.5C172.5 269.1 168.4 274.1 164.2 279.3C161.1 283.2 158.4 287.1 155.6 291.2C153.4 294.2 151.5 297.1 149.8 300.3C146.5 306.5 143.2 312.5 140.7 319C139.3 322.4 138.3 325.9 137.6 329.5C136.8 333.1 136.4 336.6 136.3 340.2C136 347.6 135.8 354.6 136.2 361.9C136.4 364.9 136.8 367.7 137.4 370.7C138.7 375.9 140.3 380.8 142.4 385.7C144.8 391.2 148.3 395.1 150.9 400.5C151.9 402.7 153.3 402.4 151.4 403.8C149.4 405.1 149.8 403.9 147.7 402.7C145.4 401.4 143.7 400.1 141.7 398.3C137.7 394.8 134.7 390.6 131.7 386.2C128.1 380.9 125.2 375.3 122.6 369.6C120 363.8 117.8 357.8 116.2 351.7C114.5 345.3 113.1 338.8 112.2 332.2C111.8 329.3 111.6 326.4 111.8 323.4C112.1 316.4 113.7 309.8 115.2 303C116.6 296.8 117.2 290.6 120.2 285C121 283.6 121.7 282.6 122.9 281.5C124.1 280.4 125.2 279.9 126.7 279.3C133.2 276.6 140 276.9 146.7 274.8C152.1 273.1 157.3 270.8 162.2 268.1C166.9 265.5 171.1 262.6 175.3 259.3C180 255.6 184.2 251.6 188.6 247.5C191.7 244.5 194.8 241.6 197.5 238.3C200.9 234.1 203.8 229.8 206.5 225.2C208.9 221.2 210.9 217.1 212.6 212.7C214.9 206.8 215.7 200.6 218.7 195C219.9 192.6 221.3 190.9 223.4 189.3C225.8 187.5 228.5 186.5 231.2 185.4C236.5 183.2 241.8 181.3 247.2 179.7C251.4 178.4 255.6 177.4 259.8 176.5C264.4 175.7 268.9 175 273.5 174.5Z'/%3E%3Cpath fill='none' stroke='%23123a8c' stroke-linecap='round' stroke-linejoin='round' stroke-opacity='.6' stroke-width='10.5' d='M144 193.4C143.5 195.5 142.3 201.7 141.2 205.8C140.1 210 138.8 214.1 137.2 218.2C135.7 222.3 134 226.4 132.1 230.5C130.1 234.5 128 238.6 125.7 242.6C123.3 246.6 120.8 250.6 118 254.6C115.3 258.6 110.7 264.5 109.2 266.5'/%3E%3Cpath fill='none' stroke='%23123a8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='8' d='M304.7 164.9C305.4 166.2 307.5 170.3 309.1 172.3C310.8 174.3 312 175.1 314.8 176.9C317.5 178.7 322.1 180.4 325.9 182.8C329.6 185.3 333.3 188.8 337.1 191.4C340.8 194.1 344.2 196.5 348.1 198.8C352 201 356.1 202.8 360.2 204.8C364.3 206.9 368.7 208.9 372.9 211C377 213.1 381.1 215.1 385.2 217.3C389.3 219.5 393.3 221.8 397.3 224.1C401.4 226.4 406.4 229.3 409.3 231.1C412.3 232.9 413.5 234 415 234.9C416.4 235.9 417.5 236.3 418 236.6'/%3E%3Cpath fill='%23061a44' d='M288.4 120.9C286.2 121.6 284.2 122.9 282.4 124.4C280.4 126.1 278.7 128.1 277.4 130.5C276.2 132.5 275.5 134.7 275.1 137C274.6 139.6 274.3 142.4 275.3 144.9C275.7 145.8 275.9 146.6 276.7 147.2C277.2 147.7 277.6 147.8 278.2 148.1C281.5 149.6 285.4 148.2 289 149C290.9 149.4 292.8 150.1 294.6 151C296.1 151.7 297.3 152.9 298.8 153.5C299.8 153.9 300.4 154.6 301.4 154.6C302.1 154.7 302.6 154.7 303.2 154.5C304.2 154.3 304.8 153.6 305.6 153C306.6 152.1 307.3 151 308 149.9C309.5 147.3 310.4 144.4 310.7 141.4C310.9 138.7 310.6 136.1 309.8 133.6C309 131 307.8 128.7 306.2 126.6C305.1 125.3 304 124.1 302.7 123.2C300.7 121.9 298.6 121.1 296.3 120.7C293.7 120.2 291 120.2 288.4 120.9Z'/%3E%3Ccircle fill='%23fff' cx='298' cy='133' r='6.2'/%3E%3Cpath fill='url(%23s)' d='M432 24Q438.7 59.3 474 66Q438.7 72.7 432 108Q425.3 72.7 390 66Q425.3 59.3 432 24Z'/%3E%3Ccircle fill='url(%23b)' cx='318' cy='462' r='16'/%3E%3Ccircle fill='url(%23b)' cx='366' cy='424' r='11'/%3E%3Ccircle fill='url(%23b)' cx='352' cy='506' r='8'/%3E%3C/svg%3E"); }
+/* a player's own logo, picked in dreamports.net's Settings: the page's head names its pictures (ui/opening-mark.js) */
+:root[data-logo] .opening-door { background-image: var(--opening-mark); }
+@media (prefers-color-scheme: dark) { :root[data-logo]:not([data-theme="light"]) .opening-door { background-image: var(--opening-mark-dark); } }
+:root[data-logo][data-theme="dark"] .opening-door { background-image: var(--opening-mark-dark); }
+
+/* the game's ROM setup: a row for each ROM the game reads, with their extras under them, then Play. It is drawn
+   like the dreamports.net launcher the game opens from, at its sizes: all in Monocraft, a pixel font nine of its
+   pixels to the em, with names and buttons at 15 px and what's said about them at 13.5 px, and 2 px pixel-art
+   frames with their corner pixels left out. Light or dark, as the launcher is. */
+/* fonts/Monocraft.woff2, here in the file itself so that it's there on the page's first frame, with no change of shape after it */
+@font-face { font-family: Monocraft; src: url(data:font/woff2;base64,d09GMgABAAAAABAsAA8AAAAAWygAAA/VAAQzMwAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbEBwgBmAAgVQIBBEICoGjVPpKATYCJAOEeAuEeAAEIAWCRAcgGyVDsyLYOABA5UOiCDYOSAPOiaJODUav2f81OZFb+av9AC4Rp4y9yiTC1bXh7LqEVoc5cLt8IPPuk0oDNMvzolTfXyIBkZgqVOBBY2ReE/ovf9/6zMyKoXpRlTXRCDx1qRx+EGIRxJuj8QPtwqS9egwryG9Vs4y07BQgpQZ9/ztwAE+R2fP49WqAEtvlHQ7wTDG3Hb/yPxxAnYqPCMKIIIwpJoSSo2M9d8x5+JxPkkQy4yn+4v0abC34jQcsF+wV2BzzJQlYBiwNNgVf74VrhUKtIg1Y+/zA9sASsPnqV/EcWAI22wODQ4QTCQfY/5pWUml0MQF454DMjENEyNzMI/XXqxrtbN9l5BBzv369QdLU1jjkwIyNckRb3IC6DmEHwux71z5tclcmi6ht1WYyk7xsNh/4CGD/Nwfo7lUCq9ZVEspTdQZQtrrG9BpLG+z3Qb2O9VIjC+JKCCLixhrNvb7t/V9Dr38y+rn77saYnkUmcl9YkaY0y4SAVADAIaT1CAHJpDIEAK4+bxJTcFk5RVUMKUqvKtF8EwjusxAH7mP+gbvF0Vw8qzT2AuKT4GfUBglwz/zkGDZnlI9FfaWHd/wCRgK4s34vYBjmLvdXjMKjbGsg9kdciBFIpYVXGqpZWqTN2qtTSle2ytVqo2y8TbbZ0262/vl3kcC4xxuN0Fwt1TYd1FllKU9VNtLG2SR2nGt/rVnMJ+9MhQnh8S5FH2pX/LPgx+zE1XLMdK8ARQqANgC4GtBvTPiAyYPMzzVvnDgdhEdmavl/K1sqZ9FjZr6YQD3VsndZ29e8L4Qet6jwXTr2BDxMgJMiXV9IAq2AUAUYezaxHGpz7GIICEmpl30s8Cv2BupFxcUytrXnPdW0d8OcW3YZK65QpKQeb/DsbKrqqWaJK8DMynQOAW1NZPjBy2qi5lMaPF2B3ecBTgmtvZLxRzGyN5WQ/JR739+zpxB3w20DPtdiW6gqQJ+ryuoVT2s98MpmMpVO8SN1r6/i9rMZDAUQx4FsAtByy30heqes7NUnI8ZRpBZhQhomKBK17pTgSCwqWmw5lCZuE4F3iKCvQYvxZE8bjGkNRV7MBPPg0lI4NRIJ8mrEvpm0suoZ9yy16l4fMDbhrmHXgxQZsJl5rYFqXoZGmzoC7BWMrFB9itpQ5twfafyikRrL1EHR+XZjO9oiASovpkbC5UmxHgyNHzm7V2InlJ7aZ4raobNbAl4v6qRRigpsWwxzvzdEDpZysTwMd7FysmtCl4W7fn76VD7c7kYkCz6hsKGwOmOe0XGJRC1TQNty7eRxHh23W3aw7ZFNTDKtb8YeOZaZs7eWK/Chkelw6O/hJjO7Dh9Cm7lVnxFnCNXQOBgU7noA8BREnlhYM4jVyf/cYTIiDcWsUCSAQvUXahzBKzMMN3vhrLiWRDYVm8l8LZx9r4w0pgRpLr1RJqNPI3m3IzVrUtgphDCGJMWb4LiBrNkUqdnroawuPeVz1+uAkUgCGVeDUr00jrGyg/Cu1/fi7gsRSDONLJNGnoWMQlKaWaF23GGAoU4z0kSwjKMmA/jNdxle0J8DzwrbfPPDQAbCexs8b15BXRJGJ6xAmBC3uYduxs2O/cmdpmLwIsiKxC6DIpzYAkOQ8qED/jhvFWlxYkBp54j5uGPZ0gx9gWkCbGywj8O+L1luWZDD5GdznKO0BOgZgkkJmEPnjqGLW1hiWJeEwYVv5gs5mDe3acFA6Gyc5W5w2pYkTmSMK3hLaResIXJW//uIRCtxKWTY4k4haXsByTGUhQhBc5YFGUgKcN2swp0WpKGho8QWIEQ4WeiO7F1fIBVYIT6EhWgVb9o2wo5+SjNyAHG/9zrcL0t81OnWGLJPnmHgfZiCHGuOfbCgJAgRC1CIlB9d4XbIpVIPrVZpurhzPUzNkM91m+12rYM4fR92Y+FfTObLuv8pkpKe5aFGbBKuwyOyiKYWeSOD6xp3rLHfiwytduamm49n2S1CmhhAeWCZu9O3JJZy1hoS12u5eB7VUF8RrLeh9LCW16OHXVn4RIX5sp7658AUTnU47XS2qc9vBeUIq6Rsoa+IaRc2KypyghwBx+8PFXYdvWv8LhEUKlXT9pjAWZ1FqbJvCssUct4FXV8xsiJGl1eLbhqWs/glWiliXmERyjTyCemCXovAJwSmEOhU9v3qU856f7kkevn6XjoydMTWKbQoCno07RDJQXNsmnOLnZnrPDOgyoRCe9jxoZvn0MwU9EhUdfu7r0KiZ1gxf7el9PmcPZu5dfATvlrbkCT0aYYurGZtHFFk13uj6X45FRPv1WvVjJKwtbE6VrWVZ/dhL6xESSJIxgrQSC6yIHV6niGtfyIsHU4wVo8haEdURn2hYVRwUyOGBVFQiIpGlByiQqq+ld0OYj54sUPhIVgjjAnUYca6QFhGBXW9GJ2uuRJsikte852Fz036eVj4XqXBlVBi0AoKBib3bvbTAFvomm6UBwWJpo/LJCqe24jGwKWhSYiW0uXQU8DNEQ3Hw6ueafzfTF5nSzp0i7hL+fOW0RrkVCwEpYEOT3p95x8Wp2CNON7CzZsXFSdyqIhhmGP3MRJRNoFx8SpM4FwqB8wIyxapKpWcYzjSMxUb6ahfRy0GNyZupVWNsOicwpXhy8MCUCxse/JFvjLq1gZMtKQhdf+P7OmQ9ZxTuo8xxnx4yWtTLMbZ10dw5iS0g+e41x9+G33LlE3SY2WwSAaT4VzRBCMTNpzyWLkmhAlGUpu9unb8927WR8FKrKbNWJVODY7SV9USs3yu+XNXo6ikCApx1Gxe9BjW9Yvr6GjlPeE/83h8cMhNYUuE4RmDTdylwkWOeRRUngLASMhNk7z4X8gmXBC5SjSKrqVwa0gSM6YnAa6X5LzgtXbGzecb/+qW5O6IZgZTTyFmd1wg0TmF7wxPLEAgYcxok1jQAKLVG4Z45SLwDVWupjB31Z8xqG8bcigIK+easERQnym+KEKcGVVIRrScbksiBl7j+zx6z8X8qvABS1/9rR01I/7M9oNI54vdq61F7p0hYa93f5srhV0dw1po79McF2tY5GPx8Azdd8sl/KZ9nPvF9KymOu64/wqoCCvZ3KRWcGZr5mxqac1xSxTl2SM9g5P6IAfaOs5rZsC9ldkoyeNo4Tcbq3XnR3a4DI4pTHi448gNIpzC1f4VE2rBUxOFNiCUInQA0ipxgEf2JPzffenWACSbY4Uwko2LZd8y0kwFDT1BBrdJGnEoND2gBaCrGsy8B9V+fk6933FK5Mff7WyO749j4I8zNoRf736FlXL8+U8mKjlrlBHhsVmPkWKvBREiGXAIyAk0+73jZOI6rWrWF7ft1r32JHSZuGjqstHRyKsxqXg8TcIETgYabu1zAA16ZfGZcSQ8G4KTbNrkSp30OrN6OU27cs2/lDViZq6hJg7anrHk+Vg9dfQZeDy92FKkQbRFlQl/o0JY6BAgkqG/4dTBTp6JWrvO7lsOR/TU7NPPAj8k12z4gIFjpifRJw1ZErsFPGv6v3YvwYA8b46eTaOuldJ5qUbUJx4p5r8Xw/E7t5WdQHQKJeNCFDm7ZK6Zetj5B2vWxD+o5jjM7xLgn+k0Dn1q4hQYq4aZs0cf/dfv608yclqlpB5wvFcVHn0COnGIfVUmvs2jW+6dRlh8Y1xUg+OLnanYh0VrjvRNOhP4JQPr/yUOiKpi5VkzWM6JLK+oyzVVTz89de6qS0ecm96/xxnfgIMYtDrgwb7LXRtgsnLlZk2niBME8PrjFbnf3sOoI+ZhpdT+Dk8EY6fgczvsQjazXczE5YfJ32tNyrmecHeapa6TwPIMsor+RIOr5uZYYer3Y7cdu7X382a9deZ/j2pkCJocTnh3XrATc7rSo9Ej3CamPS2RvvtbHu69v6N0yvRnp3mEXZDkg1lao2nK0G/ZXYjKI7qtpvDB9xcKz7EXzctX9/V+VtJ0eNOjNwG3LkVfvHuT2bouOGk/HlYhlQW9Dxs937cb6KO+mqVIoyFM/0eBo7cr0ZVjtD1IYVEXZQUKZEL6EVbsopuYaeywz+qigj3pssFIV8SPNUmZ3gAhaUUPXG/bx6E5Wj6nI1HGpUySVA4/FIJFuoKxvKypaH1OXRe1Fw8HNs4K0NjCbPB8HO/3ZUq6YpXeBNzKxAaDPkmykgAimWo7Jdcwt7ZPcWquzqqE/RPbqnRFLHShRL/01eBqu/zS9fbXwaJf6eDTjgSbzc5uKdwB9Ygcen+3apTq2CVbolxMAq1KVodREi7zrFblA5935hUdwHurI+V/N39aEjvaQBr6INs/5lcuAD9djtSPhmqYLV5s2GCPE5+zzmjKNPWLi4pWmaGSrelX1ZrjV1YynCKefVkteEXjYRYzSixoEi9GQFSncBqS80/6IktB/9JI0bJ3/1aZ1e8/oXVF05vb/teV7Umtfw4xgJ+SQNgGPulG9Q7LyOvsCrAIFcDKCjLHrElMMrKjEY/dfztWZF9VgUcukA6oH431vHIz+dEnvmf0ImHayLMRL/B+nEBtx9AHdC+w+677S9yKQJ9PCLMLdBQQW8dFjXvl2DYulGuA+R4G9/fa+5Wz3aQFmYimY4i0Y616fvZcDvdfRxZPYOKMurFN+BrP2fPc34t+jjluYCMv4u3GZcSnhUgkkq2hwt305zWmAaH/ykr6tKVGTS7+9PK+EeFi+YiPW7SnZ1GZrPrEltp6W/RrnaNC+FGhVeXyHjgO553ZjvNsHiYZpSbByUqmM4YSXEf2qsLxpNvBO2eUPbeFc11sP5SzSm+uXDO9EnWKthq9SgN7rRfPlmsHUvvjuZeSXk4NItSHy5f9P6uL+aCQytcDGMrWm0Xc71HxI+Mj4LuchbHupQBWddqnByM/qj4alFN8LPzzLL6m1LG7NtCvowqWO1SKwijz3lcv5WaY4OPz3a+8WsPT0blgSwTmPtWH78JN9ZnwmMGP+S/nzo6Wx5hdf6F9jNn8Efcmc8PmzzWW1dIBRSgL/6K6CqFZfvVwlni8kRfTg/p0X1N/hDTMQ6MFfI34tmHFirNdu33jfzqsBRg8P/lS8Wk5EA07T3gHJOIQw+qZwJ9KuvsMzz6fB9kcgsecCfyirtxtraOuqWOaw7ivDpaA1iu83/hRbOwA1u5X/5r0lyOtSzQ1cWqwcuP/gj+qjo0PMprMTlHmE1PUJUYvU3qeNuifJO72Ch3cyuJRCZzHo6CtKIDdSTGCgpOOITSd9OxnYGbQn4xjDN9tPNRzH1lUkC2ursTYSzqVLemUsLBakkcVO7uMStaz5O/mkk8VeVSTwWIyKaWYJXizD2Uy6yWHKM1KSskEH5ZODlU1c9y4Zy7VFJFet7uZrSpKKsiFv52xnMUsxViPYRFqWc0ilhmZRTlfWrKK07i2CirJd9ZirGQxlPTwa4vutxwQ) format("woff2"); }
+
+.picker:has(> .setup), .assets {
+  /* light: white paper, dark blue ink, light blue fills, a deeper blue for what's light blue on paper */
+  --page: #fff; --glow: radial-gradient(900px 560px at 50% 0, #ddefff, rgba(221, 239, 255, 0) 80%);
+  --paper: #fff; --hover: #eef7ff; --line: #cde3f8; --sky: #8fd1ff; --blue: #1a4fb0;
+  --ink: #0a1738; --dim: rgba(10, 23, 56, .68); --faint: rgba(10, 23, 56, .46);
+  --act: #1a4fb0; --on-act: #fff; --on-act-key: rgba(255, 255, 255, .16); --on-act-key-ink: rgba(255, 255, 255, .8);
+  --veil: rgba(255, 255, 255, .82);
+  background: var(--glow), var(--page); color-scheme: light;
+}
+/* dark: the launcher's night blue, when the device is dark and the launcher wasn't set to light, or it was set to dark */
+@media (prefers-color-scheme: dark) {
+  .picker:not([data-theme="light"]):has(> .setup), .assets:not([data-theme="light"]) {
+    --page: #050a24; --glow: radial-gradient(1200px 600px at 50% -10%, #1a3cb8 0%, rgba(26, 60, 184, 0) 60%);
+    --paper: #0b1240; --hover: #121b4f; --line: #263a66; --blue: #7aa7ff;
+    --ink: #eef4ff; --dim: #a9b8e6; --faint: rgba(169, 184, 230, .6);
+    --act: #bfe6ff; --on-act: #0a1738; --on-act-key: rgba(10, 23, 56, .12); --on-act-key-ink: rgba(10, 23, 56, .72);
+    --veil: rgba(5, 10, 36, .82);
+    color-scheme: dark;
+  }
+}
+.picker[data-theme="dark"]:has(> .setup), .assets[data-theme="dark"] {
+  --page: #050a24; --glow: radial-gradient(1200px 600px at 50% -10%, #1a3cb8 0%, rgba(26, 60, 184, 0) 60%);
+  --paper: #0b1240; --hover: #121b4f; --line: #263a66; --blue: #7aa7ff;
+  --ink: #eef4ff; --dim: #a9b8e6; --faint: rgba(169, 184, 230, .6);
+  --act: #bfe6ff; --on-act: #0a1738; --on-act-key: rgba(10, 23, 56, .12); --on-act-key-ink: rgba(10, 23, 56, .72);
+  --veil: rgba(5, 10, 36, .82);
+  color-scheme: dark;
+}
+.setup {
+  --frame: var(--line);
+  font: 15px/20px Monocraft, var(--mono); color: var(--ink);
+  font-variant-ligatures: none; font-synthesis: none; -webkit-font-smoothing: antialiased;
+}
+/* it fills the screen, as the launcher's views do: the top bar stays, and what doesn't fit under it scrolls there, with
+   no scroll bar and with soft edges where it's cut off. At rest nothing reaches those edges. */
+.picker > .setup, .assets-page { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.setup-scroll {
+  flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; align-content: safe center;
+  padding-inline: max(18px, env(safe-area-inset-left)) max(18px, env(safe-area-inset-right));
+  overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; scroll-padding-block: 8px 36px;
+  -webkit-mask-image: linear-gradient(transparent, #000 8px, #000 calc(100% - 36px), transparent);
+  mask-image: linear-gradient(transparent, #000 8px, #000 calc(100% - 36px), transparent);
+}
+.setup-scroll::-webkit-scrollbar { display: none; }
+.setup-page { width: min(560px, 100%); padding-block: 8px 72px; }
+.setup :focus-visible, .pad-nav .pad-at { outline: 2px solid var(--blue); outline-offset: 4px; }
+/* a pixel frame, 2 px with the corner pixels left out */
+.setup :is(.setup-back, .roms, .rom-add, .play, kbd, .switch-track, .remember input, .setup-drag > div, .pad),
+.assets :is(.setup-back, .assets-part, .switch-track, .assets-choose) {
+  box-shadow: 0 -2px var(--frame), 0 2px var(--frame), -2px 0 var(--frame), 2px 0 var(--frame);
+}
+/* a key, as the launcher draws one; touch screens have none to press, so it shows only with a mouse */
+.setup kbd {
+  --frame: var(--line); display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px;
+  margin: 2px; padding: 0 4px; border: 0; border-radius: 0; background: var(--line);
+  font: 11px/1 Monocraft, var(--mono); color: var(--ink);
+}
+
+.setup-head { margin: 0 0 22px; }
+/* the top bar, in the page's top corners: the way back to dreamports.net, an arrow, and the controller badge */
+.setup-bar {
+  flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 56px;
+  padding: 0 max(18px, env(safe-area-inset-right)) 0 max(18px, env(safe-area-inset-left));
+}
+.setup-back { display: grid; place-items: center; width: 34px; height: 34px; margin: 2px; padding: 0; border: 0; background: var(--paper); color: var(--ink); cursor: pointer; }
+.setup-back:hover { background: var(--hover); }
+.setup-back:active { transform: translateY(2px); }
+.setup-back svg { width: 14px; height: 14px; }
+.setup-brand { margin: 0; color: var(--blue); font-size: 13.5px; line-height: 20px; }
+.dp-tag { display: inline-block; padding: 0 5px; background: var(--line); color: var(--ink); font-size: 11px; line-height: 16px; vertical-align: 1px; white-space: nowrap; }
+.setup h1, .assets h1 { margin: 4px 0 0; font-size: 24px; font-weight: normal; line-height: 32px; }
+.setup-intro { margin: 8px 0 0; color: var(--dim); }
+
+/* the controller badge: in with a note while an Xbox controller is connected; off, with a note, then out once
+   none is */
+.pad {
+  --frame: var(--blue); display: flex; align-items: center; height: 30px; margin: 2px; padding: 0 6px; background: var(--paper);
+  color: var(--blue); font-size: 13.5px; line-height: 20px; white-space: nowrap;
+  transition: opacity .25s, transform .3s cubic-bezier(.3, 1.5, .5, 1), color .3s;
+}
+.pad[data-state="gone"] { transform-origin: right; visibility: hidden; opacity: 0; transform: scale(.5); transition: opacity .25s, transform .25s ease-in, visibility 0s .25s; }
+.pad[data-state="off"] { --frame: var(--line); color: var(--faint); }
+/* Pixelarticons' gamepad, drawn in the badge's colour: its 24-unit grid at 24 px, strokes of 2 px like the font's pixels */
+.pad-icon { display: block; width: 24px; height: 24px; background: currentColor; mask: url(icons/gamepad.svg) center / 24px 24px no-repeat; }
+.pad[data-state="on"] .pad-icon { animation: pad-on .45s ease-out; }
+.pad-note { max-width: 0; overflow: hidden; transition: max-width .35s ease, margin .35s ease; }
+.pad.noting .pad-note { max-width: 15em; margin-left: 8px; }
+
+.roms { margin: 0 2px; padding: 0; list-style: none; background: var(--paper); }
+.rom + .rom { border-top: 2px solid var(--line); }
+.rom.over { background: var(--hover); }
+.rom-main { position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 0 12px; padding: 14px 16px; }
+.rom[data-state="ready"] .rom-main { padding-right: 10px; }
+/* the mark shows once the ROM is in, so a row with none starts with its name */
+.rom[data-state="empty"] .rom-main { grid-template-columns: minmax(0, 1fr) auto; cursor: pointer; }
+.rom[data-state="empty"] .rom-mark { display: none; }
+.rom[data-state="empty"] .rom-main:hover { background: var(--hover); }
+.rom-mark { align-self: start; display: grid; margin-top: 3px; color: var(--blue); }
+.rom-mark svg { display: none; grid-area: 1 / 1; width: 14px; height: 14px; }
+.rom[data-state="reading"] .mark-reading, .rom[data-state="ready"] .mark-ready { display: block; }
+.rom[data-state="reading"] .rom-mark { animation: setup-blink .6s steps(2, jump-none) infinite alternate; }
+.rom-text { min-width: 0; }
+.rom h2 { margin: 0; font-size: inherit; font-weight: normal; line-height: inherit; text-wrap: balance; }
+.rom-detail { margin: 4px 0 0; color: var(--dim); font-size: 13.5px; line-height: 20px; overflow-wrap: anywhere; }
+.rom-detail:empty { display: none; }
+
+/* add, with a plus: filled for the ROM the game needs, framed for the optional ones */
+.rom-add, .rom-actions { display: none; }
+.rom[data-state="empty"] .rom-add { display: flex; }
+.rom[data-state="ready"] .rom-actions { display: flex; align-items: center; gap: 2px; }
+.rom-add {
+  --frame: var(--line); align-items: center; gap: 8px; height: 34px; margin: 2px; padding: 0 16px 0 14px; border: 0;
+  background: none; cursor: pointer; color: var(--ink); font-size: 13.5px;
+}
+.rom-add svg { width: 10px; height: 10px; }
+.rom-add:hover, .rom-main:hover .rom-add { --frame: var(--sky); background: var(--hover); }
+.rom-add.needed { --frame: var(--sky); background: var(--sky); color: #0a1738; }
+.rom-add.needed:hover, .rom-main:hover .rom-add.needed { --frame: var(--act); background: var(--act); color: var(--on-act); }
+.rom-add:active { transform: translateY(2px); }
+.rom-actions button { height: 34px; padding: 0 8px; border: 0; background: none; cursor: pointer; color: var(--dim); font-size: 13.5px; }
+.rom-actions button:hover { background: var(--hover); color: var(--ink); }
+.rom-actions .rom-remove { width: 34px; padding: 0; font-size: 15px; }
+.setup .rom-actions button:is(:focus-visible, .pad-at) { outline-offset: 0; }
+.rom-bar { display: none; position: absolute; inset: auto 0 0; height: 2px; overflow: hidden; }
+.rom[data-state="reading"] .rom-bar { display: block; }
+.rom-bar span { position: absolute; inset: 0 auto 0 -30%; width: 30%; background: var(--blue); animation: setup-sweep 1.2s steps(24) infinite; }
+
+.rom-status { margin: -6px 0 0; padding: 0 16px 12px 42px; font-size: 13.5px; line-height: 20px; color: var(--dim); }
+.rom-status:empty { display: none; }
+.rom[data-state="empty"] .rom-status { padding-left: 16px; }
+.rom-status[data-kind="error"] { color: var(--ink); }
+.rom-status[data-kind="error"]::before { content: "! "; color: var(--blue); }
+
+/* an extra: its name and what it does, its key, and the launcher's switch. They show once their ROM is in. */
+.rom[data-state="empty"] .rom-extras { display: none; }
+.rom-extras { display: grid; margin: -6px 0 0; padding: 0 16px 12px 42px; list-style: none; }
+.switch { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 10px; padding: 6px 0; cursor: pointer; }
+.switch-text { display: grid; }
+.switch-label { font-size: 13.5px; line-height: 20px; }
+.switch-hint { color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.switch-track { position: relative; width: 32px; height: 16px; margin: 2px; background: var(--line); }
+.switch-track span { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background: var(--faint); transition: transform .12s steps(4); }
+.switch input:checked + .switch-track { --frame: var(--sky); background: var(--sky); }
+.switch input:checked + .switch-track span { transform: translateX(16px); background: #0a1738; }
+.switch input:focus-visible + .switch-track, .pad-nav .switch .pad-at + .switch-track { outline: 2px solid var(--blue); outline-offset: 4px; }
+.switch:has(input:disabled) { cursor: default; opacity: .4; }
+.switch:has(input:not(:disabled)):hover .switch-track span { background: var(--ink); }
+.switch:has(input:not(:disabled)):hover input:checked + .switch-track span { background: #0a1738; }
+
+/* play: the launcher's button, filled once every ROM the game needs is in, with a line under it while it isn't */
+.setup-play { margin: 22px 2px 0; }
+.play {
+  --frame: var(--sky); display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 48px;
+  padding: 0 22px; border: 0; background: var(--sky); cursor: pointer; color: #0a1738; font-size: 15px; line-height: 1;
+}
+.play svg { width: 8px; height: 14px; }
+.play kbd { --frame: transparent; background: rgba(10, 23, 56, .1); color: rgba(10, 23, 56, .72); }
+.play:hover:not(:disabled) { --frame: var(--act); background: var(--act); color: var(--on-act); }
+.play:hover:not(:disabled) kbd { background: var(--on-act-key); color: var(--on-act-key-ink); }
+.play:active:not(:disabled) { transform: translateY(2px); }
+.play:disabled { --frame: var(--line); background: var(--hover); cursor: not-allowed; color: var(--faint); }
+.play:disabled kbd { display: none; }
+.play-note { margin: 10px 0 0; color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.play-note:empty { margin: 0; }
+.play-note[data-kind="error"] { color: var(--ink); }
+
+.setup-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 18px 2px 0;
+  color: var(--dim); font-size: 13.5px; line-height: 20px;
+}
+.setup .remember { display: flex; align-items: center; gap: 12px; margin: 0; color: inherit; font-size: inherit; cursor: pointer; }
+.setup .remember input { --frame: var(--faint); flex: none; appearance: none; width: 14px; height: 14px; margin: 2px; background: var(--paper); cursor: pointer; }
+.setup .remember input:checked {
+  --frame: var(--blue); background: var(--blue);
+  box-shadow: inset 0 0 0 3px var(--paper), 0 -2px var(--frame), 0 2px var(--frame), -2px 0 var(--frame), 2px 0 var(--frame);
+}
+.setup .link { color: var(--blue); font: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.setup .link:hover { color: var(--ink); }
+
+.setup-drag {
+  position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 16px; pointer-events: none;
+  background: var(--veil); opacity: 0; transition: opacity .15s;
+}
+.setup-drag > div { --frame: var(--blue); display: grid; justify-items: center; gap: 14px; padding: 28px 36px; background: var(--paper); text-align: center; }
+.setup-drag svg { width: 28px; height: 28px; color: var(--blue); }
+.setup-drag small { color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.dragging .setup-drag { opacity: 1; }
+
+@keyframes setup-sweep { to { left: 100%; } }
+@keyframes setup-blink { to { opacity: .25; } }
+@keyframes pad-on { 0% { transform: scale(.7); } 60% { transform: scale(1.15); } }
+@media (min-width: 760px) {
+  .setup-page { padding-block: 16px 80px; }
+}
+@media (max-width: 520px) {
+  .rom-main { padding: 12px; gap: 0 10px; }
+  .rom[data-state="ready"] .rom-main { padding-right: 6px; }
+  .rom-actions button { padding-inline: 6px; }
+  .rom-status, .rom-extras { padding-left: 36px; padding-right: 12px; }
+  .rom[data-state="empty"] .rom-status { padding-left: 12px; }
+}
+@media (pointer: coarse) {
+  .setup kbd, .switch-keys { display: none; }
+  .switch { grid-template-columns: minmax(0, 1fr) auto; }
+  .setup-back { width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rom[data-state] .rom-mark, .rom-bar span { animation: none; }
+  .setup-drag, .switch-track span, .pad, .pad-note { transition: none; }
+  .pad[data-state="on"] .pad-icon { animation: none; }
+}
+
+/* game */
+.stage { position: fixed; inset: 0; display: grid; place-items: center; background: #000; }
+.stage[hidden] { display: none; }
+#screen { display: block; image-rendering: pixelated; image-rendering: crisp-edges; outline: none; }
+#screen[hidden] { display: none; }
+.screens { display: grid; gap: 8px; justify-content: center; align-content: center; }
+.screens[hidden] { display: none; }
+.screens .screen { display: block; image-rendering: pixelated; image-rendering: crisp-edges; outline: none; }
+/* the game's own buttons: the settings button in the top-left corner, drawn like dreamports.net (Monocraft and 2 px
+   pixel frames with the corner pixels left out), and on touch screens an Xbox controller's around the game */
+.stage {
+  --t-frame: #4a5d94; --t-fill: #0b1240; --t-ink: #eef4ff; --t-held: #8fd1ff; --t-held-ink: #0a1738;
+  --pad: clamp(104px, 32vmin, 148px); --edge: 14px;
+  /* the page draws under the iPhone's notch, rounded corners and home bar (the viewport tag's viewport-fit=cover), so
+     the game's black reaches every side instead of a colour iOS picks; the buttons keep clear of them, as far from the
+     notch's side as from a plain edge */
+  --edge-top: max(var(--edge), env(safe-area-inset-top, 0px));
+  --edge-bottom: max(var(--edge), env(safe-area-inset-bottom, 0px));
+  --edge-left: calc(var(--edge) + env(safe-area-inset-left, 0px));
+  --edge-right: calc(var(--edge) + env(safe-area-inset-right, 0px));
+  --t-opacity: .6;   /* the settings' Button opacity sets it */
+}
+.settings-open {
+  position: fixed; z-index: 3; top: var(--edge-top); left: var(--edge-left); display: grid; place-items: center;
+  width: 44px; height: 44px; margin: 2px; padding: 0; border: 0; background: var(--t-fill); color: var(--t-ink);
+  opacity: calc(var(--t-opacity) * .7); touch-action: none; cursor: pointer;
+  box-shadow: 0 -2px var(--t-frame), 0 2px var(--t-frame), -2px 0 var(--t-frame), 2px 0 var(--t-frame);
+  transition: opacity .2s, transform .3s ease;
+}
+.settings-open svg { width: 18px; height: 18px; fill: currentColor; }
+@media (hover: hover) {
+  .settings-open:hover { opacity: 1; }
+}
+
+/* the touch layout, on phones and tablets: an Xbox controller's buttons around the game, drawn like the settings
+   button and see-through as the settings say, until a real controller is connected, and the Opacity slider for
+   them in the settings. Held sideways, the game fills the height, with the d-pad and A, B, X
+   and Y in the bottom corners, the shoulder buttons above them, Select under the settings button and Start at the
+   top right; held upright, the game is in the middle of what's between the settings button and the buttons below
+   it. Buttons that cover part of the game are more see-through. */
+.touch { display: none; }
+@media (pointer: coarse) {
+  .stage, .stage * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .stage .pill { box-shadow: 0 -2px var(--t-frame), 0 2px var(--t-frame), -2px 0 var(--t-frame), 2px 0 var(--t-frame); }
+  .settings-open { cursor: auto; }
+  /* the buttons: each frame and fill drawn solid, then all of it see-through as the settings say, so the frames
+     don't show through the fills */
+  .touch { position: fixed; inset: 0; display: block; color: var(--t-ink); font: 13.5px/1 Monocraft, var(--mono); pointer-events: none; }
+  .touch[hidden], .stage.multi .touch { display: none; }
+  .touch > * { position: absolute; opacity: var(--t-opacity); }
+  .touch > .covers { opacity: calc(var(--t-opacity) * .65); }
+  .touch :is(.dpad, button) { pointer-events: auto; touch-action: none; }
+  .touch button { margin: 0; padding: 0; border: 0; color: inherit; font: inherit; }
+  .touch button.held { background: var(--t-held); color: var(--t-held-ink); }
+
+  /* the d-pad: one cross, its frame and its fill, with the arm or arms held lit */
+  .dpad {
+    left: var(--edge-left); bottom: var(--edge-bottom); isolation: isolate; width: var(--pad); height: var(--pad);
+    display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  }
+  .dpad::before, .dpad::after {
+    content: ""; position: absolute; z-index: -1;
+    clip-path: polygon(33.4% 0, 66.6% 0, 66.6% 33.4%, 100% 33.4%, 100% 66.6%, 66.6% 66.6%, 66.6% 100%, 33.4% 100%, 33.4% 66.6%, 0 66.6%, 0 33.4%, 33.4% 33.4%);
+  }
+  .dpad::before { inset: 0; background: var(--t-frame); }
+  .dpad::after { inset: 2px; background: var(--t-fill); }
+  .arm { display: grid; place-items: center; margin: 4px; }
+  .arm svg { width: 15px; height: 9px; fill: currentColor; }
+  .arm[data-dir="up"] { grid-area: 1 / 2; }
+  .arm[data-dir="right"] { grid-area: 2 / 3; }
+  .arm[data-dir="down"] { grid-area: 3 / 2; }
+  .arm[data-dir="left"] { grid-area: 2 / 1; }
+  .arm[data-dir="right"] svg { transform: rotate(90deg); }
+  .arm[data-dir="down"] svg { transform: rotate(180deg); }
+  .arm[data-dir="left"] svg { transform: rotate(-90deg); }
+  .dpad:is([data-held~="up"]) [data-dir="up"], .dpad:is([data-held~="right"]) [data-dir="right"],
+  .dpad:is([data-held~="down"]) [data-dir="down"], .dpad:is([data-held~="left"]) [data-dir="left"] {
+    background: var(--t-held); color: var(--t-held-ink);
+  }
+
+  /* A, B, X and Y in the Xbox controller's diamond, as pixel circles, their letters in its colours */
+  .face { right: var(--edge-right); bottom: var(--edge-bottom); width: var(--pad); height: var(--pad); }
+  .round {
+    --circle: polygon(25% 0, 75% 0, 75% 12.5%, 87.5% 12.5%, 87.5% 25%, 100% 25%, 100% 75%, 87.5% 75%, 87.5% 87.5%, 75% 87.5%,
+      75% 100%, 25% 100%, 25% 87.5%, 12.5% 87.5%, 12.5% 75%, 0 75%, 0 25%, 12.5% 25%, 12.5% 12.5%, 25% 12.5%);
+    position: absolute; isolation: isolate; width: 38%; aspect-ratio: 1;
+    clip-path: var(--circle);
+  }
+  .touch .round { background: var(--t-frame); font-size: 18px; }
+  .round::before { content: ""; position: absolute; z-index: -1; inset: 3px; clip-path: var(--circle); background: var(--t-fill); }
+  .round.held::before { background: var(--t-held); }
+  .round.y { left: 31%; top: 0; color: #ffd65a; }
+  .round.x { left: 0; top: 31%; color: #74a9ff; }
+  .round.b { right: 0; top: 31%; color: #ff7a6b; }
+  .round.a { left: 31%; bottom: 0; color: #7fdc6a; }
+
+  /* the shoulder buttons above the d-pad and the diamond, the triggers outside */
+  .touch .pill { height: 30px; min-width: 64px; margin: 2px; padding: 0 10px; }
+  .touch .pill:not(.held) { background: var(--t-fill); }
+  .shoulders { bottom: calc(var(--edge-bottom) + var(--pad) + 16px); width: var(--pad); display: flex; gap: 8px; }
+  .shoulders.left { left: var(--edge-left); }
+  .shoulders.right { right: var(--edge-right); }
+  .touch .shoulders .pill { flex: 1; min-width: 0; padding: 0; }
+  .touch :is(.select, .start) { width: 72px; padding: 0; }
+  .touch .select { top: calc(var(--edge-top) + 60px); left: var(--edge-left); }
+  .touch .start { top: var(--edge-top); right: var(--edge-right); }
+}
+@media (pointer: coarse) and (orientation: portrait) {
+  .stage { padding-top: calc(var(--edge-top) + 60px); }
+  .touch :is(.select, .start) { top: auto; right: auto; left: 50%; transform: translateX(-50%); }
+  .touch .select { bottom: calc(var(--edge-bottom) + var(--pad) / 2 + 6px); }
+  .touch .start { bottom: calc(var(--edge-bottom) + var(--pad) / 2 - 40px); }
+}
+
+/* the asset viewer (ui/assets-view.js), drawn like the start screen: each part on the launcher's paper in a
+   pixel frame, the game's pictures on its sky blue, the wide ones in boxes that scroll */
+.assets[hidden] { display: none; }
+.assets-page {
+  --frame: var(--line);
+  font: 15px/20px Monocraft, var(--mono); color: var(--ink);
+  font-variant-ligatures: none; font-synthesis: none; -webkit-font-smoothing: antialiased;
+}
+.assets .setup-scroll { align-content: start; }
+.assets .setup-page { width: min(1100px, 100%); padding-block: 8px 64px; }
+.assets-body { display: grid; gap: 22px; }
+.assets-part { min-width: 0; margin: 2px; padding: 14px 16px 16px; background: var(--paper); }
+.assets-part h2 { margin: 0 0 12px; font-size: inherit; font-weight: normal; line-height: inherit; }
+.assets-note, .assets-status { margin: 0 0 12px; color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.assets-status:empty { display: none; }
+.assets-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 18px; margin: 0; font-size: 13.5px; }
+.assets-facts dt { color: var(--dim); }
+.assets-facts dd { margin: 0; overflow-wrap: anywhere; }
+.assets-anims { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 2px; background: var(--line); border: 2px solid var(--line); }
+.assets-anim { margin: 0; padding: 10px; background: var(--paper); text-align: center; }
+.assets-anim canvas { display: block; width: 100%; max-width: 128px; margin: 0 auto 8px; aspect-ratio: 1; background: var(--sky); image-rendering: pixelated; }
+.assets-anim b { display: block; font-weight: normal; font-size: 13.5px; overflow-wrap: anywhere; }
+.assets-anim small { display: block; color: var(--dim); font-size: 12px; }
+.assets-sheet { max-width: 100%; max-height: 70vh; overflow: auto; background: var(--sky); }
+.assets-sheet canvas { display: block; image-rendering: pixelated; }
+.assets .switch { grid-template-columns: minmax(0, 1fr) auto; margin: 0 0 12px; }
+.assets-choose {
+  --frame: var(--sky); display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; margin: 2px 0 0;
+  border: 0; background: var(--sky); color: #0a1738; font: inherit; cursor: pointer;
+}
+.assets-choose:hover { --frame: var(--act); background: var(--act); color: var(--on-act); }
+.assets :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+@media (max-width: 520px) {
+  .assets-facts { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .assets-facts dd { margin-bottom: 8px; }
+}
+
+/* the unlock popup (achievements/popup.js) in a layer over the game's screen, which it comes in from the edge of:
+   its pixels are `--dot` CSS px each, and its sizes and places (`--h`, `--margin`, `--trophy-x` …) come from popup.js;
+   a light sweeps over it once */
+.unlock-layer { position: fixed; z-index: 4; overflow: hidden; pointer-events: none; }
+.unlock {
+  position: absolute; top: calc(var(--dot) * var(--margin)); right: calc(var(--dot) * var(--margin));
+  width: calc(var(--dot) * var(--w)); height: calc(var(--dot) * var(--h));
+  filter: drop-shadow(0 calc(var(--dot) * 1) calc(var(--dot) * 2) rgba(0, 0, 0, .4));
+  will-change: transform;
+}
+.unlock-box { position: absolute; inset: 0; overflow: hidden; background: var(--box); }
+.unlock canvas { position: absolute; display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+.unlock-trophy { left: calc(var(--dot) * var(--trophy-x)); top: calc(var(--dot) * var(--trophy-y)); }
+.unlock-strip { position: absolute; top: 0; bottom: 0; left: calc(var(--dot) * var(--text-x)); right: 0; overflow: hidden; }
+.unlock-text { left: 0; top: calc(var(--dot) * var(--text-y)); }
+.unlock-shine {
+  position: absolute; z-index: 1; top: 0; bottom: 0; left: 0; width: calc(var(--dot) * 14);
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, .55) 50%, transparent 80%);
+  mix-blend-mode: overlay;
+}
+.unlock-said { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* the settings (ui/sheet.js): one sheet in the middle of the screen over the game, which waits behind it,
+   blurred, drawn like the dreamports.net launcher, light or dark as it is: Monocraft, its tokens and its 2 px pixel
+   frames with the corner pixels left out. The settings are its first view; the achievements, Your ROMs, the asset
+   viewer and the controls are wider views it grows into, each with how far along it is or its parts on the left and
+   what's picked on the right; on a narrow screen they fill it, one above the other. */
+#screen, .screens { transition: filter .45s ease, transform .6s cubic-bezier(.2, .8, .2, 1); }
+.stage.sheet-open :is(#screen, .screens) { filter: blur(12px) brightness(.7) saturate(1.1); transform: scale(1.04); }
+.stage.sheet-open :is(.settings-open, .touch) { opacity: 0; transform: scale(.85); pointer-events: none; }
+.stage.sheet-open .touch { transition: opacity .2s; transform: none; }
+
+.sheet-wrap {
+  /* light */
+  --paper: #fff; --hover: #eef7ff; --line: #cde3f8; --sky: #8fd1ff; --blue: #1a4fb0;
+  --ink: #0a1738; --dim: rgba(10, 23, 56, .68); --faint: rgba(10, 23, 56, .46);
+  --act: #1a4fb0; --on-act: #fff; --on-act-key: rgba(255, 255, 255, .16); --on-act-key-ink: rgba(255, 255, 255, .8);
+  --veil: radial-gradient(900px 560px at 50% 0, rgba(221, 239, 255, .55), rgba(221, 239, 255, 0) 80%), rgba(238, 247, 255, .18);
+  --page: radial-gradient(900px 560px at 50% 0, #ddefff, rgba(221, 239, 255, 0) 80%), #fff;
+  --lift: 0 24px 64px rgba(5, 10, 36, .35);
+  --xa: #2e8a26; --xb: #c8291f; --xx: #1f5fc9; --xy: #a87d00;   /* an Xbox controller's A, B, X and Y */
+  --gap: 16px;
+  position: fixed; z-index: 5; inset: 0; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center;
+  padding: calc(var(--gap) + env(safe-area-inset-top, 0px)) max(var(--gap), env(safe-area-inset-right, 0px))
+    calc(var(--gap) + env(safe-area-inset-bottom, 0px)) max(var(--gap), env(safe-area-inset-left, 0px));
+  color: var(--ink); color-scheme: light; text-align: left;
+  font: 15px/20px Monocraft, var(--mono); font-variant-ligatures: none; font-synthesis: none; -webkit-font-smoothing: antialiased;
+}
+.sheet-wrap[data-look="dark"] {
+  --paper: #0b1240; --hover: #121b4f; --line: #263a66; --blue: #7aa7ff;
+  --ink: #eef4ff; --dim: #a9b8e6; --faint: rgba(169, 184, 230, .6);
+  --act: #bfe6ff; --on-act: #0a1738; --on-act-key: rgba(10, 23, 56, .12); --on-act-key-ink: rgba(10, 23, 56, .72);
+  --veil: radial-gradient(1200px 600px at 50% -10%, rgba(26, 60, 184, .5), rgba(26, 60, 184, 0) 60%), rgba(5, 10, 36, .42);
+  --page: radial-gradient(1200px 600px at 50% -10%, #1a3cb8 0%, rgba(26, 60, 184, 0) 60%), #050a24;
+  --lift: 0 24px 64px rgba(0, 0, 0, .55);
+  --xa: #6cc95f; --xb: #ff6b61; --xx: #6ea4ff; --xy: #ffd23f;
+  color-scheme: dark;
+}
+.sheet-wrap[hidden], .sheet [hidden] { display: none !important; }
+.sheet-veil { position: absolute; inset: 0; background: var(--veil); }
+/* the launcher's page colour, coming up over everything as the game is left */
+.sheet-cover { position: absolute; inset: 0; background: var(--page); }
+.sheet {
+  --frame: var(--line); position: relative; display: flex; flex-direction: column; overflow: hidden;
+  width: 720px; max-width: calc(100% - 4px); max-height: calc(100% - 4px); margin: 2px; background: var(--paper);
+  box-shadow: 0 -2px var(--frame), 0 2px var(--frame), -2px 0 var(--frame), 2px 0 var(--frame), var(--lift);
+}
+.sheet:not([data-view="settings"]) { width: 1000px; height: 720px; }
+.view { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.sheet button, .sheet input { font: inherit; color: inherit; }
+:where(.sheet) svg { display: block; fill: currentColor; }
+.sheet :focus { outline: none; }
+.sheet :focus-visible, .sheet .pad-at { outline: 2px solid var(--blue); outline-offset: 2px; }
+/* a pixel frame, 2 px with the corner pixels left out */
+.sheet :is(.sheet-back, .sheet-paused, .resume, .quit, .ach-tile, .rows, .status, .chip, .card, .key, .track, .navs, .ctl-list, .assets-facts, .drop, .assets-sheet, .rom, .assets-choose) {
+  box-shadow: 0 -2px var(--frame), 0 2px var(--frame), -2px 0 var(--frame), 2px 0 var(--frame);
+}
+.sheet-sr, .key-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* each view's head: where you are, and the ways out */
+.sheet-head { display: flex; flex: none; align-items: center; gap: 12px; padding: 12px 12px 12px 18px; border-bottom: 2px solid var(--line); }
+.sheet-title { flex: 1; min-width: 0; }
+.sheet-head h2 { margin: 0; font-size: 20px; font-weight: normal; line-height: 28px; text-wrap: balance; }
+.sheet-note { color: var(--dim); font-size: 13.5px; white-space: nowrap; }
+.sheet-note:empty { display: none; }
+.sheet-paused { display: flex; align-items: center; gap: 8px; height: 26px; margin: 2px; padding: 0 8px; color: var(--dim); font-size: 13.5px; white-space: nowrap; }
+.sheet-paused svg { width: 7px; height: 9px; color: var(--blue); animation: sheet-blink 1.2s steps(2, jump-none) infinite alternate; }
+.sheet-back, .sheet-close {
+  display: grid; place-items: center; flex: none; width: 34px; height: 34px; margin: 2px; padding: 0; border: 0;
+  background: none; color: var(--dim); font-size: 18px; cursor: pointer;
+}
+.sheet-back { background: var(--paper); color: var(--ink); }
+.sheet-back svg { width: 14px; height: 14px; }
+.sheet-back:active, .sheet-close:active { transform: translateY(2px); }
+.sheet-body { flex: 1 1 auto; min-height: 0; }
+
+/* the keys a view takes, at its foot: the keyboard's, or a controller's while one is connected */
+.sheet-foot { display: flex; flex: none; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 8px 18px 10px; border-top: 2px solid var(--line); color: var(--dim); font-size: 12px; }
+.sheet-foot span { display: flex; align-items: center; gap: 4px; }
+
+/* a key or a controller's button, as the launcher draws a key; A, B, X and Y in the controller's colours */
+.sheet .key {
+  --frame: var(--line); display: inline-flex; align-items: center; justify-content: center; gap: 2px; min-width: 20px; height: 18px;
+  margin: 2px; padding: 0 4px; background: var(--line); font: 11px/1 Monocraft, var(--mono); color: var(--ink); white-space: nowrap;
+}
+.key-arrow { width: 10px; height: 10px; }
+.sheet .key-a { color: var(--xa); } .sheet .key-b { color: var(--xb); } .sheet .key-x { color: var(--xx); } .sheet .key-y { color: var(--xy); }
+
+/* the settings: the way back and the places to go on the left, the extras on the right */
+.settings-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-content: start; gap: 22px 24px; overflow: auto; overscroll-behavior: contain; padding: 20px 20px 22px; }
+/* the settings a new game starts with (ui/settings.js), one column of them in a narrower sheet */
+.settings-body.single { grid-template-columns: minmax(0, 1fr); }
+.sheet[data-view="settings"]:has(.settings-body.single) { width: 440px; }
+.settings-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.settings-label { margin: 0 2px -4px; color: var(--dim); font-size: 13.5px; }
+.settings-status { margin: 0 2px; color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.settings-status:empty, #stats { display: none; }
+.stage.debug #stats:not(:empty) { display: block; }
+/* the ways out, together: back to the game filled, and quitting in its outline, so it's seen and still comes second */
+.resume, .quit {
+  --frame: var(--sky); display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; margin: 2px; padding: 0 18px;
+  border: 0; cursor: pointer;
+}
+.resume { background: var(--sky); color: #0a1738 !important; }
+.quit { background: none; }
+.resume svg { width: 8px; height: 14px; }
+.quit svg { width: 18px; height: 18px; }
+.resume:active, .quit:active, .ach-tile:active { transform: translateY(2px); }
+.ach-tile {
+  display: grid; grid-template-columns: 36px minmax(0, 1fr) 8px; align-items: center; gap: 10px 14px; margin: 2px; padding: 14px 14px 14px 16px;
+  border: 0; background: var(--paper); text-align: left; cursor: pointer;
+}
+.ach-tile canvas, .card canvas { width: 36px; height: 30px; image-rendering: pixelated; image-rendering: crisp-edges; }
+.ach-tile-text { display: grid; gap: 2px; min-width: 0; }
+.ach-tile-top { display: flex; justify-content: space-between; gap: 8px; }
+.ach-tile-top b { font-weight: normal; color: var(--blue); }
+.ach-tile small { color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.ach-tile .cells { grid-column: 1 / -1; }
+.chev { flex: none; width: 6px; height: 10px; color: var(--faint); }
+/* the earned achievements, or the ROMs in, as a row of cells, one for each */
+.cells { display: flex; gap: 2px; height: 8px; }
+.cells i { flex: 1; background: var(--line); }
+.cells i.on { background: var(--blue); }
+.meter { display: block; height: 8px; background: var(--line); }
+.meter i { display: block; height: 100%; background: var(--blue); }
+
+.rows { margin: 2px; padding: 0; list-style: none; background: var(--paper); }
+.rows > li + li { border-top: 2px solid var(--line); }
+.row {
+  display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; min-height: 48px;
+  margin: 0; padding: 10px 14px; border: 0; background: none; color: inherit; text-align: left; text-decoration: none;
+  cursor: pointer;
+}
+.row > svg:first-child { width: 18px; height: 18px; color: var(--blue); }
+.row[role="switch"], label.row { grid-template-columns: minmax(0, 1fr) auto; }
+.row-text { display: grid; min-width: 0; }
+.row-hint { color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.row-end { display: flex; align-items: center; gap: 10px; }
+.players-count { min-width: 1ch; color: var(--sky); font: inherit; text-align: right; }
+.row:disabled { cursor: default; opacity: .45; }
+/* the launcher's switch */
+.track { --frame: var(--line); position: relative; flex: none; width: 32px; height: 16px; margin: 2px; background: var(--line); }
+.track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background: var(--faint); transition: transform .12s steps(4); }
+[aria-checked="true"] .track { --frame: var(--sky); background: var(--sky); }
+[aria-checked="true"] .track::after { transform: translateX(16px); background: #0a1738; }
+/* how solid the drawn buttons are, on a touch screen */
+.opacity-row { display: none; }
+.opacity-row input {
+  -webkit-appearance: none; appearance: none; flex: none; width: 120px; height: 16px; margin: 2px; padding: 0 2px;
+  background: var(--line); box-shadow: 0 -2px var(--line), 0 2px var(--line), -2px 0 var(--line), 2px 0 var(--line); touch-action: none; cursor: pointer;
+}
+.opacity-row input::-webkit-slider-runnable-track { height: 16px; background: none; }
+.opacity-row input::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: 2px; border: 0; background: var(--blue); }
+.opacity-row input::-moz-range-track { height: 16px; background: none; }
+.opacity-row input::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 0; background: var(--blue); }
+@media (pointer: coarse) { .opacity-row { display: block; } }
+
+/* the wider views: how far along, or the parts to pick, on the left; what's picked on the right */
+.split { display: grid; grid-template-columns: 280px minmax(0, 1fr); height: 100%; }
+.side { display: flex; flex-direction: column; gap: 16px; min-height: 0; overflow: hidden auto; overscroll-behavior: contain; padding: 20px 18px; border-right: 2px solid var(--line); background: var(--hover); }
+.main { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.side-note, .main-note { margin: 0; color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.main-note { display: none; padding: 0 16px 18px; }
+.sum { display: grid; gap: 10px; }
+.sum-num { display: flex; align-items: baseline; gap: 4px; margin: 0; }
+.sum-num b { font-size: 40px; font-weight: normal; line-height: 44px; }
+.sum-num span { color: var(--dim); }
+.latest { margin: auto 0 0; color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.latest b { display: block; font-weight: normal; color: var(--ink); }
+.chip {
+  margin: 2px; padding: 3px 10px; border: 0; background: none; color: var(--dim) !important; font-size: 13.5px; line-height: 20px;
+  cursor: pointer; --frame: var(--line);
+}
+.chip[aria-pressed="true"] { --frame: var(--blue); background: var(--hover); color: var(--ink) !important; }
+.chip em { margin-left: 4px; font-style: normal; color: var(--faint); }
+
+/* the achievements: the total, Beaten and Mastered (each, pressed, shows only what it needs) and the latest on the
+   left; every achievement as a card on the right, gold once earned */
+.status { display: grid; gap: 8px; margin: 2px; padding: 12px 14px; border: 0; background: var(--paper); text-align: left; cursor: pointer; }
+.status[aria-pressed="true"] { --frame: var(--blue); }
+.status-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.status-top span:last-child, .status small { color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.status[data-done] .status-top span:first-child { color: var(--blue); }
+.tools { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 16px 20px 12px; background: var(--paper); }
+.tools .ach-note { flex-basis: 100%; margin: 0 2px; color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 0; padding: 4px 20px 22px; list-style: none; }
+.card { display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: start; gap: 14px; margin: 2px; padding: 14px; background: var(--paper); }
+.card canvas { margin-top: 2px; }
+.card h3 { margin: 0; font-size: 15px; font-weight: normal; line-height: 20px; }
+.card p { margin: 4px 0 0; color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 8px; color: var(--faint); font-size: 12px; line-height: 16px; }
+.card[data-earned] .card-when { color: var(--blue); }
+.card:not([data-earned]) { background: none; }
+.card:not([data-earned]) h3 { color: var(--faint); }
+.tag { padding: 0 6px; color: var(--dim); box-shadow: 0 -2px var(--line), 0 2px var(--line), -2px 0 var(--line), 2px 0 var(--line); }
+.cards-empty { padding: 24px 22px; color: var(--dim); }
+
+/* Your ROMs: how many are in, remembering them and a place to drop one on the left; a card for each ROM on the right,
+   as on the start screen (rom-setup.js lends its rows), with its extras under it once it's in */
+.sheet .setup { font: inherit; }
+.sheet .setup-foot { flex-direction: column; align-items: flex-start; margin: 0; }
+.sheet .setup .roms { display: grid; align-content: start; gap: 14px; margin: 0; padding: 18px 20px 22px; background: none; box-shadow: none; }
+.sheet .rom { margin: 2px; background: var(--paper); }
+.sheet .rom + .rom { border-top: 0; }
+.sheet .rom-main { border-radius: 0; }
+.sheet .play-note { margin: -8px 22px 22px; }
+.sheet .play-note:empty { display: none; }
+.drop { display: grid; justify-items: center; gap: 6px; margin: 2px; padding: 18px 12px; background: var(--paper); color: var(--dim); font-size: 13.5px; line-height: 20px; text-align: center; transition: background .15s; }
+.drop svg { width: 14px; height: 14px; color: var(--blue); }
+.drop small { color: var(--faint); font-size: 12px; line-height: 16px; }
+.drop.over { --frame: var(--blue); background: var(--hover); color: var(--ink); }
+
+/* the asset viewer and the controls: their parts listed on the left, the one picked on the right */
+.navs { margin: 2px; padding: 0; list-style: none; background: var(--paper); }
+.navs li + li { border-top: 2px solid var(--line); }
+.nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 44px; padding: 8px 12px;
+  border: 0; background: none; font-size: 13.5px; line-height: 20px; text-align: left; cursor: pointer;
+}
+.nav[aria-current="true"] { background: var(--sky); color: #0a1738 !important; }
+.nav .chev { color: inherit; opacity: .6; }
+.sheet .assets-part { display: grid; align-content: start; gap: 14px; min-width: 0; margin: 0; padding: 18px 20px 22px; background: none; box-shadow: none; }
+.sheet .assets-part h2 { margin: 0; font-size: 18px; font-weight: normal; line-height: 24px; }
+.sheet .assets-note { margin: -6px 0 0; }
+.sheet .assets-facts { gap: 10px 18px; margin: 2px; padding: 14px 16px; background: var(--paper); line-height: 20px; }
+.sheet .assets-facts dt { color: var(--ink); }
+.sheet .assets-facts dd { color: var(--dim); }
+.sheet .assets-anims { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 12px; background: none; border: 0; }
+.sheet .assets-anim { --frame: var(--line); margin: 2px; box-shadow: 0 -2px var(--frame), 0 2px var(--frame), -2px 0 var(--frame), 2px 0 var(--frame); }
+.sheet .assets-sheet { --frame: var(--line); max-width: none; max-height: min(460px, 60vh); margin: 2px; overflow: auto; overscroll-behavior: contain; }
+.sheet .assets-part .switch { grid-template-columns: minmax(0, 1fr) auto; margin: 0; }
+.sheet .switch-track { box-shadow: 0 -2px var(--frame, var(--line)), 0 2px var(--frame, var(--line)), -2px 0 var(--frame, var(--line)), 2px 0 var(--frame, var(--line)); }
+.sheet .switch .pad-at { outline: 0; }
+.sheet .switch.pad-at, .sheet .switch:has(input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
+.sheet .switch input:focus-visible + .switch-track { outline: 0; }
+.assets-empty { margin: 0; padding: 22px 20px; color: var(--dim); }
+
+/* the controls: with a keyboard or with a controller, each key or button and what it does */
+.modes { display: flex; flex-wrap: wrap; gap: 8px; }
+.modes .chip { flex: 1 1 auto; padding-inline: 6px; }
+.ctl-list { margin: 2px; padding: 0; list-style: none; background: var(--paper); }
+.ctl-list > li + li { border-top: 2px solid var(--line); }
+.ctl { display: grid; grid-template-columns: 190px minmax(0, 1fr); align-items: center; gap: 4px 16px; padding: 10px 14px; }
+.ctl-keys { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; color: var(--faint); font-size: 12px; }
+.ctl-what { color: var(--dim); font-size: 13.5px; line-height: 20px; }
+.ctl-what .key { vertical-align: 1px; }
+.ctl-none { color: var(--faint); font-size: 12px; }
+.ctl-group { padding: 12px 14px 2px; color: var(--blue); font-size: 13.5px; }
+.ctl-list > .ctl-group + li { border-top: 0; }
+.sheet .ctl.pad-at { outline-offset: -2px; }
+.controls-part { display: grid; align-content: start; gap: 14px; padding: 18px 20px 22px; }
+.controls-part h3 { margin: 0; font-size: 18px; font-weight: normal; line-height: 24px; }
+
+@media (hover: hover) {
+  .sheet-close:hover, .chip:hover { background: var(--hover); color: var(--ink); }
+  .chip:hover { color: var(--ink) !important; }
+  .sheet-back:hover, .quit:hover, .ach-tile:hover, .row:not(:disabled):hover, .nav:not([aria-current="true"]):hover { background: var(--hover); }
+  .ach-tile:hover, .status:hover:not([aria-pressed="true"]) { --frame: var(--sky); }
+  .resume:hover { --frame: var(--act); background: var(--act); color: var(--on-act) !important; }
+  .row:not(:disabled):hover .track::after { background: var(--ink); }
+  .row[aria-checked="true"]:not(:disabled):hover .track::after { background: #0a1738; }
+}
+/* touch screens have no keys to press, nor a mouse to drop a file with */
+@media (hover: none) {
+  .sheet .row .key, .sheet .setup kbd, .sheet-foot[data-input="keys"], .drop { display: none; }
+}
+
+/* a tablet held upright, or a small window: the wider views as tall as the screen lets them be */
+@media (max-width: 960px) {
+  .sheet:not([data-view="settings"]) { height: min(960px, 100%); }
+  .split { grid-template-columns: 240px minmax(0, 1fr); }
+  .side { padding: 18px 14px; }
+  .ctl { grid-template-columns: 150px minmax(0, 1fr); }
+}
+/* a phone held upright, or a narrow window: the settings in one column, and the wider views fill the screen */
+@media (max-width: 720px) {
+  .sheet-wrap { --gap: 10px; }
+  .settings-body { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 16px; }
+  .sheet:not([data-view="settings"]) { width: 100%; height: 100%; }
+  .latest, .status small { display: none; }
+  .tools { padding: 14px 16px 10px; }
+  .cards { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 4px 16px 18px; }
+  .sheet-head { gap: 8px; padding-left: 14px; }
+  .sheet-paused { display: none; }
+  .sheet .roms, .sheet .assets-part, .controls-part { padding: 16px; }
+  .sheet .play-note { margin: -4px 18px 18px; }
+  .ctl { grid-template-columns: minmax(0, 1fr); }
+  .sheet .assets-sheet { max-height: 60vh; }
+}
+/* and tall enough for it: the left part above, staying in place, so its filters and parts are in reach while the list
+   under it scrolls (its note goes under the list); Your ROMs, with nothing there to keep in reach, scrolls whole */
+@media (max-width: 720px) and (min-height: 501px) {
+  .split { display: flex; flex-direction: column; }
+  .side {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; flex: none; gap: 12px;
+    max-height: 45%; padding: 16px; border-right: 0; border-bottom: 2px solid var(--line);
+  }
+  .side > * { grid-column: 1 / -1; }
+  .side > .status { grid-column: auto; }
+  .main { flex: 1 1 auto; }
+  .split:not(.whole) .side-note { display: none; }
+  .main-note { display: block; }
+  .sum-num b { font-size: 28px; line-height: 32px; }
+  .navs { display: flex; overflow-x: auto; overscroll-behavior: contain; }
+  .navs li + li { border-top: 0; border-left: 2px solid var(--line); }
+  .nav { white-space: nowrap; }
+  .nav .chev { display: none; }
+  .split.whole { display: block; overflow: auto; overscroll-behavior: contain; }
+  .whole :is(.side, .main) { max-height: none; overflow: visible; }
+}
+/* a phone held sideways: little height, so a smaller head and no foot */
+@media (max-height: 500px) {
+  .sheet-wrap { --gap: 8px; }
+  .sheet:not([data-view="settings"]) { width: 100%; height: 100%; }
+  .sheet-head { padding: 6px 8px 6px 14px; }
+  .sheet-foot, .sheet-paused, .latest, .status small { display: none; }
+  .sheet-head h2 { font-size: 17px; line-height: 24px; }
+  .settings-body { gap: 14px 20px; padding: 14px 16px 16px; }
+  .split { grid-template-columns: 220px minmax(0, 1fr); }
+  .side { gap: 12px; padding: 14px 12px; }
+  .sum-num b { font-size: 28px; line-height: 32px; }
+  .tools { padding: 12px 16px 8px; }
+  .sheet .assets-sheet { max-height: 70vh; }
+}
+/* the question before quitting (ui/quit-view.js) stays small at any size, and its buttons say what the head's would */
+.sheet[data-view="quit"] { width: 480px; height: auto; }
+.sheet[data-view="quit"] :is(.sheet-close, .sheet-paused) { display: none; }
+.settings-body.quit-body { grid-template-columns: minmax(0, 1fr); }
+.quit-note { margin: 0 2px 4px; line-height: 22px; }
+@media (pointer: coarse) {
+  .sheet-back, .sheet-close { width: 44px; height: 44px; }
+  .sheet :is(.rom-actions button) { height: 44px; }
+  .sheet .rom-actions .rom-remove { width: 44px; }
+}
+
+@keyframes sheet-blink { to { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) {
+  #screen, .screens { transition: none; }
+  .stage.sheet-open :is(#screen, .screens) { transform: none; }
+  .sheet-paused svg { animation: none; }
+  .track::after { transition: none; }
+}
