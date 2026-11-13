@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/992-cave",
-  "commit": "3e0aeeaab2566862c4feefe0bef37a675667aa7e",
-  "made": "2026-11-13T14:50:52.111Z",
+  "commit": "1f0928ba6392cc586f6e4e2db9cca0177eb59625",
+  "made": "2026-11-13T14:55:32.091Z",
   "about": "The cave's shooters and the axe, and the cave on to its boss: enemies that wait unseen and come out when Arthur reaches them, a weapon thrown from the top of a screen, and the axe's block test on the screen above. The interrupt that runs two frames ahead now keeps its guess of the A buttons, so the time is put right exactly. Arthur goes through the third stage's cave to $0D00, just short of its boss, exact against the original. Refs #992."
 }
