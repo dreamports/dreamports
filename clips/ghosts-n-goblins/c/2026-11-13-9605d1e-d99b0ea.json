@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "first-floor",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/first-floor.json",
+  "recordingSha1": "22224bf2f33c9ac2bc63d1c95e2da21c52037007",
+  "commit": "9605d1e46adc97e3896089f5eb475dc8f2cc27fe",
+  "base": "c4f7cfcf6c088c3fcb86ae06e64c147b261647a8",
+  "sideBySide": true,
+  "video": "d99b0ea7bbfa7262e03327c8647e959d680a01a8",
+  "measures": {
+    "from": 10060,
+    "to": 10359,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 6,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "c4f7cfcf6c088c3fcb86ae06e64c147b261647a8"
+  }
+}
