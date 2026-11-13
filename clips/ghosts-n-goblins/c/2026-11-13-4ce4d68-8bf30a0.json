@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "fire-bridge",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/fire-bridge.json",
+  "recordingSha1": "823f3945cfe6f8cd33bb9289c74b6bb1da72c722",
+  "commit": "4ce4d68bbfbe4dc88a7b6720e99c11a7c8369099",
+  "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d",
+  "sideBySide": true,
+  "video": "8bf30a0b44e4bb5421242f797bf1ac0b08ff0311",
+  "measures": {
+    "from": 29800,
+    "to": 30099,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d"
+  }
+}

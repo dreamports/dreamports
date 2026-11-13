@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "eyeball-rafts",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/eyeball-rafts.json",
+  "recordingSha1": "9891c0d93b439f71f37c1ce41a9dde0ea97a34e8",
+  "commit": "4ce4d68bbfbe4dc88a7b6720e99c11a7c8369099",
+  "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d",
+  "sideBySide": true,
+  "video": "ae1e92b37e67b1a15f329c9929a8f55b92fe0ca8",
+  "measures": {
+    "from": 28420,
+    "to": 28719,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 9,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "c51d94c76ece6e5578d0ddee8bf10b87381e406d"
+  }
+}
