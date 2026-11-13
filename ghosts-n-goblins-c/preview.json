@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/992-cave",
-  "commit": "1f0928ba6392cc586f6e4e2db9cca0177eb59625",
-  "made": "2026-11-13T14:55:32.091Z",
-  "about": "The cave's shooters and the axe, and the cave on to its boss: enemies that wait unseen and come out when Arthur reaches them, a weapon thrown from the top of a screen, and the axe's block test on the screen above. The interrupt that runs two frames ahead now keeps its guess of the A buttons, so the time is put right exactly. Arthur goes through the third stage's cave to $0D00, just short of its boss, exact against the original. Refs #992."
+  "branch": "feat/992-cave-boss",
+  "commit": "154468dc9cfa05eac2321e5907d35eb802b9ab1a",
+  "made": "2026-11-13T19:41:41.316Z",
+  "about": "Stage 3 proven to its end: the cave's dragon, a head and eight pieces that follow it, its fire, its death, the key and the stage's end, exact against the original."
 }
