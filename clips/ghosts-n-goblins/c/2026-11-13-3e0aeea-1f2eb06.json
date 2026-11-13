@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "cave-to-the-boss",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/cave-to-the-boss.json",
+  "recordingSha1": "ac6ef7a663505fdaff13bb8240c253e3243c1cce",
+  "commit": "3e0aeeaab2566862c4feefe0bef37a675667aa7e",
+  "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a",
+  "sideBySide": true,
+  "video": "1f2eb06244bb9b1bed99836accfd56bd93a61e68",
+  "measures": {
+    "from": 20600,
+    "to": 20899,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 35,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a"
+  }
+}
