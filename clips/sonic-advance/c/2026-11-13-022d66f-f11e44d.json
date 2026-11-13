@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "knuckles-neo-green-hill",
+  "recordingFile": "games/sonic-advance/proof/recordings/knuckles-neo-green-hill.json",
+  "recordingSha1": "74d09e4453e1a331c84032b777b93bac5ed45cda",
+  "commit": "022d66f679e5b9c8a7056759a8a50e7fbd50af22",
+  "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a",
+  "sideBySide": true,
+  "video": "f11e44d1db65610549686ef77f98d4420e023066",
+  "measures": {
+    "from": 2347,
+    "to": 2646,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 1871,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "knuckles-ice-mountain",
+  "recordingFile": "games/sonic-advance/proof/recordings/knuckles-ice-mountain.json",
+  "recordingSha1": "610aa2c4bdac75e3dc918524867bd947ea5f0c42",
+  "commit": "022d66f679e5b9c8a7056759a8a50e7fbd50af22",
+  "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a",
+  "sideBySide": true,
+  "video": "76d624c088cd312011bc9dcf49faad05c65946f7",
+  "measures": {
+    "from": 2314,
+    "to": 2613,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2051,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a"
+  }
+}

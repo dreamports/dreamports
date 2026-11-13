@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "knuckles-x-zone",
+  "recordingFile": "games/sonic-advance/proof/recordings/knuckles-x-zone.json",
+  "recordingSha1": "fc272e25b235299c528fe6085611ad55bfb1464c",
+  "commit": "022d66f679e5b9c8a7056759a8a50e7fbd50af22",
+  "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a",
+  "sideBySide": true,
+  "video": "92a5e8e1c83b8e1acef800af3e7079e9d7edd707",
+  "measures": {
+    "from": 2458,
+    "to": 2757,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2195,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "8574308d1ecf986483c37e0d3e644bde31fe4c6a"
+  }
+}

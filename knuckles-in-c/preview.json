@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/759-knuckles-in-c",
+  "commit": "022d66f679e5b9c8a7056759a8a50e7fbd50af22",
+  "made": "2026-11-13T14:28:41.221Z",
+  "about": "Knuckles can be picked and played in the C version: his glide and its turns, the drop and slide after it, wall grab, climbing and the ledge, the punches and uppercut with its flame, and floating on the water with its splash. knuckles-neo-green-hill, knuckles-ice-mountain and knuckles-x-zone match every frame, and knuckles-neo-green-hill proves the part Playing as Knuckles. The grind rails, bumpers, wall poles and ice blocks now treat a flying Tails or a gliding or climbing Knuckles as the original does."
+}
