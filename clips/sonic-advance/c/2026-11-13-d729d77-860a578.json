@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-cosmic-angel",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-cosmic-angel.json",
+  "recordingSha1": "921bbccc163575f6bd1cb694ee80897241da7e2d",
+  "commit": "d729d77a8f8d2be7883c352c3e7b7f4d00694706",
+  "base": "266116698ead3d6b87dc8350cd7b5036519164e4",
+  "sideBySide": true,
+  "video": "860a578c431eff115c62b87cea4016c8aa0f77f8",
+  "measures": {
+    "from": 17500,
+    "to": 17799,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 29,
+    "same": 42,
+    "changed": {
+      "frame": 16968,
+      "why": "where the original first runs code main's proof doesn't count, at 08034208"
+    },
+    "newFrames": 300,
+    "base": "266116698ead3d6b87dc8350cd7b5036519164e4"
+  }
+}

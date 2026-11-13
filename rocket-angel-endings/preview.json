@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "fix/1201-egg-rocket-cosmic-angel-endings",
+  "commit": "d729d77a8f8d2be7883c352c3e7b7f4d00694706",
+  "made": "2026-11-13T00:40:51.632Z",
+  "about": "Egg Rocket's and Cosmic Angel's endings, results and hand-overs to the next zone, as the original's"
+}
