@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "down-to-the-ground",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/down-to-the-ground.json",
+  "recordingSha1": "23ec1f0efdb35cf8a85f338665464a42c6443da2",
+  "commit": "831d003217401300d462339612b941edc1379bcc",
+  "base": "1c87be008f353dacf5a6be5beb6500997d3a6aa2",
+  "sideBySide": true,
+  "video": "a98f90dee7c5dd351ad61e45e8c08da045c3f0e6",
+  "measures": {
+    "from": 12520,
+    "to": 12819,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 49,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "1c87be008f353dacf5a6be5beb6500997d3a6aa2"
+  }
+}
