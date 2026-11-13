@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "special-stage-1",
+  "recordingFile": "games/sonic-advance/proof/recordings/special-stage-1.json",
+  "recordingSha1": "53b2916fc6141490dfbebadc4767ae3ee5afdc8c",
+  "commit": "722c137e343362a18b0621ba42d9ae35eb71dc25",
+  "base": "459901d6743dcb3444bebe1827c9e035a4ec09ff",
+  "sideBySide": true,
+  "video": "fb9511c0312defabc62ac45d5843532a0112f227",
+  "measures": {
+    "from": 5850,
+    "to": 6149,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 62,
+    "same": 65,
+    "changed": {
+      "frame": 5912,
+      "why": "where the original first runs code main's proof doesn't count, at 0805E1B0"
+    },
+    "newFrames": 238,
+    "base": "459901d6743dcb3444bebe1827c9e035a4ec09ff"
+  }
+}
