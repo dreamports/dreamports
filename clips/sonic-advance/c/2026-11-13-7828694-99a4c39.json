@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tails-x-zone",
+  "recordingFile": "games/sonic-advance/proof/recordings/tails-x-zone.json",
+  "recordingSha1": "c92f0a2910b3d2415943d6b59eb4db235579c9f8",
+  "commit": "7828694a2d32f1865d365941f5194698a7884db0",
+  "base": "21d8cbe425b270c831dfe74088e6386753e32baf",
+  "sideBySide": true,
+  "video": "99a4c39cf39f10589a74153e57ebaa3bcc7828c6",
+  "measures": {
+    "from": 2458,
+    "to": 2757,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2195,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "21d8cbe425b270c831dfe74088e6386753e32baf"
+  }
+}

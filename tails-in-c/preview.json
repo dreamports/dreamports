@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/758-tails-in-c",
+  "commit": "7828694a2d32f1865d365941f5194698a7884db0",
+  "made": "2026-11-13T05:05:53.875Z",
+  "about": "Tails can be picked and played in the C version: his title card, face, 1-up, tail swipe, flight and results, and a lost life starts the act over."
+}
