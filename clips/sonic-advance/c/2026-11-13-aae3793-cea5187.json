@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tails-ice-mountain",
+  "recordingFile": "games/sonic-advance/proof/recordings/tails-ice-mountain.json",
+  "recordingSha1": "c7a42e2fd5364f6df762b7c46d80d1dbe7f42940",
+  "commit": "aae37937f723e8695b75675257d810662ae39bab",
+  "base": "21d8cbe425b270c831dfe74088e6386753e32baf",
+  "sideBySide": true,
+  "video": "cea518766788b85d0293938306eaed4a9fe14b33",
+  "measures": {
+    "from": 2314,
+    "to": 2613,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2051,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "21d8cbe425b270c831dfe74088e6386753e32baf"
+  }
+}

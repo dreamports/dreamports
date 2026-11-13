@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/758-game-over-in-c",
+  "commit": "aae37937f723e8695b75675257d810662ae39bab",
+  "made": "2026-11-13T05:17:00.269Z",
+  "about": "The game over in the C version: GAME OVER slides in when the last life is lost, the screen fades to black, and the game goes back to the SEGA logo once its song ends."
+}

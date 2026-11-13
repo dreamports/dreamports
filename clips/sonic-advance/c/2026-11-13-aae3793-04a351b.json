@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tails-neo-green-hill",
+  "recordingFile": "games/sonic-advance/proof/recordings/tails-neo-green-hill.json",
+  "recordingSha1": "b03cfa9387206a29efbd1327f15f5819f2eecf1e",
+  "commit": "aae37937f723e8695b75675257d810662ae39bab",
+  "base": "21d8cbe425b270c831dfe74088e6386753e32baf",
+  "sideBySide": true,
+  "video": "04a351bf329b57dcc21abc96d920f0b2a5f8da9e",
+  "measures": {
+    "from": 2327,
+    "to": 2626,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 1851,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "21d8cbe425b270c831dfe74088e6386753e32baf"
+  }
+}
