@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "fix/1200-animals-tiles-after-neo-green-hill",
+  "commit": "26c15a7ab05f2a18fc8a90dea698d7c6982a57ce",
+  "made": "2026-11-13T02:08:35.041Z",
+  "about": "Sprite tiles taken and given back as the original does, through Neo Green Hill act 2"
+}
