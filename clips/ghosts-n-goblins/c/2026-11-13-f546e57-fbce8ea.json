@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "upper-floors",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/upper-floors.json",
+  "recordingSha1": "f5721de7bfd0c4c3b40b36bb23ce95f265b193ab",
+  "commit": "f546e5755183c83b0376291f0c706ea2a083f835",
+  "base": "230a88a3a4d5214bc5136fe64c0c7a7440b55f51",
+  "sideBySide": true,
+  "video": "fbce8eaca71a601e461e7e4cfb98b084b0ea370e",
+  "measures": {
+    "from": 11700,
+    "to": 11999,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 35,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "230a88a3a4d5214bc5136fe64c0c7a7440b55f51"
+  }
+}
