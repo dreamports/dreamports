@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "fix/1200-act-2-from-power-on",
+  "commit": "4834744b2d55a69de3cde849f7a0a77d1b7f2f58",
+  "made": "2026-11-13T02:54:42.860Z",
+  "about": "Neo Green Hill act 2 from power-on, menus and all, and its hand-over to Secret Base"
+}
