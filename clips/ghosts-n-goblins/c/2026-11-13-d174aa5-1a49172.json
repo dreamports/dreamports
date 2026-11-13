@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "cave-axe",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/cave-axe.json",
+  "recordingSha1": "4681c9ddf78d0a60255d71a57cd733c42c84e01c",
+  "commit": "d174aa582a27a3c9eeb706f021c9fef5fa509a85",
+  "base": "d4780cf5a0db7cd3b6c7007e2284279b41fcffbd",
+  "sideBySide": true,
+  "video": "1a49172c0d66377975dea479eb2da77c23b7a8d8",
+  "measures": {
+    "from": 19100,
+    "to": 19399,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 25,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "d4780cf5a0db7cd3b6c7007e2284279b41fcffbd"
+  }
+}
