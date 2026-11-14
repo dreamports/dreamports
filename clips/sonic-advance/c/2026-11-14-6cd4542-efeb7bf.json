@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "special-stage-5",
+  "recordingFile": "games/sonic-advance/proof/recordings/special-stage-5.json",
+  "recordingSha1": "3705fba17d53c0f2e08bb3f220fd46dc41787408",
+  "commit": "6cd4542b845744a06c9c2ccfb392e6aa015d0a68",
+  "base": "771dba97d89940655bf0c9776b6d51d41cc8cc75",
+  "sideBySide": true,
+  "video": "efeb7bfea645c0486b6717dc4f1530f8a61e039a",
+  "measures": {
+    "from": 2900,
+    "to": 3199,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "771dba97d89940655bf0c9776b6d51d41cc8cc75"
+  }
+}
