@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "fix/1293-new-recording-clip-part",
-  "commit": "6cd4542b845744a06c9c2ccfb392e6aa015d0a68",
-  "made": "2026-11-14T22:46:27.236Z",
-  "about": "Special stage 5's recording shows the stage in its clip; a new recording's clip now starts at the part it newly proves."
+  "branch": "feat/753-special-stage-6-in-c",
+  "commit": "14739479dee26ec8fc5e6d958244df5652fbf0ce",
+  "made": "2026-11-14T23:16:06.930Z",
+  "about": ""
 }

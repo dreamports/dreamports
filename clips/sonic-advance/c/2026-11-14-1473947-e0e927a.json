@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "special-stage-6",
+  "recordingFile": "games/sonic-advance/proof/recordings/special-stage-6.json",
+  "recordingSha1": "e14628fb1639bc179b093a9b6b15af0dbf1748b7",
+  "commit": "14739479dee26ec8fc5e6d958244df5652fbf0ce",
+  "base": "5fc6681ceed72f9ad3552ff7018ab40e7e358776",
+  "sideBySide": true,
+  "video": "e0e927a8e32ec3ed9c60eee3f02772a741782480",
+  "measures": {
+    "from": 2900,
+    "to": 3199,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2550,
+      "why": "where Special stage 6 starts, a part main didn't prove"
+    },
+    "newFrames": 300,
+    "base": "5fc6681ceed72f9ad3552ff7018ab40e7e358776"
+  }
+}
