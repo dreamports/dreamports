@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-the-moon",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-the-moon.json",
+  "recordingSha1": "5b2feebbed67da377fd92c64006fe29c518d8797",
+  "commit": "945d1e9e119a6d481c4322e47be6f298ddf6e722",
+  "base": "281cc841c86f663346b8bd4843f68cc02278b8d3",
+  "sideBySide": true,
+  "video": "da9e9d71e806e6165e9de25e695197a37a44fbd3",
+  "measures": {
+    "from": 13300,
+    "to": 13599,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 62,
+    "same": 61,
+    "changed": {
+      "frame": 9610,
+      "why": "where The Moon Zone starts, a part main didn't prove"
+    },
+    "newFrames": 300,
+    "base": "281cc841c86f663346b8bd4843f68cc02278b8d3"
+  }
+}
