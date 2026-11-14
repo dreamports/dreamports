@@ -1,5 +1,7 @@
-// Sonic: his state, movement and animation, translated from the JavaScript version's engine/player.js and
-// engine/animator.js. The characters other than Sonic, the boost modes and the Sonic Advance 2 tricks are not here; the fields the objects will read and set (onto him, holding his controls, curling him up) are.
+// Sonic, Tails, Knuckles or Amy as the character played, and Tails as the CPU's partner: their state, movement and
+// animation, translated from the JavaScript version's engine/player.js and engine/animator.js. The boost modes and the Sonic
+// Advance 2 tricks are not here; the fields the objects will read and set (onto him, holding his controls, curling him
+// up) are.
 
 #ifndef SA_PLAYER_H
 #define SA_PLAYER_H
@@ -7,6 +9,14 @@
 #include "sa.h"
 
 enum { LAYER_FRONT = 0, LAYER_BACK = 1 };
+enum { CHARACTER_SONIC = 0, CHARACTER_TAILS = 1, CHARACTER_KNUCKLES = 2, CHARACTER_AMY = 3 };
+// Knuckles' glide flags (w.kf.flags): not yet down, and a wall stopped him
+enum { GLIDE_UP = 0x2, GLIDE_WALL = 0x20 };
+// Knuckles' midAir: gliding, dropping from it, sliding after it, climbing, onto a ledge, and floating on the water
+enum { KN_GLIDE = 1, KN_DROP = 2, KN_SLIDE = 3, KN_CLIMB = 4, KN_LEDGE = 5, KN_FLOAT = 9 };
+// how the camera's look eases on one of his frames: left as it is (a jump off the water), once more while he glides
+// (sub_8048980), and once more again while he climbs (Player_8047280)
+enum { LOOK_EASE_NONE, LOOK_EASE_STILL, LOOK_EASE_GLIDE, LOOK_EASE_CLIMB };
 enum { SHIELD_NONE, SHIELD_NORMAL, SHIELD_MAGNETIC };
 
 // the d-pad bits of the input history (the mid-air dash reads it)
@@ -30,6 +40,18 @@ typedef enum {
   PS_FLOAT,                 // lifted by a whirlwind (CHARSTATE_37)
   PS_GRABBED,               // held in Egg X's claw
   PS_MOON_GAZE, PS_MOON_TRANSFORM, PS_MOON_FLY,   // X Zone's way to the Moon Zone
+  // Tails' own: flying, turning in flight, tired out and landing as the CPU's partner (charStates 53 to 56), swimming and
+  // turning under water (57 and 58), and the tail swipe (60)
+  PS_FLY, PS_FLY_TURN, PS_FLY_TIRED, PS_FLY_LAND, PS_SWIM, PS_SWIM_TURN, PS_TAIL_SWIPE,
+  // Knuckles' own (charStates 62 to 84): gliding and turning round in a glide (under water he swims, PS_SWIM), the drop
+  // from it and its landing, the slide after it, on a wall (grabbing it, climbing, still, up and down, and up onto its
+  // ledge), the punches and the uppercut, and floating on the water
+  PS_GLIDE, PS_GLIDE_TURN0, PS_GLIDE_TURN1, PS_GLIDE_TURN2, PS_GLIDE_TURN3, PS_GLIDE_DROP, PS_DROP_LAND, PS_GLIDE_SLIDE,
+  PS_WALL_GRAB, PS_CLIMB, PS_CLIMB_UP, PS_CLIMB_DOWN, PS_LEDGE_CLIMB, PS_LEDGE_TOP,
+  PS_PUNCH1, PS_PUNCH2, PS_PUNCH3, PS_UPPERCUT, PS_WATER_FLOAT, PS_WATER_FLOAT_UP,
+  // Amy's own (charStates 85 to 93): rising from a jump with no curl, the leap off her hammer, her two swings, the hammer in
+  // the air and swirled down, her dive, its slam and slide, and the pose that ends it
+  PS_HAMMER_RISE, PS_HAMMER_LEAP, PS_HAMMER, PS_HAMMER2, PS_HAMMER_AIR, PS_HAMMER_SWIRL, PS_DIVE, PS_DIVE_SLAM, PS_DIVE_END,
   PA_BORED, PA_RUN, PA_BRAKE_TURN,   // bored of waiting, running, and turning round after a skid
   PA_COUNT
 } PlayerAnim;
@@ -40,6 +62,8 @@ typedef struct {
 } PlayerInput;
 
 typedef struct {
+  int character;                // CHARACTER_*
+  int cpu;                      // the CPU's partner (gPartner), whose camera, music and loop are Sonic's
   double x, y, gsp, xsp, ysp;   // his centre, and his speeds in pixels a frame: along the surface, and in X and Y
   int facing;                   // 1 right, -1 left
   int state, prevState;         // PS_*, and the one his animation was last picked for
@@ -53,7 +77,14 @@ typedef struct {
   int spinDashing;
   int dashAccel;                // the spin dash's charge, in 1/256 px
   int offsetY;                  // from his centre to the ground sensors
-  int midAir;                   // mid-air move used this jump: 1 insta-shield, 2 dash
+  int midAir;                   // mid-air move used this jump: 1 insta-shield, 2 dash; Tails' flight, 2 to 31 rising after
+                                // a press
+  int glideShift, glideFlags;  // Knuckles' glide heading (w.kf.shift: 0 right, 0x80 left, turning between) and GLIDE_* flags
+  int hammerJump;               // Amy, MOVESTATE_2000000: in the air with no hammer and no jump cap (her hammer's leap, a bounce)
+  int dive;                     // Amy, MOVESTATE_4000000: her dive, with its slide (sub_80495F0)
+  int waterCrossed;             // MOVESTATE_1000: he went into the water or out of it this frame
+  int lookEase;                 // this frame's extra easing of the camera's look (LOOK_EASE_*), Knuckles'
+  int flyTime;                  // Tails: frames of flight left, counted down every other frame (flyingDuration)
   int attack, attackNext;       // step of the B-button combo, and the move queued after the somersault
   int idleT;                    // frames until he gets bored
   int invulnerable, invincible, speedUp;   // frames of blinking, invincibility and speed shoes left
@@ -70,7 +101,7 @@ typedef struct {
   int shield;                   // the shield an item box gave him (SHIELD_*)
   const void *onObject;         // the solid object he stands on, if any
   int animRestart;              // an object asked for his animation to start over
-  int forcedRoll, scripted, actClear, halfPipe, ignoreInput, carried, override;
+  int forcedRoll, scripted, actClear, halfPipe, ignoreInput, wasIgnoreInput, carried, override;
   int grinding;                 // on a grind rail, on the layer it put him on (MOVESTATE_1000000)
   int front;                    // drawn in front of the front layer, priority 1, as on a grind rail
   int track;                    // the step of the marble track or tube holding him (unk99[0]), NO_TRACK when none does
@@ -83,20 +114,48 @@ typedef struct {
   int heldDirs, pressedDirs;    // the d-pad his last frame read, and what it found newly pressed
   int jumpPressed, attackPressed;
   int held[DPAD_HISTORY], pressed[DPAD_HISTORY];
-  double drawX, drawY;          // where this frame's picture shows him: his place as his own task left it, before the
-                                // tasks at his priority and later move him
   Sprite sprite;                // his graphics, kept by the animation
+  Sprite tails;                 // Tails' tails, a second sprite shown while he is curled up (AllocateCharacterMidAirGfx)
+  int tailsShift;               // the way he moves, which turns his tails (w.tf.shift)
+  int tailsShown, tailsMatrix;  // his tails drawn this frame, through this rotation matrix (gOamMatrixIndex)
 } Player;
 
 enum { PLAYER_ALIVE = 0, PLAYER_FALLING, PLAYER_GONE };
 enum { NO_TRACK = 0x7F, FULL_SCALE = 0x100 };
 
 void player_init(Player *p, int x, int y);
+/** Tails as InitializePlayer makes him for the CPU's partner: his sprites from the heap, the body with room for Sonic's
+ *  run (ALLOC_TILES(SA1_ANIM_SONIC_RUN)) and his tails 16 tiles. */
+void player_init_partner(Player *p, int x, int y);
+/** Tails as his character: his tails' sprite from the heap (AllocateCharacterMidAirGfx), after the body's. */
+void player_become_tails(Player *p);
+void player_free(Player *p);
+void player_time_up(Player *p);
 /** One frame of his movement, before his animation. */
 void player_step(Player *p, const PlayerInput *in);
 /** Picks and steps his animation after the movement, and decides whether he is drawn. */
 void player_animate(Player *p, const PlayerInput *in);
 void player_draw(Player *p, int camX, int camY);
+/** Knuckles on a wall, grabbing it, climbing or pulling himself up its ledge (sub_80549FC). */
+int player_climbing(const Player *p);
+/** Knuckles gliding or sliding on after a glide, whom an object he lands on leaves in the air (sub_800C934). */
+int player_gliding(const Player *p);
+/** What Amy's hammer hits (Coll_AmyHammer_Spring): one of her swings, while its attack box is out, on the object's box
+ *  `hb` at (x, y). */
+int player_hammer_hits(const Player *p, int x, int y, const Hitbox *hb);
+/** A speed 1.5 times as fast, as the original works it out in 1/256 px: what a spring her hammer hits gives her. */
+double player_hammer_speed(double v);
+/** Sent back off a boss his attack box hit: the way he came, or Amy with half her speed across (Coll_Player_Enemy). */
+void player_bounce_off_boss(Player *p);
+/** The state an object throws her into the air with, where it curls up the others (charState 85 for 5). */
+int player_thrown_state(const Player *p);
+/** Amy's dive turned into its slam or its slide (MOVESTATE_4000000 with unk62), which an object she lands on leaves in the
+ *  air (Coll_Player_Platform). */
+int player_slamming(const Player *p);
+/** Player_HandleWater: in and out of the water, and the drowning count (the start of his frame). */
+void player_water_step(Player *p);
+/** Tails' tails after his animation: the way they turn, and their own animation while he is curled up (sub_8024F74). */
+void player_tails_step(Player *p);
 /** The hooks for the objects: out of a ball and into one, keeping his feet in place. */
 void player_stand_up(Player *p);
 void player_curl_up(Player *p);

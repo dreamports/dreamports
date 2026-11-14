@@ -5,6 +5,9 @@
 
 #include "objects.h"
 #include "results.h"
+#include "bosses.h"
+#include "special.h"
+static void leave_for_lobby(void);
 
 int moon_opens(void);
 
@@ -27,6 +30,8 @@ int actHudFlash = -1;
 // the HUD's zero-ring flash the act starts with: the character select hands over 1, a course select or a start
 // point the stage's own value (levels.js hudFlash)
 static int hud_flash(void) { return actHudFlash >= 0 ? actHudFlash : act.stage.hudFlash; }
+// and after the act before it, where the original's counter stands as the HUD starts
+enum { HUD_FLASH_AFTER = 1 };
 static int musicSync;
 void act_render_music_at_first_frame(void) { musicSync = 1; }
 static uint16_t holdColour; static int restoreColour;   // the menu's black for the act's first picture
@@ -71,9 +76,12 @@ static void copy_rom(uint32_t src, uint32_t dest, uint32_t size) {
   g->src = src; g->dest = dest; g->size = size & 0xFFFF; g->anim = 0; g->ram = NULL;
   queue_graphics(g);
 }
+// the act being started follows the one before it (GoToNextLevel), which its title card shows
+static int comingOn;
 static void load_stage(int level) {
   Stage *s = &act.stage;
   const Level *row = level_row(level);
+  if (!act.fromStartPoint && row->played) row = row->played;
   memset(s, 0, sizeof *s);
   s->level = level; s->row = row;
   s->front = read_tilemap(level * 3 + 0);
@@ -182,7 +190,12 @@ void act_next_bg_palette(uint16_t *pal) {
   for (int i = 0; i < 256; i++) pal[i] = e.bgPalette[i];
   for (int i = 0; i < act.palCount && i < 16; i++) { PaletteAnim copy = paletteAnims[i]; palette_animation_into(&copy, pal); }
 }
-static void palette_animation_task(Task *t) { palette_animation_step((PaletteAnim *)t->data); }
+// on the frame the original spends loading the act it comes back to from a special stage, no task runs, the palette
+// animations' among them (act_come_back)
+static void palette_animation_task(Task *t) {
+  if (e.frameCount < act.palettesFrom) return;
+  palette_animation_step((PaletteAnim *)t->data);
+}
 static void start_palette_animations(void) {
   if (act.palStarted) return;
   act.palStarted = 1;
@@ -235,13 +248,20 @@ static void ease_look_back(Camera *c) {
   if (step > LOOK_STEP) step = LOOK_STEP;
   c->look -= c->look > 0 ? step : c->look < 0 ? -step : 0;
 }
+// Knuckles floating on the water with up held looks up too (Player_8044750, Player_80447D8); his frames from a glide to
+// its end ease the look once more (sub_8048980), 2 down or 4 up, and climbing up or down once more again (Player_8047280);
+// his jump off the water leaves it as it is
 static void update_look(Camera *c, const Player *p) {
-  int looking = (p->state == PS_LOOK_UP ? -LOOK_UP : p->state == PS_CROUCH && p->gsp == 0 ? LOOK_DOWN : 0) * (p->inverted ? -1 : 1);
+  if (p->lookEase == LOOK_EASE_STILL) return;
+  int up = p->state == PS_LOOK_UP || p->state == PS_WATER_FLOAT_UP;
+  int looking = (up ? -LOOK_UP : p->state == PS_CROUCH && p->gsp == 0 ? LOOK_DOWN : 0) * (p->inverted ? -1 : 1);
   if (!looking) { c->lookDelay = LOOK_DELAY; ease_look_back(c); }
   else if (c->lookDelay == 0 || --c->lookDelay == 0) {
     if (looking < 0 && c->look + c->shiftY > looking) c->look -= LOOK_STEP;
     if (looking > 0 && c->look + c->shiftY < looking) c->look += LOOK_STEP;
   } else ease_look_back(c);
+  if (p->lookEase == LOOK_EASE_GLIDE || p->lookEase == LOOK_EASE_CLIMB) c->look += c->look > 0 ? -2 : c->look < 0 ? 4 : 0;
+  if (p->lookEase == LOOK_EASE_CLIMB) ease_look_back(c);
 }
 static int camera_update(Camera *c, const Player *p) {
   c->wrappedThisFrame = 0;
@@ -261,7 +281,8 @@ static int camera_update(Camera *c, const Player *p) {
   // at most its speed a frame, which the results set to 0 to hold it
   if (dx > 8) c->x += dx - 8 > c->speedX ? c->speedX : dx - 8;
   else if (dx < -8) c->x += dx + 8 < -c->speedX ? -c->speedX : dx + 8;
-  int air = p->air;
+  // Knuckles floating on the water counts as on the ground
+  int air = p->air && !(p->character == CHARACTER_KNUCKLES && p->midAir == KN_FLOAT);
   c->deadY = air ? (c->deadY + 4 < 24 ? c->deadY + 4 : 24) : (c->deadY - 4 > 0 ? c->deadY - 4 : 0);
   int dy = (int)c->targetY - (int)c->y;
   if (dy > c->deadY) c->y += dy - c->deadY > c->speedY ? c->speedY : dy - c->deadY;
@@ -298,7 +319,7 @@ static void hud_update(int draw) {
   if (draw) {
     // the icons: the ring over the ring count and the character's face by the lives, at OAM order 3
     put_oam(ORDER_ICONS, -2, -1, OBJ_32x32, HUD_RING, 6, 0);
-    put_oam(ORDER_ICONS, 2, 144, OBJ_16x16, HUD_FACE, 0, 0);
+    if (!time_attack()) put_oam(ORDER_ICONS, 2, 144, OBJ_16x16, HUD_FACE, ctx.character, 0);
     if (act.ringCount == 0) {
       // white, red, red, white, then the white zero the bytes after the string make; past those, on the first frame of a
       // counter that starts at 40 or more, a character code of 0, the tiles 64 before the font's (sub_8053BAC, hud_load)
@@ -318,7 +339,7 @@ static void hud_update(int draw) {
     }
     int d[12], n = digits_of(act.score % 1000000000, d);
     for (int i = 0; i < n; i++) hud_glyph(d[i], 81 - 8 * n + i * 8, -2);
-    int red = act.courseTime > 9 * 3600 && (act.tick & 0x10) ? 11 : 0;
+    int red = (act.timerReversed ? act.courseTime < 3600 : act.courseTime > 9 * 3600) && (act.tick & 0x10) ? 11 : 0;
     int sec = (act.courseTime / 60) % 60;
     int hundredths = (int)__builtin_floor((act.courseTime % 60) * 100.0 / 60.0 + 0.5);
     int t[7];
@@ -326,7 +347,12 @@ static void hud_update(int draw) {
     else { t[0] = act.courseTime / 3600; t[1] = 10; t[2] = sec / 10; t[3] = sec % 10; t[4] = 10; t[5] = hundredths / 10; t[6] = hundredths % 10; }
     for (int i = 0; i < 7; i++) hud_glyph(t[i] + red, 25 + i * 8, 12);
     int lives = act.lives > 9 ? 9 : act.lives == 0 ? 0 : act.lives - 1;
-    hud_glyph(lives, 22, 143);
+    if (!time_attack()) hud_glyph(lives, 22, 143);
+    if (act.timerReversed) {
+      if (act.courseTime < 20 * 60 && act.courseTime % 60 == 0 && act.courseTime != 0) play_song(139);
+    } else {
+      if (act.courseTime > 9 * 3600 + 40 * 60 && act.courseTime < 10 * 3600 && act.courseTime % 60 == 0) play_song(139);
+    }
   }
   if (act.ringCount == 0) h->flash = (h->flash + 1) & 31;   // it only counts while it shows
 }
@@ -342,6 +368,12 @@ static void late_tiles_copy(int frame);
 static void late_tiles_step(void);
 static void late_tiles_draw(void);
 
+// Sonic as his task (0x3000) left him: his sprite is drawn from this, so a task after his that moves or turns him, as a
+// shot that hurts him or a hang bar, shows on the next frame's picture (drawSonic in engine/game.js)
+static Player shown, partnerShown;
+static int shownSet;
+static void sonic_shown(void) { shown = act.player; shownSet = 1; }
+
 static void draw_frame(void) {
   const Level *row = act.stage.row;
   if (restoreColour) { restoreColour = 0; e.bgPalette[0] = holdColour; e.flags |= FLAGS_UPDATE_BG_PALETTES; }
@@ -349,6 +381,15 @@ static void draw_frame(void) {
   int hold = act.frames <= 2 && !act.afterLevel;
   int camX = hold ? act.startCamX : (int)act.cam.x;
   int camY = hold ? act.startCamY : (int)act.cam.y;
+  // the first frame after the act before draws the stage's layers from its corner, where its making left them; the
+  // sprites are already where the camera has them
+  int spriteX = camX, spriteY = camY;
+  if (act.cam.held) { camX = act.cam.layerX; camY = act.cam.layerY; act.cam.held = 0; }
+  if (act.afterLevel && act.frames == 1) camX = camY = 0;
+  // the course select's act whose stage init draws its layers from its corner shows them there on its first picture
+  // after its load, and its background where it starts: the camera's task, first run then, only sets itself going
+  int fromCorner = act.byCourseSelect && row->layersOnFirstLoad && act.frames == 2;
+  if (fromCorner) camX = camY = 0;
   // the act has no blend, and its first frames keep the course select's display, as the original does
   // (Ice Mountain's background update sets its blend in the camera's task, which the title card's end clears)
   if (!row->ownsBlend) { e.bldCnt = 0; e.bldAlpha = 0x0010; }
@@ -371,10 +412,16 @@ static void draw_frame(void) {
   int layerX = camX - act.cam.wrappedThisFrame;
   fill_layer(0xF000, LAYER_FRONT, layerX, camY);
   fill_layer(0xF800, LAYER_BACK, layerX, camY);
-  // the zone's StageBgUpdate
-  if (row->drawBackground) row->drawBackground(camX, camY);
+  // the zone's StageBgUpdate, which the camera's first run leaves for the next
+  if (fromCorner) e.bgScroll[6] = e.bgScroll[7] = 0;
+  else if (row->drawBackground) row->drawBackground(camX, camY);
 
-  player_draw(&act.player, camX, camY);
+  player_draw(shownSet ? &shown : &act.player, spriteX, spriteY);
+  // Amy's hearts, whose task (0x3001) runs just after hers
+  act_amy_hearts_draw();
+  // and the CPU partner as his task (0x3001) left him, just after Sonic
+  if (act.hasPartner) player_draw(shownSet ? &partnerShown : &act.partner, spriteX, spriteY);
+  shownSet = 0;
 }
 
 // UpdateBgAnimationTiles: the front layer's first tiles change every animDelay camera runs; frame 0 is the tileset,
@@ -412,29 +459,34 @@ static void late_tiles_draw(void) {
 }
 void act_copy_tiles(int frame) { late_tiles_copy(frame); }
 
+// UI graphics 39, which the character select loads into sprite VRAM from tile 1: its tiles 19 and 20 are the two a
+// zero-ring count reads past its string on its first frame (sub_8053BAC). They stay there until the player's own frames
+// write over them, as Tails' larger ones do on the card and Sonic's only later. The Dreamport's recordings that skip the
+// character select still find them there, but in an act whose row has them blank. After the act before, the player's
+// own frames have long been over them, and they stay his.
+static void menu_leftovers(void) {
+  // X Zone's first card leaves them blank only for Sonic
+  if (act.stage.row->blankZeroTiles && ctx.character == CHARACTER_SONIC) { memset(gba_vram + OBJ_VRAM + (HUD_WHITE - 64) * 32, 0, 2 * 32); return; }
+  uint32_t leftTiles, leftPalette;
+  UiSlot layout;
+  ui_graphics(39, &leftTiles, &leftPalette, &layout);
+  copy_rom(leftTiles + 19 * 32, OBJ_VRAM + (HUD_WHITE - 64) * 32, 2 * 32);
+}
+
 // the HUD's tiles and colours (hudGraphics): the white and red digits, the ring and the face. The original loads
 // them as the HUD starts, after the title card's frame, which is why the card's own palette 6 is loaded later too.
 static void hud_load(void) {
   uint32_t fontTiles, fontPalette, faceTiles, facePalette, ringTiles, ringPalette;
   UiSlot layout;
   ui_graphics(0, &fontTiles, &fontPalette, &layout);
-  ui_graphics(1, &faceTiles, &facePalette, &layout);
+  ui_graphics(1 + ctx.character, &faceTiles, &facePalette, &layout);   // UIGFX_UI_ICON_SONIC + gSelectedCharacter
   ui_graphics(5, &ringTiles, &ringPalette, &layout);
   copy_rom(fontTiles + 32 * 32, OBJ_VRAM + HUD_WHITE * 32, 22 * 32);
   copy_rom(fontTiles + 224 * 32, OBJ_VRAM + HUD_RED * 32, 22 * 32);
   copy_rom(ringTiles, OBJ_VRAM + HUD_RING * 32, 16 * 32);
   copy_rom(faceTiles, OBJ_VRAM + HUD_FACE * 32, 4 * 32);
-  // UI graphics 39, which the character select loads into sprite VRAM from tile 1 and nothing writes over before the act:
-  // its tiles 19 and 20 are the two a zero-ring count reads past its string on its first frame (sub_8053BAC). The
-  // Dreamport's recordings that skip the character select still find them there, but in an act whose row has them blank
-  if (act.stage.row->blankZeroTiles) memset(gba_vram + OBJ_VRAM + (HUD_WHITE - 64) * 32, 0, 2 * 32);
-  else {
-    uint32_t leftTiles, leftPalette;
-    ui_graphics(39, &leftTiles, &leftPalette, &layout);
-    copy_rom(leftTiles + 19 * 32, OBJ_VRAM + (HUD_WHITE - 64) * 32, 2 * 32);
-  }
   for (int i = 0; i < 16; i++) e.objPalette[6 * 16 + i] = (uint16_t)rom_u16(fontPalette + i * 2);
-  for (int i = 0; i < 16; i++) e.objPalette[i] = (uint16_t)rom_u16(facePalette + i * 2);
+  for (int i = 0; i < 16; i++) e.objPalette[ctx.character * 16 + i] = (uint16_t)rom_u16(facePalette + i * 2);
   e.flags |= FLAGS_UPDATE_OBJ_PALETTES;
 }
 
@@ -454,7 +506,9 @@ void act_random_seed(uint32_t seed) {
 static uint32_t act_random_state(void) { return act.stage.row->sharedRandom ? ctx.seed : act.seed; }
 
 // --- what Sonic's moves ask of the act (the world's hooks in engine/game.js) --------------------------------------------
-enum { SE_LIFE_LOST = 119, SE_DROWNED = 192, SPIN_DASH_FREEZE = 10 };
+enum { SE_LIFE_LOST = 119, SE_DROWNED = 192, SE_TIME_UP = 166, SPIN_DASH_FREEZE = 10 };
+// the save's time limit, 1 when it's off (timeLimitDisabled)
+#define SAVE_TIME_LIMIT_OFF 0x1A
 
 // brake dust stays where it appeared, flipped by the game's random numbers (CreateBrakingDustEffect): the effect itself
 // isn't here yet, but its draw moves the sequence the fireworks' positions come from on
@@ -466,25 +520,79 @@ void act_player_died(void) {
   act.clockStopped = 1;
   play_song(act.player.drownSeconds < 0 ? SE_DROWNED : SE_LIFE_LOST);
 }
-// the act starting over with a life less is not here yet
-void act_life_lost(void) {}
-// CreateStageResults, as the goal hands over: the act's rings into the save's ring bank and the next level unlocked
-// (X Zone's way to the Moon Zone decides that itself, and isn't here yet), then the results' tasks, which first run
-// this frame, after the goal's
-void act_stage_results(void) {
+// Task_PlayerHandleDeath's HandleLifeLost: his task ends, his rings and a life go, and with lives left every task goes and
+// the act starts over at the end of it (restart_act), so nothing after it runs this frame. The last life brings the game
+// over, with the act running on behind it; with no continue left, as the continue's countdown isn't in C yet, though a
+// special stage gives continues (spGame.continues)
+// (CreateGameOverScreen(OVER_CAUSE_TIME_UP))
+static int lifeLost;
+void act_life_lost(void) {
+  if (lifeLost || act.playerGone) return;
+  act.noPause = 1;
+  // Time Attack: every task goes and the lobby comes, with no life lost
+  if (time_attack()) { lifeLost = 1; return; }
+  act.ringCount = 0;
+  act.lives = (act.lives - 1) & 0xFF;
+  if (act.lives != 0) { lifeLost = 1; return; }
+  act.playerGone = 1;
+  gameover_start();
+}
+// a frame of the course clock, where the act's task doesn't run it: gCheckpointTime counts up whichever way the clock goes
+static void clock_step(void) {
+  act.clockTime++;
+  if (act.timerReversed) {
+    if (--act.courseTime <= 0) act.courseTime = 0;
+  } else act.courseTime++;
+}
+
+#define EGG_ROCKET_COUNTDOWN (3 * 3600)
+// CreateStageResults in Time Attack: the act's rings into the save's ring bank, nothing unlocked, and in place of the
+// results the Time Attack result over the act, for the time the act took (Egg Rocket's by gCheckpointTime)
+static void time_attack_results(int nextFrame) {
   int level = act.stage.level;
   save_add_ring_bank(act.ringCount);
-  if (level != LEVEL_X_ZONE && save_unlocked_level(0) < level + 1) save_set_unlocked_level(0, (uint16_t)(level + 1));
-  results_start(level, act.ringCount, act.courseTime, level == LEVEL_X_ZONE, 0);
+  int courseTime = act.courseTime;
+  if (level == LEVEL_EGG_ROCKET) {
+    egg_rocket_results();
+    courseTime = act.clockTime <= EGG_ROCKET_COUNTDOWN ? 1 : act.clockTime - EGG_ROCKET_COUNTDOWN;
+  }
+  time_attack_result_start(level, (uint32_t)courseTime, nextFrame);
+}
+// CreateStageResults, as the goal hands over: the act's rings into the save's ring bank and the next level unlocked
+// (X Zone's way to the Moon Zone decides that itself, and isn't here yet), then the results' tasks, which first run
+// this frame, after the goal's, or with `nextFrame` on the next one
+void act_stage_results(int nextFrame) {
+  int level = act.stage.level;
+  act.noPause = 1;
+  if (time_attack()) { time_attack_results(nextFrame); return; }
+  save_add_ring_bank(act.ringCount);
+  if (level != LEVEL_X_ZONE && save_unlocked_level(ctx.character) < level + 1)
+    save_set_unlocked_level(ctx.character, (uint16_t)(level + 1));
+  int courseTime = act.courseTime;
+  if (level == LEVEL_EGG_ROCKET) {
+    // the rocket's clock counts down, so the time bonus goes by the time the act took (gCheckpointTime), less the
+    // countdown's 3:00; and the sky behind stops where it is
+    egg_rocket_results();
+    courseTime = act.clockTime <= EGG_ROCKET_COUNTDOWN ? 1 : act.clockTime - EGG_ROCKET_COUNTDOWN;
+  }
+  results_start(level, act.ringCount, courseTime, level == LEVEL_X_ZONE, nextFrame);
 }
 
 // GoToNextLevel, once the save is written: the next act, made inside the task as the course select makes one, with the
-// score, the lives and the game's random numbers carried over (GameStageStart leaves them). Its first frame runs at
-// once, then it loads for NEXT_LEVEL_LOAD frames (act_task). A next act that isn't in C yet stops the game there, on
+// score, the lives and the game's random numbers carried over (GameStageStart leaves them). Its first frame comes
+// once it has loaded (act_task). A next act that isn't in C yet stops the game there, on
 // the black the original's screen is while its stage loads, as the front end does (front.c), rather than load with
 // another act's music and background
-enum { NEXT_LEVEL_LOAD = 2 };
+static void start_music(void);
+void act_task(Task *t);
 static int nextLevel;
+static uint16_t lastObjects[128 * 4];
+// the layers' maps (screens 28 to 31): a new zone's first loading frame shows the act before's, drawn with the new
+// zone's tiles, as the original's does, and the new zone's are back from the next frame
+#define LAYER_MAPS 0xE000
+#define LAYER_MAPS_SIZE 0x1000
+static uint8_t oldMaps[LAYER_MAPS_SIZE], newMaps[LAYER_MAPS_SIZE];
+static int mapsShownOld;
 // the frame after, once the screen has taken the black, the game stops
 static void stop_on_black(Task *t) { destroy_task(t); ctx.done = 1; }
 static void next_act(void) {
@@ -500,13 +608,32 @@ static void next_act(void) {
   int lives = act.lives, score = act.score;
   // gPseudoRandom goes on from the act before, whichever of the C's two sequences that act drew from
   uint32_t seed = act_random_state();
+  memcpy(oldMaps, gba_vram + LAYER_MAPS, LAYER_MAPS_SIZE);
+  comingOn = 1;
   act_start(nextLevel, -1, 0);
+  sound_late(LOAD_ACT_NEXT, nextLevel);
+  comingOn = 0;
   act.lives = lives; act.score = score;
   act_random_seed(seed);
   act.afterLevel = 1;
   act.musicStarts = 1;
-  act_frame_now();
-  act.stallLoad = 0; act.loadFrames = NEXT_LEVEL_LOAD;
+  // the frame the stage is made on still shows the results' last sprites, in the new act's colours; none of its own
+  // tasks has run
+  start_music();
+  if (act.task) destroy_task(act.task);
+  act.task = create_task(act_task, NULL, 0x0F00, 0, NULL);
+  // how long the stage takes the original to load: a frame for a zone's second act and for X Zone, two for a new zone
+  act.stallLoad = 0; act.loadFrames = nextLevel & 1 || nextLevel == LEVEL_X_ZONE ? 2 : 3;
+  titlecard_made(1);
+  // the objects' tasks are after the results' in the list, so they run at once, unseen: the rings' spin and the
+  // first objects' animations are a step on when the act's own first frame comes
+  objects_set_drawing(0);
+  objects_run_before_hud();
+  objects_run_after_hud();
+  objects_set_drawing(1);
+  // this frame's V-blank is spent making the stage and doesn't swap the two H-blank tables, which Secret Base's
+  // spotlights show
+  e.primary ^= HBLANK_BUFFER;
 }
 // m4aSoundVSyncOn once the save is written, then the next act
 static void next_act_after_write(void) {
@@ -514,12 +641,87 @@ static void next_act_after_write(void) {
   next_act();
 }
 
+// HandleLifeLost with lives left (restartAct in the JavaScript's game.js): every task goes, and the act starts over
+// (CreateGameStage) with its title card from black, the player at the last checkpoint he passed or the act's start
+// without one, and the CPU partner at the act's start, flying back from there. The score, the lives, the stage clock, the
+// checkpoint and the game's random numbers carry on; the course time goes back to the checkpoint's (to 0 if it had run
+// past 10:00). The act's music starts again at once, and the original spends the whole next frame loading the act.
+#define MAX_COURSE_TIME (10 * 3600)
+static int restarting, respawnIndex, respawnX, respawnY;
+// the special stages (below): the act as the character left it, and the spring that sent them out of it
+enum { SPECIAL_SPRING = 102, START_LIVES = 3 };
+static Act actLeft;
+static int specialPending, specialX, specialY;
+static void restart_act(void) {
+  Act was = act;
+  uint32_t seed = act_random_state();
+  destroy_tasks(0, 0xFFFF);
+  act_tasks_destroy_all();
+  act.task = NULL;
+  clear_queues();
+  restarting = 1;
+  respawnIndex = was.checkpointIndex; respawnX = was.checkpointX; respawnY = was.checkpointY;
+  act_start(was.stage.level, -1, 0);
+  sound_late(LOAD_ACT_AGAIN, was.stage.level);
+  restarting = 0;
+  act.restarted = 1;
+  act.lives = was.lives; act.score = was.score; act.tick = was.tick;
+  act_random_seed(seed);
+  act.checkpointIndex = was.checkpointIndex; act.checkpointX = was.checkpointX; act.checkpointY = was.checkpointY;
+  act.checkpointTime = was.checkpointIndex && was.courseTime < MAX_COURSE_TIME ? was.checkpointTime : 0;
+  act.courseTime = act.clockTime = act.checkpointTime;
+  act.musicStarts = 0;
+  music_call(MUSIC_STAGE, act.stage.music);
+  act.stallLoad = 0; act.loadFrames = 2;
+  titlecard_made(0);
+  // the new act's tasks after the ones that went run at once, unseen, as after the act before
+  objects_set_drawing(0);
+  objects_run_before_hud();
+  objects_run_after_hud();
+  objects_set_drawing(1);
+}
+
+// sub_805D4F0, as the special stage's results end: the act starts again (CreateGameStage) as after a life lost but with
+// none lost, its checkpoint 16 px up and left of the spring the character left on, with its title card, and the original
+// spends the next frame loading it. The checkpoint then goes back to the one he had passed, and the special springs are
+// plain until the act starts over. The course time, the stage clock, the rings and the last checkpoint passed are what
+// they were when he left; the score, the lives and the game's random numbers what the special stage leaves. (No
+// recording plays this yet.)
+void act_come_back(void) {
+  Act was = actLeft;
+  restarting = 1;
+  respawnIndex = 1; respawnX = specialX - 16; respawnY = specialY - 16;
+  act_start(was.stage.level, -1, 0);
+  restarting = 0;
+  act_active = 1;
+  act.restarted = 1;
+  act.player.plainSprings = 1;
+  act.lives = spGame.lives; act.score = (int)spGame.score; act.tick = was.tick; act.ringCount = was.ringCount;
+  act_random_seed(spGame.seed);
+  act.checkpointIndex = was.checkpointIndex; act.checkpointX = was.checkpointX; act.checkpointY = was.checkpointY;
+  act.checkpointTime = was.checkpointIndex && was.courseTime < MAX_COURSE_TIME ? was.checkpointTime : 0;
+  act.courseTime = was.courseTime; act.clockTime = was.clockTime;
+  act.palettesFrom = e.frameCount + 2;
+  act.musicStarts = 0;
+  music_call(MUSIC_STAGE, act.stage.music);
+  act.stallLoad = 0; act.loadFrames = 2;
+  titlecard_made(0);
+  objects_set_drawing(0);
+  objects_run_before_hud();
+  objects_run_after_hud();
+  objects_set_drawing(1);
+}
+
 // GoToNextLevel: every task goes, the act's objects with their sprites' VRAM, the queues stop, the music stops, and
-// the save is written (the screen keeping its frame while the flash takes it), before the next act starts. Against the
-// original, the write and the next stage's start take a frame more than WRITE_FRAMES here for an act in C, whose first
-// frame has no V-blank; the black of one that isn't shows on the frame the write ends, as the original's stage start's
+// the save is written (the screen keeping its frame while the flash takes it), before the next act starts on the
+// frame the write ends; the black of an act that isn't in C shows on that frame too, as the original's stage start's
+static void time_attack_to_lobby(void);
 static void go_to_next_level(void) {
+  if (time_attack()) { time_attack_to_lobby(); return; }
   nextLevel = act.stage.level + 1;
+  // what the objects' tasks drew this frame, before the results' task ended it, is on the screen for a frame as the
+  // next act loads: the animals of a capsule, flying on
+  engine_take_oam(lastObjects);
   destroy_tasks(0, 0xFFFF);
   act_tasks_destroy_all();
   act.task = NULL;
@@ -527,12 +729,99 @@ static void go_to_next_level(void) {
   // the sound engine is off while the save is written (m4aSoundVSyncOff), so its frames stop with the screen's
   stop_all_songs();
   sound_vsync_off();
-  if (save_write()) engine_stall(level_in_c(nextLevel) ? WRITE_FRAMES + 1 : WRITE_FRAMES, next_act_after_write);
+  if (save_write()) engine_stall(WRITE_FRAMES, next_act_after_write);
   else next_act_after_write();
+}
+
+// CreateCongratulationsAnimation's start, after the last stage's results: every task goes and the save is written, as
+// before the next act, and then the normal ending takes the screen (congratulations.c)
+static uint32_t endingSeed;
+static void congratulations_after_write(void) {
+  sound_vsync_on();
+  act_active = 0;
+  front_random_seed(endingSeed);
+  create_congratulations();
+}
+static void go_to_congratulations(void) {
+  endingSeed = act_random_state();
+  destroy_tasks(0, 0xFFFF);
+  act_tasks_destroy_all();
+  act.task = NULL;
+  clear_queues();
+  stop_all_songs();
+  sound_vsync_off();
+  if (save_write()) engine_stall(WRITE_FRAMES, congratulations_after_write);
+  else congratulations_after_write();
+}
+
+// Time Attack's life lost and pause menu end the run: every task goes, the stage's with every music player
+// (TaskDestructor_GameStage's m4aMPlayAllStop), the queues stop, and the lobby comes, for the act that was played, with
+// the game's random numbers where the act left them
+static void end_run(void) {
+  front_random_seed(act_random_state());
+  ctx.currentLevel = act.stage.level;
+  destroy_tasks(0, 0xFFFF);
+  act_tasks_destroy_all();
+  time_attack_result_stop();
+  player_free(&act.player);
+  if (act.hasPartner) player_free(&act.partner);
+  act.task = NULL;
+  stop_all_songs();
+  clear_queues();
+  clear_bg_sprites();
+}
+static void leave_for_lobby(void) {
+  end_run();
+  act_active = 0;
+  create_time_attack_lobby();
+}
+// GoToNextLevel in Time Attack: as the run ends, the sound engine off while the save is written, then the lobby
+static void lobby_after_write(void) {
+  sound_vsync_on();
+  act_active = 0;
+  create_time_attack_lobby();
+}
+static void time_attack_to_lobby(void) {
+  end_run();
+  sound_vsync_off();
+  if (save_write()) engine_stall(WRITE_FRAMES, lobby_after_write);
+  else lobby_after_write();
+}
+
+// Task_8056AC8, once the game over's song has ended: the music stops and the save is written, then every task goes and
+// the game goes back to the SEGA logo
+static void sega_logo_after_write(void) {
+  sound_vsync_on();
+  act_active = 0;
+  create_sega_logo();
+}
+static void go_to_sega_logo(void) {
+  destroy_tasks(0, 0xFFFF);
+  act_tasks_destroy_all();
+  act.task = NULL;
+  clear_queues();
+  stop_all_songs();
+  sound_vsync_off();
+  if (save_write()) engine_stall(WRITE_FRAMES, sega_logo_after_write);
+  else sega_logo_after_write();
 }
 
 void act_go_to_next_level(void) {
   go_to_next_level();
+}
+
+/** The level the act plays (gCurrentLevel). */
+int act_level(void) { return act.stage.level; }
+
+/** A soft reset (front.c): the act stops where it is, its objects, its results and its game over with it. */
+void act_soft_reset(void) {
+  act_tasks_destroy_all();
+  time_attack_result_stop();
+  act.task = NULL;
+  results_stop();
+  gameover_stop();
+  lifeLost = 0;
+  act_active = 0;
 }
 
 int act_goal_passed(void) { return act.goalReached; }
@@ -543,21 +832,71 @@ int act_checkpoint_index(void) { return act.checkpointIndex; }
 void act_checkpoint_pass(int index, int x, int y) {
   act.checkpointIndex = index; act.checkpointX = x; act.checkpointY = y; act.checkpointTime = act.courseTime;
 }
-// the C version has no special stages yet, so a special spring is a plain spring, as the JavaScript version's is without
-// one; act_special_stage is then never reached
-int act_special_stages(void) { return 0; }
-void act_special_stage(int x, int y) { (void)x; (void)y; }
-// the special spring holds the camera where it was, so what is drawn after it this frame is placed from there
-void act_hold_camera(int x, int y) { act.cam.x = x; act.cam.y = y; }
+// --- the special stages (special.h) ------------------------------------------------------------------------------
+// A special spring sends the character out of the act: no task after it runs this frame, and once the frame is over the
+// act hands what the special stage needs over to it (front.c), as the JavaScript's handOver does. Coming back after the
+// results, the act starts again from the spring (act_come_back).
+int act_special_stages(void) { return 1; }
+void act_special_stage(int x, int y) {
+  specialPending = 1; specialX = x; specialY = y;
+  act_tasks_stop();
+}
+int act_special_pending(void) { return specialPending; }
+// what the act hands over: the score, the lives and the game's random numbers, with the save's emeralds and buttons
+static void hand_over(int level, int score, int lives, uint32_t seed) {
+  spGame.level = level; spGame.character = ctx.character; spGame.score = (uint32_t)score; spGame.lives = lives;
+  spGame.seed = seed; spGame.emeralds = SAVE_CHAOS_EMERALDS; spGame.btnConfig = save.bytes[0x1B];
+}
+/** The act's frame a special spring ended is over: the act stops, every music player with it, and the special stage
+ *  starts. */
+void act_to_special_stage(void) {
+  specialPending = 0;
+  hand_over(act.stage.level, act.score, act.lives, act_random_state());
+  actLeft = act;
+  act_tasks_destroy_all();
+  act.task = NULL;
+  act_active = 0;
+  stop_all_songs();
+  special_stage_enter();
+}
+/** A start point's `special`: what the act would hand over had the character gone straight from its start at a new game
+ *  to its special spring (the JavaScript's specialSpringStart). 0 for an act without a special spring. */
+int act_special_start_point(int level) {
+  int x, y;
+  if (!entities_find(level, SPECIAL_SPRING, &x, &y)) return 0;
+  memset(&actLeft, 0, sizeof actLeft);
+  actLeft.stage.level = level;
+  specialX = x; specialY = y;
+  hand_over(level, 0, START_LIVES, 0);
+  return 1;
+}
+// the special spring holds the camera where it was, after the camera's task has moved it and drawn the layers there, so
+// what is drawn after it this frame is placed from there, and the layers stay where they were drawn
+void act_hold_camera(int x, int y) {
+  if (!act.cam.held) { act.cam.held = 1; act.cam.layerX = (int)act.cam.x; act.cam.layerY = (int)act.cam.y; }
+  act.cam.x = x; act.cam.y = y;
+}
 
 // the HUD starts: its zero-ring flash from the act's own value, or where a counter that flashes in sixteens begins
 static void hud_begin(void) {
   act.hud.active = 1;
-  act.hud.flash = act.stage.row->zeroFlashesInSixteens ? (act.stage.hudFlash + 7) & 31 : hud_flash();
+  const Level *row = act.stage.row;
+  act.hud.flash = row->zeroFlashesInSixteens ? (act.stage.hudFlash + 7) & 31
+    : act.afterLevel || act.restarted ? HUD_FLASH_AFTER : hud_flash();
+}
+
+// A start point's `put=F&put-x=X&put-y=Y&put-camera-x=CX&put-camera-y=CY`: the character's centre at (X, Y) and the
+// camera at (CX, CY) as the page's frame F starts, where a recording's sets put the original's, as Amy over Neo Green
+// Hill act 1's special spring in soft-reset-special-stage
+static void put_start_point(void) {
+  if (!gba_start_point("put") || front_frame() != (uint32_t)gba_start_number("put", -1)) return;
+  act.player.x = (double)gba_start_number("put-x", 0); act.player.y = (double)gba_start_number("put-y", 0);
+  act.cam.x = (double)gba_start_number("put-camera-x", 0); act.cam.y = (double)gba_start_number("put-camera-y", 0);
 }
 
 static void act_frame(void) {
   const Level *row = act.stage.row;
+  put_start_point();
   if (musicSync) {
     musicSync = 0;
     // the act's music starts on the frame after its first picture: the frames before the recording's first one are the
@@ -569,7 +908,7 @@ static void act_frame(void) {
       dp_sound_render(count);
     }
   }
-  if (act.tick == 0) {
+  if (act.frames == 0) {
     // the first frame takes the screen from the course select or the act before, whose sprites go with it, those drawn
     // earlier this frame too
     clear_oam();
@@ -583,29 +922,43 @@ static void act_frame(void) {
   // (Task_CallUpdateCamera), and counts the animated tiles from the frame after that, in UpdateCamera
   int camRuns = act.cam.started && act.frames > 1;
   if (act.frames > 0) objects_run_before_camera();
-  if (camera_update(&act.cam, &act.player)) act.cam.bgUpdates++;
+  // the camera's task (0x0F00) doesn't run on the frame the course select makes the act, which runs only the tasks after
+  // the course select's own
+  int made = act.byCourseSelect && act.frames == 0;
+  if (!made && camera_update(&act.cam, &act.player)) act.cam.bgUpdates++;
   // UpdateCamera's fnBgUpdate
-  if (row->cameraMoved) row->cameraMoved(camRuns);
-  if (camRuns || (row->runsFromFirstFrame && act.frames > 0)) { if (row->tilesShownLate) late_tiles_step(); else animate_stage_tiles(); }
+  // after the act before, the stage's background update and its animated tiles run from the act's second frame, a
+  // frame before the camera
+  int bgRuns = camRuns || (act.afterLevel && act.frames > 0);
+  if (row->cameraMoved) row->cameraMoved(bgRuns);
+  if (bgRuns || (row->runsFromFirstFrame && act.frames > 0)) { if (row->tilesShownLate) late_tiles_step(); else animate_stage_tiles(); }
   // the objects' tasks first run on the frame after the one that makes the act, which is where the rings' spin starts;
   // those from the HUD's priority on run after it, below
   int objectsRun = act.frames > 0 || row->runsFromFirstFrame;
   if (row->beforeObjects) row->beforeObjects();
   if (objectsRun) objects_run_before_hud();
+  // a special spring sent the character out of the act: nothing after it runs this frame. The camera's task had already
+  // updated the zone's background where it moved, with the H-blank copy that the frame's V-blank still starts
+  if (specialPending) {
+    if (row->drawBackground) row->drawBackground(act.cam.held ? act.cam.layerX : (int)act.cam.x, act.cam.held ? act.cam.layerY : (int)act.cam.y);
+    act.cam.held = 0;
+    return;
+  }
+  // the game over's tasks, made after the objects' at their priority
+  if (gameover_step()) { go_to_sega_logo(); return; }
   // the title card's task (0x2100) runs before Sonic's and the clock's, so the frame it ends frees the pad and starts
   // the clock; its pieces and fade go over the act, and it sets the display while it shows, after draw_frame
   int cardShows = !act.cardDone;
   if (cardShows) card_update((e.pressed & (KEY_A | KEY_B | KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT)) != 0);
   // the results' task (0x2100) and its pieces' (0x2120); the frame they end, the next act takes over
+  if (time_attack_result_active() && !time_attack_result_run()) { go_to_next_level(); return; }
   if (results_active() && !results_run()) {
-    if (act.stage.level != LEVEL_X_ZONE || !moon_opens()) {
-      go_to_next_level();
-      return;
-    }
+    if (act.stage.level != LEVEL_X_ZONE) { go_to_next_level(); return; }
+    if (!moon_opens()) { go_to_congratulations(); return; }
   }
   // the HUD's task runs before Sonic's and before the clock, as the original makes it (0x2180), and the objects' tasks from
   // its priority after it, so an icicle (0x2200) that hurts Sonic takes his rings after the HUD has shown them
-  if (act.cardDone) hud_update(1);
+  if (act.cardDone && !act.hud.gone) hud_update(1);
   if (objectsRun) objects_run_after_hud();
   PlayerInput in = {
     .left = (e.input & KEY_LEFT) != 0, .right = (e.input & KEY_RIGHT) != 0,
@@ -622,33 +975,86 @@ static void act_frame(void) {
     in.left = 0; in.right = 1; in.jump = 1; in.attack = 0; in.jumpPressed = 0; in.attackPressed = 0;
     act.firstFrame = 0;
   }
+  if (act.player.wasIgnoreInput && !act.player.ignoreInput) {
+    if (e.input & KEY_A) in.jumpPressed = 1;
+    if (e.input & KEY_B) in.attackPressed = 1;
+    act.player.heldDirs = 0;
+  }
+  act.player.wasIgnoreInput = act.player.ignoreInput;
+  // the CPU partner hears Sonic's buttons, or nothing while the card or an object holds them (sub_804D13C)
+  if (act.hasPartner) partner_hear(!act.cardDone || act.player.ignoreInput ? NULL : &in);
   // an object holding him takes the pad from him: he reads nothing held or pressed, or only right held as the goal post
   // gives him to run off (HOLD_RIGHT)
   if (act.player.ignoreInput)
     in = act.player.heldRight ? (PlayerInput){ .right = 1 } : act.player.heldLeft ? (PlayerInput){ .left = 1 } : (PlayerInput){0};
-  player_step(&act.player, &in);
-  // a start point's first act frame is the held A's jump, one frame after it began, when it has the word for it
-  if (act.drawn == 0 && act.fromStartPoint && gba_start_number("jump", 0)) player_start_jump(&act.player);
-  player_animate(&act.player, &in);
-  // what the frame shows of him: his own task has set his place, and the tasks after it, such as a hang bar's (0x8000),
-  // move him for the next frame
-  act.player.drawX = act.player.x; act.player.drawY = act.player.y;
+  // after the last life, the player's task has gone
+  if (!act.playerGone) {
+    player_step(&act.player, &in);
+    if (lifeLost) {
+      lifeLost = 0;
+      if (time_attack()) leave_for_lobby();
+      else restart_act();
+      return;
+    }
+    // a start point's first act frame is the held A's jump, one frame after it began, when it has the word for it
+    if (act.drawn == 0 && act.fromStartPoint && gba_start_number("jump", 0)) player_start_jump(&act.player);
+    if (!act.playerGone) {
+      player_animate(&act.player, &in);
+      player_tails_step(&act.player);
+    }
+  }
+  sonic_shown();
+  // the CPU partner's task, just after Sonic's (0x3001)
+  if (act.hasPartner) { partner_task(!act.cardDone); partnerShown = act.partner; }
   if (row->palettesAfterSonic)
     for (int i = 0; i < act.palCount; i++) palette_animation_step(&act.pal[i]);
   if (act.frames > 0 || row->runsFromFirstFrame) objects_run_late();
   // what the music manager reads of Sonic (0x4000)
   const Player *sonic = &act.player;
   music_call(MUSIC_PLAYER, (sonic->invincible > 0) | (sonic->speedUp > 0) << 1 | !sonic->dead << 2);
-  // the stage clock's task (0xFF00): the course time counts once the card has ended, the stage's tick every frame
-  if (!act.clockStopped) act.courseTime++;
+  // the stage clock's task (0xFF00): the course time counts once the card has ended, the stage's tick every frame; it
+  // keeps this frame's gravity as the last (gPrevStageFlags), so a flip turns his Y speed around once
+  // in the single-player game Start opens the pause menu from when the title card ends until a life is lost or the
+  // results start. Its task comes last among the act's, so it runs this frame only after the water's, which has its
+  // priority; otherwise from the next frame
+  if (act.cardDone && !act.noPause && (e.pressed & KEY_START)) pause_menu_create(leave_for_lobby, !water_runs());
+  act.player.wasInverted = act.player.inverted;
+  act.partner.wasInverted = act.partner.inverted;
+  if (!act.clockStopped) {
+    act.clockTime++;
+    if (act.timerReversed) {
+      if (--act.courseTime <= 0) {
+        // time up stops the clock (STAGE_FLAG__ACT_START), so this happens once
+        act.courseTime = 0;
+        act.clockStopped = 1;
+        if (act.stage.level == LEVEL_EGG_ROCKET) boss_shake(0x800, 8, 16, -1, SHAKE_VERTICAL | SHAKE_HORIZONTAL | SHAKE_RANDOM);
+        act.player.dead = 1;
+      }
+    } else if (++act.courseTime > MAX_COURSE_TIME) {
+      // past 10:00 the clock stops, and with the time limit on, or in Time Attack whatever it is, it's a time up: his
+      // shield and items go, and he dies thrown up as high as a jump, with SE_TIME_UP
+      act.clockStopped = 1;
+      if (!save.bytes[SAVE_TIME_LIMIT_OFF] || time_attack()) {
+        player_time_up(&act.player);
+        play_song(SE_TIME_UP);
+      }
+    }
+  }
   act.tick++;
   // the water's task (0xFFFE), after the clock's
   if (act.frames > 0) water_task();
   act.frames++;
   draw_frame();
-  if (row->afterFrame) row->afterFrame(1);
+  // the first frame after the act before still has the layers where the stage's making left them, at 0
+  if (act.afterLevel && act.frames == 1) for (int i = 2; i < 8; i++) e.bgScroll[i] = 0;
+  // the card's fade first: a stage's own tasks, such as Secret Base's spotlights, run after the card's and have the
+  // last word on the display
   if (cardShows) titlecard_display();
+  // (after the act before, its tasks first run on the act's second frame, as its objects do)
+  if (row->afterFrame) row->afterFrame(1);
   results_display();
+  time_attack_result_display();
+  gameover_display();
 }
 
 // the act's music, as the course select leaves it: the stage music manager (Task_StageMusicManager, priority 0x4000)
@@ -657,10 +1063,14 @@ static void act_frame(void) {
 static void start_music(void) {
   if (!act.musicStarts) return;
   act.musicStarts = 0;
-  music_call(act.afterLevel ? MUSIC_STAGE : MUSIC_STAGE_IN, act.stage.music);
+  // Time Attack's start at full volume too
+  music_call(act.afterLevel || time_attack() ? MUSIC_STAGE : MUSIC_STAGE_IN, act.stage.music);
 }
 
 static void act_loaded(void) {
+  // the load runs past the frame's V-blank, which keeps the screen, but the frame it took still ends with
+  // ClearOamBufferDma's swap of the two H-blank tables, as the original's does (Secret Base's spotlights show which)
+  if (!(e.flags & FLAGS_KEEP_HBLANK_BUFFER)) e.primary ^= HBLANK_BUFFER;
   // the palette animations first run on the frame after the load, as the original makes them
   start_palette_animations();
   act_frame();
@@ -669,11 +1079,29 @@ static void act_loaded(void) {
 void act_task(Task *t) {
   (void)t;
   if (act.loadFrames) {
-    // the next act after GoToNextLevel loads: on these frames the act's own tasks wait, but those at the objects'
-    // priority already run, its palette animations from the first, and the screen keeps the act's first frame
-    if (act.loadFrames-- == NEXT_LEVEL_LOAD) start_palette_animations();
-    objects_run_early();
-    return;
+    // the next act after GoToNextLevel loads: black, with the results' band where a zone's second act comes on
+    // (sub_80550F8). Then its first frame, whose palette animations are a step on already
+    if (mapsShownOld) { memcpy(gba_vram + LAYER_MAPS, newMaps, LAYER_MAPS_SIZE); mapsShownOld = 0; }
+    if (--act.loadFrames) {
+      titlecard_made(0);
+      // a new zone's first loading frame shows the act before's objects a last time, and its layers' maps
+      if (!(act.stage.level & 1) && act.loadFrames == 2) {
+        engine_show_oam(lastObjects);
+        memcpy(newMaps, gba_vram + LAYER_MAPS, LAYER_MAPS_SIZE);
+        memcpy(gba_vram + LAYER_MAPS, oldMaps, LAYER_MAPS_SIZE);
+        mapsShownOld = 1;
+        if (act.stage.row->layersOnFirstLoad) {
+          fill_layer(0xF000, LAYER_FRONT, 0, 0);
+          fill_layer(0xF800, LAYER_BACK, 0, 0);
+        }
+      }
+      return;
+    }
+    // an act whose palette animations run from the frame that makes it has made them already
+    if (!act.stage.row->runsFromFirstFrame) {
+      start_palette_animations();
+      for (int i = 0; i < act.palCount; i++) palette_animation_step(&act.pal[i]);
+    }
   }
   if (act.stallLoad) {
     // the frame the act takes to load: it skips its V-blank, so the screen and the palette keep the frame before
@@ -684,6 +1112,13 @@ void act_task(Task *t) {
     return;
   }
   act_frame();
+}
+
+/** The Time Attack card makes the act from its task at 0x2000, so the act's palette animations, made at that priority
+ *  with it, run once on that frame too (notes/the-time-attack-card-makes-the-act-a-priority-lower.md). */
+void act_made_at_card_priority(void) {
+  if (!act.palStarted) return;
+  for (int i = 0; i < act.palCount; i++) palette_animation_step(&act.pal[i]);
 }
 
 /** Keeps the screen black for this frame, as a menu's last frame is, while the act's first picture waits for the
@@ -745,7 +1180,9 @@ static void pre_run(int cardSkip, int preFrames, int prelude) {
     if (act.cardDone && !row->cardStepsOn) {
       // the frames after the card only settle the HUD's task, which starts as the card ends: the stage keeps the frame it
       // ended on, and only the clock and the HUD move on
-      if (!act.clockStopped) act.courseTime++;
+      if (!act.clockStopped) {
+        clock_step();
+      }
       hud_update(0);
       after++;
       continue;
@@ -779,12 +1216,16 @@ static void pre_run(int cardSkip, int preFrames, int prelude) {
     player_step(&act.player, &in);
     // a card with its own timing starts Sonic's animation on its 15th frame and the palette animations on its 16th
     if (!row->cardStepsOn || act.tick >= 15) player_animate(&act.player, &in);
+    player_tails_step(&act.player);
+    sonic_shown();
     if (act.tick > 0) objects_run_late();
     if (!row->cardStepsOn || act.tick >= 16)
       for (int i = 0; i < act.palCount; i++) palette_animation_step(&act.pal[i]);
     water_card_flush();   // the card's part in the water, after the palette animations as in the task list
     if (row->afterFrame && !loading) row->afterFrame(0);
-    if (!act.clockStopped && !(row->cardStepsOn && cardJustEnded)) act.courseTime++;
+    if (!act.clockStopped && !(row->cardStepsOn && cardJustEnded)) {
+      clock_step();
+    }
     if (wasDone && row->cardStepsOn) {
       // the act keeps stepping through the frames after its card, as its first recording starts there: the HUD's
       // zero-ring flash starts with the card's end, and the frames count towards the act's clock
@@ -808,15 +1249,12 @@ static void pre_run(int cardSkip, int preFrames, int prelude) {
 static int songPlaying;
 void act_song_playing(void) { songPlaying = 1; }
 
-// where an act's SoundMain starts in the chip's frame, after the act's V-blank work, measured on
-// sonic-ice-mountain-act-2; the menus' V-blanks do less, and their sound writes as it did before (#741)
-#define ACT_SOUND_MAIN_AT 52550
-
 static int startPointSpent;   // a start point has opened its act, so the acts after it start as the game starts them
 
 void act_start(int level, int cardSkip, int preFrames) {
-  gba_sound_psg_at(level_row(level)->soundAtOnce ? 0 : ACT_SOUND_MAIN_AT);
   memset(&act, 0, sizeof act);
+  // the screens after a soft reset are over once an act starts (front.c)
+  ctx.afterReset = 0;
   act.fromStartPoint = gba_start_point("level") != NULL && !startPointSpent;
   startPointSpent |= act.fromStartPoint;
   // gPseudoRandom is one sequence for the whole game: the act goes on with what the front left
@@ -825,7 +1263,10 @@ void act_start(int level, int cardSkip, int preFrames) {
   load_stage(level);
   const Level *row = act.stage.row;
   act.bgAnimFrame = 0; act.bgAnimShown = 0; act.bgAnimDelay = 0;
-  player_init(&act.player, act.stage.spawnX, act.stage.spawnY);
+  // after a life lost, the player starts again at the last checkpoint passed (SetStageSpawnPos)
+  int again = restarting && respawnIndex;
+  player_init(&act.player, again ? respawnX : act.stage.spawnX, again ? respawnY : act.stage.spawnY);
+  if (!comingOn && !restarting) menu_leftovers();
   create_camera(&act.cam, &act.player);
   act.startCamX = (int)act.cam.x; act.startCamY = (int)act.cam.y;
   act.lives = 3; act.score = 0; act.ringCount = 0;
@@ -843,7 +1284,20 @@ void act_start(int level, int cardSkip, int preFrames) {
   // act with water makes it there (CreateStageWaterTask)
   water_create(-1, 0);
   if (row->start) row->start();
-  titlecard_start(level, ctx.character);
+  // every task of the screen or the act before is gone, and with them their sprites' tiles: the card takes the
+  // heap's first
+  vram_reset();
+  titlecard_start(level, ctx.character, comingOn);
+  // the players come after the card's task (CreateGameStage): Sonic's sprite has its fixed place, and the CPU partner,
+  // which the character select's code brings along with Sonic in the single-player game, takes his two from the heap. The
+  // Moon Zone, the extra stage, has none (GameStageStart).
+  // Tails played by the pad has his body at Sonic's fixed place, and his tails from the heap as the partner's are
+  if (ctx.character == CHARACTER_TAILS) player_become_tails(&act.player);
+  // Knuckles needs no sprite but his body
+  if (ctx.character == CHARACTER_KNUCKLES) act.player.character = CHARACTER_KNUCKLES;
+  // and neither does Amy
+  if (ctx.character == CHARACTER_AMY) act.player.character = CHARACTER_AMY;
+  if (ctx.partner && ctx.character == 0 && level != LEVEL_THE_MOON) partner_start();
   objects_start(level, act.stage.paletteCount > 0);
   if (row->runsFromFirstFrame) start_palette_animations();
   if (act.fromStartPoint) {

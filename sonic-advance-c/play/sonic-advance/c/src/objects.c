@@ -53,6 +53,8 @@ void act_tasks_destroy(int lo, int hi) {
   destroying = 0;
 }
 
+/** The act's task list stops after the task running now, for the rest of this frame (the JavaScript's tasks.stop()). */
+void act_tasks_stop(void) { following = NULL; }
 void act_tasks_run(int from, int to) {
   ActTask *t = first;
   while (t && t->priority < from) t = t->next;
@@ -78,8 +80,10 @@ void *object_new(void) {
   return NULL;
 }
 
-ActTask *object_task(Object *o, ActRun run, int priority) {
-  ActTask *t = act_task_add(run, object_end, o, priority);
+ActTask *object_task(Object *o, ActRun run, int priority) { return object_task_ending(o, run, object_end, priority); }
+
+ActTask *object_task_ending(Object *o, ActRun run, ActEnd end, int priority) {
+  ActTask *t = act_task_add(run, end, o, priority);
   if (!t) {
     for (int i = 0; i < MAX_OBJECTS; i++) if (blocks[i].bytes == (uint8_t *)o) blocks[i].used = 0;
     object_sprite_free(&o->sprite);
@@ -87,11 +91,16 @@ ActTask *object_task(Object *o, ActRun run, int priority) {
   return t;
 }
 
-void object_end(ActTask *t) {
-  Object *o = (Object *)t->data;
+void object_end(ActTask *t) { object_free((Object *)t->data); }
+
+void object_free(Object *o) {
   if (o->slot) { o->slot->live = NULL; if (destroying) o->slot->gone = 1; }
   object_sprite_free(&o->sprite);
-  for (int i = 0; i < MAX_OBJECTS; i++) if (blocks[i].bytes == (uint8_t *)o) blocks[i].used = 0;
+  object_release(o);
+}
+
+void object_release(void *data) {
+  for (int i = 0; i < MAX_OBJECTS; i++) if (blocks[i].bytes == (uint8_t *)data) blocks[i].used = 0;
 }
 
 // --- where an object is: in range of the camera ------------------------------------------------------------------------
@@ -183,9 +192,10 @@ static ActTask *stand_in(Slot *slot) { return act_task_add(stand_in_run, NULL, s
 static int toggle_run(ActTask *t) {
   Slot *slot = (Slot *)t->data;
   const Entity *e = &slot->e;
-  Player *p = &act.player;
-  int x = (int)__builtin_floor(p->x), y = (int)__builtin_floor(p->y);
-  if (x >= e->x && x <= e->x + e->d[2] * 8 && y >= e->y && y <= e->y + e->d[3] * 8) p->layer = e->kind == TOGGLE_FRONT ? LAYER_FRONT : LAYER_BACK;
+  FOR_EACH_PLAYER(p) {
+    int x = (int)__builtin_floor(p->x), y = (int)__builtin_floor(p->y);
+    if (x >= e->x && x <= e->x + e->d[2] * 8 && y >= e->y && y <= e->y + e->d[3] * 8) p->layer = e->kind == TOGGLE_FRONT ? LAYER_FRONT : LAYER_BACK;
+  }
   return stand_in_run(t);
 }
 static ActTask *toggle_spawn(Slot *slot) { return act_task_add(toggle_run, NULL, slot, PRIORITY_OBJECTS); }
@@ -242,8 +252,10 @@ static const struct { int first, last; Spawn spawn; } INTERACTABLES[] = {
   { 77, 77, security_gate_spawn },
   { 78, 78, swing_rope_spawn },
   { 80, 80, crane_claw_spawn },
+  { 109, 109, toggle_gravity_spawn },
   { 110, 110, pipe_entrance_spawn },
   { 111, 111, pipe_exit_spawn },
+  { 112, 112, air_corner_spawn },
   { 47, 47, booster_spawn },
   { 100, 101, booster_spawn },
   { 70, 70, visibility_spawn },
@@ -264,6 +276,9 @@ static const struct { int first, last; Spawn spawn; } INTERACTABLES[] = {
   { 97, 97, updraft_spawn },
   { 88, 88, lift_spawn }, { 90, 90, float_spawn }, { 92, 92, boulder_spawner_spawn }, { 86, 86, run_wheel_spawn },
   { 83, 83, hang_bar_spawn },
+  { 93, 93, spiked_barrel_spawn },
+  { 99, 99, conveyor_belt_object_spawn },
+  { 103, 103, propeller_spawn },
 };
 
 // the enemies by their kind numbers (the ENEMIES table)
@@ -278,6 +293,8 @@ static const struct { int kind; Spawn spawn; } ENEMIES[] = {
   { 9, slot_machine_spawn },
   { 10, pierrot_spawn },
   { 6, tentou_spawn },
+  { 12, mirror_spawn },
+  { 14, oct_spawn },
   { 15, mole_spawn },
   { 21, egg_hammer_tank_intro_spawn },
   { 22, egg_hammer_tank_spawn },
@@ -291,8 +308,11 @@ static const struct { int kind; Spawn spawn; } ENEMIES[] = {
   { 17, yukimaru_wall_spawn },
   { 19, kuraa_spawn },
   { 11, leon_spawn },
+  { 12, mirror_spawn },
   { 13, wamu_spawn },
+  { 14, oct_spawn },
   { 26, mecha_knuckles_spawn },
+  { 27, egg_snake_spawn },
   { 28, egg_wrecker_spawn },
   { 29, egg_drillster_spawn },
   { 30, egg_x_spawn },

@@ -21,6 +21,9 @@ enum { Z_RHINO_PATROL, Z_RHINO_TURN, Z_RHINO_REV };
 enum { Z_KERO_IDLE, Z_KERO_JUMP, Z_KERO_CROAK };
 enum { EFFECT_COCONUT, EFFECT_COCONUT_PIECE, EFFECT_BUZZER_SHOT, EFFECT_GAMI_SHOT };
 enum { SHOT_PRIORITY = 0x9000 };
+// the coconut and the two shots draw from fixed places in sprite VRAM (vram_hardcoded.h), shared by all of their kind; a
+// coconut's piece takes 16 tiles from the heap, whatever its frames need (CreateKikiProjectilePiece)
+enum { COCONUT_PIECE_TILES = 16 };
 
 typedef struct {
   Object o;
@@ -40,7 +43,6 @@ typedef struct {
   int x4, dx;
 } Effect;
 
-static int fdiv(int a, int b) { return a >= 0 ? a / b : -((-a + b - 1) / b); }
 static int iof(double v) { return (int)__builtin_floor(v); }
 static int cos1024(int a) { return SINE[(a + 256) & 1023]; }
 static int sin1024(int a) { return SINE[a & 1023]; }
@@ -70,7 +72,7 @@ static int coconut_run(ActTask *t) {
   if (!f->resting) {
     f->vy = s16(f->vy + 40);
     f->acc = s16(f->acc + f->vx);
-    f->x = f->x0 + fdiv(f->acc, 40);
+    f->x = f->x0 + f->acc / 40;   // the BIOS divide, rounding toward 0 as C's does
     f->y = s16(f->y + (f->vy >> 8));
     if (f->vy > 0) {
       int d = terrain_tile_floor(f->x, f->y, ENEMY_LAYER, 8);
@@ -136,7 +138,7 @@ static void add_piece(int x, int y) {
   Effect *p = effect_new(EFFECT_COCONUT_PIECE);
   if (!p) return;
   p->x = x; p->y = y;
-  object_sprite(&p->o.sprite, ANIM_COCONUT_PIECE, 0, 0, ORDER_EFFECT, ENEMY_PRIORITY, 0, 0);
+  object_sprite_at(&p->o.sprite, vram_malloc(COCONUT_PIECE_TILES), ANIM_COCONUT_PIECE, 0, ORDER_EFFECT, ENEMY_PRIORITY, 0, 0);
   sprite_step(&p->o.sprite);
   object_task(&p->o, piece_run, PRIORITY_OBJECTS);
 }
@@ -151,7 +153,7 @@ static void add_coconut(int x, int y) {
   if (vx > 60) vx = 60;
   f->x = f->x0 = x; f->y = f->y0 = y;
   f->vx = vx; f->vy = -512; f->acc = 0; f->bounces = 0; f->resting = 0; f->rest = 0;
-  object_sprite(&f->o.sprite, ANIM_COCONUT, 0, 0, ORDER_EFFECT, ENEMY_PRIORITY, 0, 0);
+  object_sprite_at(&f->o.sprite, OBJ_VRAM + VRAM_KIKI_SHOT, ANIM_COCONUT, 0, ORDER_EFFECT, ENEMY_PRIORITY, 0, 0);
   sprite_step(&f->o.sprite);
   object_task(&f->o, coconut_run, PRIORITY_OBJECTS);
 }
@@ -178,7 +180,7 @@ static void add_buzzer_shot(int x, int y) {
   f->vy = sin1024(a) / 38;
   f->qx = x * 256; f->qy = y * 256;
   f->x = x; f->y = y;
-  object_sprite(&f->o.sprite, ANIM_BUZZER_SHOT, 0, 0, ORDER_EFFECT, ENEMY_PRIORITY, 0, 0);
+  object_sprite_at(&f->o.sprite, OBJ_VRAM + VRAM_BUZZER_SHOT, ANIM_BUZZER_SHOT, 0, ORDER_EFFECT, ENEMY_PRIORITY, 0, 0);
   sprite_step(&f->o.sprite);
   object_task(&f->o, buzzer_shot_run, SHOT_PRIORITY);
 }
@@ -189,7 +191,7 @@ static void add_gami_shot(int x4, int dx, int y) {
   if (!f) return;
   f->x4 = x4; f->dx = dx;
   f->x = x4 >> 2; f->y = y; f->vy = -512;
-  object_sprite(&f->o.sprite, ANIM_GAMIGAMI_SHOT, 0, 0, 9, ENEMY_PRIORITY, 0, 0);
+  object_sprite_at(&f->o.sprite, OBJ_VRAM + VRAM_GAMIGAMI_SHOT, ANIM_GAMIGAMI_SHOT, 0, 9, ENEMY_PRIORITY, 0, 0);
   sprite_step(&f->o.sprite);
   object_task(&f->o, gami_shot_run, PRIORITY_SONIC);
 }
@@ -242,7 +244,8 @@ static int buzzer_run(ActTask *t) {
   e->x = e->spawnX + (e->off >> 8);
   e->y = e->spawnY;
   if (e->state == Z_BUZZER_SHOOT && ++e->t == 10) add_buzzer_shot(e->x, e->y + 6);
-  if (gone(e, e->x, e->y)) return 0;
+  // it leaves by where it has flown to, not by where it started (buzzer.c tests worldX with its flight added)
+  if (enemy_gone(e->x, e->y, e->x, e->y)) return 0;
   if (enemy_attack(s, e->x, e->y)) { e->o.slot->gone = 1; return 0; }
   if (e->state == Z_BUZZER_PATROL) {
     if ((e->off >> 8) <= e->d0 * 8) {
@@ -426,9 +429,12 @@ ActTask *kiki_spawn(Slot *slot) {
 ActTask *buzzer_spawn(Slot *slot) {
   Enemy *e = enemy_new(slot, 1);
   if (!e) return NULL;
-  if (enemy_sonic_x() >= e->spawnX) { e->vel = 256; enemy_flip_x(&e->o.sprite, 1); }
-  else e->vel = -256;
-  enemy_sprite(&e->o.sprite, ANIM_BUZZER, BUZZER_VAR_FLY, BUZZER_VAR_TURN, ENEMY_ORDER);
+  Sprite *s = &e->o.sprite;
+  e->vel = -256;
+  // it turns to Sonic once its sprite is set and before its first step, so the turn stays (CreateEntity_Buzzer)
+  object_sprite(s, ANIM_BUZZER, BUZZER_VAR_FLY, BUZZER_VAR_TURN, ENEMY_ORDER, ENEMY_PRIORITY, 0, 0);
+  if (enemy_sonic_x() >= e->spawnX) { e->vel = 256; enemy_flip_x(s, 1); }
+  sprite_step(s);
   return object_task(&e->o, buzzer_run, PRIORITY_OBJECTS);
 }
 

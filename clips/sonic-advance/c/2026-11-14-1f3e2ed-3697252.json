@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "time-attack-start",
+  "recordingFile": "games/sonic-advance/proof/recordings/time-attack-start.json",
+  "recordingSha1": "7f87e5f2593bfeb3aaa89dadf8aeeb1175afa753",
+  "commit": "1f3e2edc60bc0c8b4660f84743ba28c62638b290",
+  "base": "23e920ccdb1feef7f9743a9043d0bee719aae4da",
+  "sideBySide": true,
+  "video": "3697252e6792f49a186b9cfdef64cd372c33bc67",
+  "measures": {
+    "from": 1741,
+    "to": 2040,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 4,
+    "same": 46,
+    "changed": {
+      "frame": 1801,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 240,
+    "base": "23e920ccdb1feef7f9743a9043d0bee719aae4da"
+  }
+}

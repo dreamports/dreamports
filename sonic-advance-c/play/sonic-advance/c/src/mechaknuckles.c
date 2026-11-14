@@ -128,6 +128,8 @@ static int idle_fn(MechaKnuckles *b) {
   Player *p = &act.player;
   if (!over(&p->sprite)) return 1;
   p->ignoreInput = 0; p->scripted = 0; p->state = PS_IDLE;
+  // the boss hands him jump and attack as already held (heldInput |= jump | attack), so what's held now is no press
+  p->wasIgnoreInput = 0; p->heldDirs = 0;
   clear_presses();
   go(b, IDLE_2);
   return 0;
@@ -502,7 +504,7 @@ static int boss_run(ActTask *t) {
   if (!p->dead && b1 && body && collide_overlap(bx, by, b1, px, py, body)) { world_damage(p); hurt = 1; }
   if (!hurt && b->blink <= 0) {
     if (b0 && attack && !p->dead && collide_overlap(bx, by, b0, px, py, attack)) {
-      p->xsp = -p->xsp; p->ysp = -p->ysp;
+      player_bounce_off_boss(p);
       if ((b->state == IDLE_2 || b->state == COVER) && !p->air) {
         if (b->state != COVER) {
           going = 0; b->next = COVER;
@@ -546,7 +548,7 @@ ActTask *mecha_knuckles_spawn(Slot *slot) {
   b->spawnX = slot->e.x; b->spawnY = slot->e.y;
   b->qx = Q(208); b->qy = -Q(32);
   b->phase = 0;
-  int difficulty = save.bytes[0x18] != 0;
+  int difficulty = difficulty_easy();
   b->lives = 8 - difficulty * 2;
   b->half = 4 - difficulty;
   b->state = b->next = ACTIVATE;

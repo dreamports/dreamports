@@ -31,6 +31,9 @@ enum {
   OFFSET_SPRITE_TABLES = 0x0D868C, OFFSET_TILEMAPS = 0x4A6C40, OFFSET_UI_GRAPHICS = 0x680A38,
   OFFSET_INTRO_GRAPHICS = 0x69EC10, OFFSET_INTRO_TABLES = 0x684178, OFFSET_LANGUAGE_BACKGROUND = 0x6C7BD0,
   OFFSET_COURSE_SELECT_BACKGROUND = 0x69A6D0, OFFSET_OPTIONS_BACKGROUND = 0x6C5650,
+  OFFSET_TIME_ATTACK_MENU = 0x6959D0, OFFSET_TIME_ATTACK_CARDS = 0x684670,
+  OFFSET_TIME_ATTACK_LOBBY_TABLES = 0x684580, OFFSET_TIME_ATTACK_LOBBY_PICTURE = 0x6C71D0,
+  OFFSET_TIME_ATTACK_RECORD_TABLES = 0x683FD0,
   OFFSET_NAME_INPUT_MAPS = 0x67DC38, OFFSET_NAME_INPUT_CHARS = 0x681340, OFFSET_TITLE_CARD = 0x681274,
   OFFSET_RINGS = 0x0B7F4C, OFFSET_INTERACTABLES = 0x0B7F94, OFFSET_ITEM_BOXES = 0x0B7FDC,
 };
@@ -46,10 +49,12 @@ int quick_angle(int a, int b);
 
 // --- the engine (gba/engine.js) ---------------------------------------------------------------------------------
 enum {
-  FLAGS_UPDATE_BG_PALETTES = 0x1, FLAGS_UPDATE_OBJ_PALETTES = 0x2, FLAGS_HBLANK_COPY = 0x4, FLAGS_KEEP_HBLANK_BUFFER = 0x20, FLAGS_VCOUNT_INTR = 0x40,
+  FLAGS_UPDATE_BG_PALETTES = 0x1, FLAGS_UPDATE_OBJ_PALETTES = 0x2, FLAGS_HBLANK_COPY = 0x4, FLAGS_HBLANK_CALLBACKS = 0x8, FLAGS_KEEP_HBLANK_BUFFER = 0x20, FLAGS_VCOUNT_INTR = 0x40,
   FLAGS_PAUSE_GAME = 0x400, FLAGS_PAUSED = 0x800, FLAGS_NO_RESET = 0x8000,
 };
 enum { TASK_INACTIVE = 0x1, TASK_DESTROY_DISABLED = 0x2, TASK_RUNS_PAUSED = 0x4 };
+// A, B, Start and Select held together at a V-blank restart the game (VBlankIntr's SoftReset)
+#define SOFT_RESET_KEYS (KEY_A | KEY_B | KEY_SELECT | KEY_START)
 #define HBLANK_BUFFER (160 * 4)
 #define HEAP_END 0xFFFFFFFFu
 
@@ -98,7 +103,12 @@ typedef struct {
   // the V-count interrupt (gIntrTable[INTR_INDEX_VCOUNT]) and the line it comes at (gUnknown_03002874)
   void (*vcountIntr)(void);
   uint8_t vcountLine;
+  // gHBlankCallbacks and gNumHBlankCallbacks: what a task asks the H-blank to run after each line it draws, with FLAGS_HBLANK_CALLBACKS;
+  // the next V-blank takes them over, and they start again
+  void (*hblankCallbacks[4])(int line);
+  int numHblankCallbacks;
   void (*vblankCallback)(void);   // gVBlankCallbacks, the one a task asks for this frame, run in the next V-blank's update
+  void (*softReset)(void);        // what the V-blank does when it finds the soft reset's buttons held (vblank)
   // the keys (gInput and the rest)
   uint16_t input, prevInput, pressed, released, repeated;
   uint8_t repeatCounters[10], firstRepeat[10], nextRepeat[10];
@@ -121,6 +131,9 @@ extern SpriteRow spriteRow;
 void sprite_row_byte(uint32_t at, uint32_t v);
 
 void engine_init(void);
+void engine_clear_video(void);
+/** A new engine for a new start, with the soft reset's V-blank (front.c). */
+void front_new_engine(void);
 Task *create_task(TaskMain main, void *data, uint16_t priority, uint16_t flags, TaskMain dtor);
 void destroy_task(Task *t);
 void destroy_tasks(uint16_t lo, uint16_t hi);
@@ -136,6 +149,9 @@ void engine_vblank_unseen(void);
 void queue_background(Background *bg);
 int alloc_oam(uint32_t order);
 void clear_oam(void);
+void engine_keep_oam(void);
+void engine_show_oam(const uint16_t *oam);
+void engine_take_oam(uint16_t *oam);
 uint32_t vram_malloc(uint32_t tiles);
 void vram_reset(void);
 void vram_free(uint32_t dest);
@@ -153,10 +169,10 @@ void fade_out_sound(int player, int speed);
 void stop_all_songs(void);
 /** The stage's music manager (music.c), which runs on the sound's side after each frame's calls: the act's song starting
  *  (MUSIC_STAGE_IN fading in, MUSIC_STAGE as it is), the results switching it off, a boss's state, an extra life's
- *  jingle, invincibility's song, the drowning music, and what it reads of Sonic each frame (MUSIC_PLAYER: invincible, speed
- *  shoes and alive, bits 0 to 2). */
+ *  jingle, invincibility's song, the drowning music, what it reads of Sonic each frame (MUSIC_PLAYER: invincible, speed
+ *  shoes and alive, bits 0 to 2), and the pause menu's start (MUSIC_PAUSE with its sound). */
 enum { MUSIC_STAGE = SOUND_OP_MANAGER, MUSIC_STAGE_IN, MUSIC_OFF, MUSIC_STATE, MUSIC_ONE_UP, MUSIC_STAR, MUSIC_DROWNING,
-  MUSIC_PLAYER };
+  MUSIC_PLAYER, MUSIC_PAUSE };
 /** the music's tempo (m4aMPlayTempoControl): normal, and doubled while Sonic has speed shoes (PLAYER_SPEED_UP_MUSIC_TEMPO) */
 enum { TEMPO_NORMAL = 0x100, TEMPO_SPEED_UP = 0x200 };
 void music_call(int op, int a);
@@ -164,12 +180,19 @@ enum { SONG_INTRO = 1, SONG_TITLE_FANFARE = 2, SONG_CHARACTER_SELECTION = 3, SON
   SONG_SEGA_RING = 102, SONG_SELECT = 106,
   SONG_RETURN = 107, SONG_MENU_CURSOR = 108, SONG_BOSS_FIGHT = 29,
   SONG_SHIFT = 103, SONG_JUMP = 116, SONG_RING = 117,
+  SONG_VS_RECORD = 10, SONG_TIME_ATTACK_LOBBY = 155,
   SONG_COURSE_SELECTION = 4, SONG_VS_PLEASE_WAIT = 5, SONG_VS_LOBBY = 6, SONG_PLAYER_DATA = 48,
   SONG_VS_LOBBY_HELLO = 156, SONG_VS_LOBBY_CLOSED = 160,
   SONG_CONNECTION_SUCCESS = 301, SONG_CONNECTION_ERROR = 302, SONG_CONNECTION_CLOSED = 303 };
 void play_song_or_change(int song);
 void sound_vsync_off(void);
 void sound_vsync_on(void);
+/** The loads that hold the original's SoundMain past its place (soundlate.c): the screen names the load as it starts,
+ *  with the level or character it's for, and the kit hears how late SoundMain runs in the frame it falls in. */
+enum { LOAD_CHARACTER_SELECT, LOAD_TURN_RIGHT, LOAD_TURN_LEFT, LOAD_ACT_NEW_GAME, LOAD_ACT_COURSE_SELECT, LOAD_ACT_NEXT,
+       LOAD_ACT_AGAIN, LOAD_ACT_TIME_ATTACK };
+void sound_late(int load, int detail);
+void sound_late_step(void);   // once a frame, at its end
 
 /** The BIOS's Div: rounded toward 0; a division by 0 gives ±1, as mGBA's BIOS does. */
 static inline int32_t bios_div(int32_t a, int32_t b) { return b == 0 ? (a < 0 ? -1 : 1) : a / b; }
@@ -242,6 +265,7 @@ typedef struct { uint16_t unk0, unk2, unk4, unk6, unk8, unkA, unkC, unkE, unk10,
 typedef uint8_t (*Glyphs)(const void *text, int i);
 
 void create_ui_task(void);
+void create_ui_task_keeping(UiSlot *slots);
 void ui_gfx_stack_init(void);
 UiSlot *ui_slots(void);
 void ui_graphics(int id, uint32_t *tiles, uint32_t *palette, UiSlot *layout);
@@ -253,6 +277,8 @@ void set_ui_affine(int angle, int sx, int sy, int index);
 void draw_ui_text(const char *text, const UiText *o, int solid);
 void draw_ui_glyphs(const char *text, const UiText *o, int behind);
 void draw_ui_text_rotated(const char *text, const UiText *o);
+void draw_ui_text_affine(const char *text, const UiText *o);
+void draw_ui_letters(const char *text, const UiText *o);
 
 // --- a spotlight's beam (front/spotlight.js) ---------------------------------------------------------------------
 typedef struct { int32_t unk0, unk2, unk4, unk6, unk8, bg, unkB; } Beam;
@@ -268,9 +294,15 @@ typedef struct { uint8_t bytes[SAVE_SIZE]; int exists, keep; } Save;
 extern Save save;
 void save_open(void);
 int save_write(void);
+void save_empty(void);
+void save_erase(void);
 void save_set_unlocked_level(int character, uint16_t level);
 void save_moon_opened(void);
 void save_add_ring_bank(int rings);
+/** The `rank`th best time (frames) of `character` in `level`, 10:00 when there is none. */
+uint32_t save_time_record(int character, int level, int rank);
+/** RegisterTimeRecord: `time` among the three best, the slower ones moving down a place; true when it is the best. */
+int save_register_time_record(int character, int level, uint32_t time);
 #define SAVE_UI_LANGUAGE (save.bytes[0x19])
 #define SAVE_CHAOS_EMERALDS (save.bytes[0x1C])
 #define SAVE_PLAYER_NAME (save.bytes + 0x10)            // six characters of the UI font, and two unused
@@ -314,6 +346,7 @@ typedef struct {
   int select;   // the main menu's Game Start opens the character select, unless a start point leaves it out
   int currentLevel, startLevel;   // gCurrentLevel and gMultiplayerCurrentLevel, for the Moon Zone's rule
   int done;   // the front end has handed over to what isn't in C yet
+  int afterReset;   // the game has started again from a soft reset, until it next starts an act
   VsLink vsLink;
   int missing[PLAYERS_MAX];   // gMultiplayerMissingHeartbeats: the frames each GBA of the link hasn't been heard from
   uint32_t seed;              // the game's random numbers (PSEUDO_RANDOM_32)
@@ -328,6 +361,9 @@ void front_draw(void);
 
 void create_language_screen(int newGame);
 void create_sega_logo(void);
+void create_congratulations(void);
+void create_staff_credits(void);
+void create_emerald_message(void);
 void create_intro(void);
 void create_title_screen(int playMusic);
 void front_play(int level);
@@ -338,9 +374,32 @@ void front_start_game(void);   // the main menu's Game Start: the course select 
 void create_main_menu(int back);
 void create_character_select(int character);
 void create_course_select(void);
+void create_course_select_records(void);
+void create_time_attack_menu(void);
+void create_time_attack_card(void);
+/** The act a Time Attack card hands over to, made inside the card's task. */
+void front_time_attack_play(int level);
+void create_time_attack_record(int level);
+void create_time_attack_lobby(void);
+// the Time Attack result over the act (timeattackresult.c)
+void time_attack_result_start(int level, uint32_t record, int nextFrame);
+int time_attack_result_active(void);
+int time_attack_result_run(void);
+void time_attack_result_display(void);
+void time_attack_result_stop(void);
+/** CreatePauseMenu (pausemenu.c); in Time Attack, A calls `toLobby` once every task has gone. */
+void pause_menu_create(void (*toLobby)(void), int later);
+/** sub_806A02C: the seven glyphs of a time, M:SS:CC, as the UI font has them, and a 0 after them. */
+void time_codes(uint32_t time, char out[8]);
+/** A sprite of a table's row at `at` (its room in tiles, animation and variant), with its room taken from the heap. */
+void table_sprite(Sprite *s, uint32_t at);
 
 // --- the VS menus (vs.c and the screens after it) ------------------------------------------------------------------
 enum { GAME_MODE_SINGLE_PLAYER = 0, GAME_MODE_TIME_ATTACK = 1, GAME_MODE_RACE = 2, GAME_MODE_CHAO_HUNT = 4 };
+/** The act runs for a record (GAME_MODE_TIME_ATTACK): normal difficulty, no 1-UPs or special springs, no lives. */
+static inline int time_attack(void) { return ctx.gameMode == GAME_MODE_TIME_ATTACK; }
+/** The save's difficulty is easy for the act, as Time Attack always plays it on normal. */
+static inline int difficulty_easy(void) { return !time_attack() && save.bytes[0x18] != 0; }
 void vs_sprite(Sprite *s, uint16_t anim, uint32_t dest, int x, int y, uint16_t oamFlags, int variant, uint32_t frameFlags);
 void vs_background(Background *bg, uint16_t tilemapId, uint32_t layoutVram, uint16_t w, uint16_t h);
 void vs_clear_map(int bg, uint8_t lastRow);

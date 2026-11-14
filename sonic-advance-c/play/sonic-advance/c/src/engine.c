@@ -50,7 +50,9 @@ static Task pool[MAX_TASKS], *freeTasks[MAX_TASKS];
 static unsigned numTasks;
 static Task *head, *tail, *nextTask;
 static void dummy(Task *t) { (void)t; }
+static void interrupts_init(void);
 
+/** The engine as the game's start makes it: at power-on, and again after a soft reset. */
 void engine_init(void) {
   memset(&e, 0, sizeof e);
   e.dispCnt = 0x80;
@@ -71,6 +73,9 @@ void engine_init(void) {
   tail = freeTasks[numTasks++];
   head->main = dummy; head->next = tail;
   tail->main = dummy; tail->priority = 0xFFFF; tail->prev = head;
+  nextTask = NULL;
+  gfxCursor = gfxIndex = bgCursor = bgIndex = 0;
+  interrupts_init();
 }
 
 /** TaskCreate: a task running `main(task)` each frame, put after every task of the same or lower priority. */
@@ -278,6 +283,12 @@ void clear_oam(void) {
   e.oamFreeIndex = 0;
   memset(orderStart, 0xFF, sizeof orderStart); memset(orderEnd, 0xFF, sizeof orderEnd);
 }
+static int keepOam;
+static const uint16_t *shownOam;
+/** This frame's V-blank leaves the screen's sprites as they are. */
+void engine_keep_oam(void) { keepOam = 1; }
+/** This frame's V-blank shows the sprites engine_take_oam kept in `oam` instead of its own. */
+void engine_show_oam(const uint16_t *oam) { shownOam = oam; }
 static void hide_oam(uint32_t i) { e.oamBuffer[i * 4] = e.oamBuffer[i * 4 + 1] = e.oamBuffer[i * 4 + 2] = 0x200; }
 static void process_oam(void) {
   uint32_t dst = 0;
@@ -301,6 +312,13 @@ static void process_oam(void) {
   }
   e.oamFreeIndex = 0;
   memset(orderStart, 0xFF, sizeof orderStart); memset(orderEnd, 0xFF, sizeof orderEnd);
+}
+/** Takes the sprites the tasks have drawn so far this frame into `oam`, as the screen would get them, and starts the
+ *  frame's sprites again from none. */
+void engine_take_oam(uint16_t *oam) {
+  process_oam();
+  memcpy(oam, e.oamBuffer, sizeof e.oamBuffer);
+  clear_oam();
 }
 
 // --- the sprites' VRAM heap (malloc_vram.c) ------------------------------------------------------------------------
@@ -345,6 +363,21 @@ static uint32_t hdmaAt;
 static struct { int on; int line; } vcount;
 // gVBlankIntrs: the callback the tasks asked for the frame before, which this V-blank's update runs
 static void (*vblankIntr)(void);
+// gHBlankIntrs: the callbacks this frame's V-blank took over, which run after each line is drawn
+static void (*hblankIntrs[4])(int line);
+static int numHblankIntrs;
+// nothing asked of the V-blank, the H-blank or the V-count interrupt, nor a stall, as the game starts
+static void interrupts_init(void) {
+  memset(&hdma, 0, sizeof hdma);
+  hdmaAt = 0;
+  memset(&vcount, 0, sizeof vcount);
+  vblankIntr = NULL;
+  numHblankIntrs = 0;
+  memset(&stall, 0, sizeof stall);
+  stalling = 0;
+  keepOam = 0;
+  shownOam = NULL;
+}
 /** DmaSet(0, gBgOffsetsHBlankSecondary, target, DMA_START_HBLANK | DMA_REPEAT | DMA_DEST_RELOAD), from the V-count
  *  interrupt as the frame is drawn: from the next H-blank on, or the one after it when it was `late`, a line's worth of the
  *  other buffer's values each time. */
@@ -369,11 +402,22 @@ static void read_keys(void) {
 
 // --- the V-blank (VBlankIntr, UpdateScreenDma, ClearOamBufferDma) ------------------------------------------------
 static void vblank(void) {
+  // VBlankIntr: unless a screen has turned it off (FLAGS_NO_RESET), A, B, Start and Select held together restart the
+  // game, and the V-blank goes no further
+  if (e.softReset && !(e.flagsPreVBlank & FLAGS_NO_RESET) && (gba_vblank_keys() & SOFT_RESET_KEYS) == SOFT_RESET_KEYS) {
+    e.softReset();
+    return;
+  }
   hdma.on = 0;
   if (e.flagsPreVBlank & FLAGS_HBLANK_COPY) {
     copy_hblank_entry(e.primary);
     hdma.on = 1; hdma.wait = 0; hdma.at = e.primary + e.hblankSize; hdma.target = e.hblankTarget; hdma.size = e.hblankSize;
   } else e.hblankTarget = 0;
+  numHblankIntrs = 0;
+  if (e.flags & FLAGS_HBLANK_CALLBACKS) {
+    for (int i = 0; i < e.numHblankCallbacks; i++) hblankIntrs[i] = e.hblankCallbacks[i];
+    numHblankIntrs = e.numHblankCallbacks;
+  }
   vcount.on = (e.flagsPreVBlank & FLAGS_VCOUNT_INTR) && e.vcountIntr;
   vcount.line = e.vcountLine;
   e.frameCount++;
@@ -400,8 +444,10 @@ static void vblank(void) {
     gba_write(at + 12, (uint16_t)a->y); gba_write(at + 14, (uint16_t)((uint32_t)a->y >> 16));
   }
   if (e.flags & FLAGS_HBLANK_COPY) copy_hblank_entry(e.primary);
-  process_oam();
-  memcpy(gba_oam, e.oamBuffer, sizeof e.oamBuffer);
+  // a frame whose tasks were all destroyed before any drew keeps the sprites of the frame before (engine_keep_oam)
+  if (keepOam) { keepOam = 0; clear_oam(); }
+  else if (shownOam) { memcpy(gba_oam, shownOam, sizeof e.oamBuffer); shownOam = NULL; clear_oam(); }
+  else { process_oam(); memcpy(gba_oam, e.oamBuffer, sizeof e.oamBuffer); }
   // UpdateScreenDma's V-blank callbacks: last frame's run now, after the registers, and this frame's wait for the next
   if (vblankIntr) vblankIntr();
   vblankIntr = e.vblankCallback;
@@ -414,12 +460,24 @@ static void vblank(void) {
 
   // ClearOamBufferDma, which the original skips while the game is paused
   if (!(e.flags & FLAGS_PAUSE_GAME)) {
+    e.numHblankCallbacks = 0;
+    e.flags &= ~FLAGS_HBLANK_CALLBACKS;
     if (!(e.flags & FLAGS_KEEP_HBLANK_BUFFER)) e.primary = e.primary ? 0 : HBLANK_BUFFER;
     e.flags &= ~FLAGS_HBLANK_COPY;
     for (int i = 0; i < OAM_ENTRIES * 4; i++) e.oamBuffer[i] = 0x200;
   }
   if (e.flags & FLAGS_PAUSE_GAME) e.flags |= FLAGS_PAUSED;
   else e.flags &= ~FLAGS_PAUSED;
+}
+
+/** The video hardware as the console's start leaves it: VRAM, the colours and OAM clear, every display register 0. The
+ *  JavaScript version starts a new one (video.js createVideo) for the special stage and after a soft reset. */
+void engine_clear_video(void) {
+  memset(gba_vram, 0, sizeof gba_vram);
+  memset(gba_pal, 0, sizeof gba_pal);
+  memset(gba_oam, 0, sizeof gba_oam);
+  for (unsigned reg = 0; reg < GBA_IO_HALFWORDS * 2; reg += 2) gba_write(reg, 0);
+  gba_update_colors();
 }
 
 /** The V-blank of a frame that runs with no picture, such as the title card's that a start point skips. */
@@ -452,6 +510,9 @@ void engine_run(void) {
   if (stalling) return;
   e.flagsPreVBlank = e.flags;
   vblank();
+  // the H-blank DMA this V-blank starts runs through the lines SoundMain's start is drawn over: two units of 16 bits a
+  // line from internal memory to the registers, each a read and a write of a cycle, after 2 to start
+  if (hdma.on) gba_sound_hblank_dma(2 + (int)hdma.size);
 }
 
 // the H-blank DMA between the lines as the kit draws the frame: after each line, the next line's values; then the
@@ -463,10 +524,11 @@ static void hblank_line(int y) {
     hdmaAt += hdma.size;
   }
   if (vcount.on && y + 1 == vcount.line) e.vcountIntr();
+  for (int i = 0; i < numHblankIntrs; i++) hblankIntrs[i](y);
 }
 /** Sets the kit's drawing of this frame up, with the H-blank DMA its V-blank started. */
 void engine_draw_setup(void) {
   hdmaAt = hdma.at;
   if (vcount.on && vcount.line == 0) e.vcountIntr();
-  gba_on_hblank(hdma.on || vcount.on ? hblank_line : NULL);
+  gba_on_hblank(hdma.on || vcount.on || numHblankIntrs ? hblank_line : NULL);
 }

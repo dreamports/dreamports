@@ -11,7 +11,7 @@ enum {
   ANIM_WATERFALL = 464, ANIM_WATERFALL_ANGEL_ISLAND = 552,
   ORDER_OBJECT = 18, PRIORITY_FRONT = 2,
   SE_BREAK = 167,
-  SE_GRIND_START = 114, SE_GRIND_END = 116,
+  SE_GRIND_START = 114, SE_GRIND_END = 116, SE_AMY_GRINDING = 134,
   DEBRIS = 4, DEBRIS_FRAMES = 60,
 };
 
@@ -39,53 +39,81 @@ static int breaks(Object *o, int ox, int oy) {
   return 0;
 }
 
+// CreateDecorationDebris: one task with the four pieces, the two small ones first. It takes the sprites' tiles twice,
+// for the first small piece and the first big one, and each other piece is a copy of the one before, drawing from the
+// same tiles: what the act takes from the heap after it lands where the original's does
+typedef struct { int qy, vy, scale, angle, turn, across, size, matrix; } Piece;
 typedef struct {
-  Object o;
-  int x, y, qy, vy, n, scale, angle, turn, across, size, cx, cy, sx, sy, matrix;
+  Object o;            // the first small piece's sprite, whose tiles the second shares
+  Sprite big;          // the first big piece's, whose tiles the fourth shares
+  Sprite copy[2];      // the second and the fourth piece
+  int n, cx, sx, sy;
+  Piece piece[DEBRIS];
 } Debris;
+
+static Sprite *piece_sprite(Debris *d, int i) { return i == 0 ? &d->o.sprite : i == 2 ? &d->big : &d->copy[i >> 1]; }
 
 static int debris_run(ActTask *t) {
   Debris *d = (Debris *)t->data;
   if (d->n > DEBRIS_FRAMES) return 0;
-  d->vy += 40;
-  d->scale += 8;
-  if (d->scale > 512) d->scale = 512;
-  d->qy += d->vy >> 8;
-  d->angle = (d->angle + d->turn) & 0x3FF;
   d->n++;
-  int dx = (d->cx - cam_x()) + d->across * d->n;
-  int dy = d->qy - cam_y();
-  int half = (d->scale * 128) >> 8;
-  int x = d->sx + ((dx * half) >> 8);
-  int y = d->sy + ((dy * half) >> 8);
-  if (x + d->size < 0 || x - d->size > DISPLAY_WIDTH || y + d->size < 0 || y - d->size > DISPLAY_HEIGHT) return 1;
-  Transform tf;
-  tf.rotation = (uint16_t)(d->angle & 0x3FF);
-  tf.qScaleX = (int16_t)d->scale; tf.qScaleY = (int16_t)d->scale;
-  tf.x = (int16_t)x; tf.y = (int16_t)y;
-  d->o.sprite.frameFlags = (d->o.sprite.frameFlags & ~(SPRITE_X_FLIP | SPRITE_Y_FLIP))
-    | (uint32_t)(4 + d->matrix) | SPRITE_ROT_SCALE_ENABLE | SPRITE_DOUBLE_SIZE;
-  transform_sprite(&d->o.sprite, &tf);
-  if (objects_drawing()) display_sprite(&d->o.sprite);
+  for (int i = 0; i < DEBRIS; i++) {
+    Piece *q = &d->piece[i];
+    Sprite *s = piece_sprite(d, i);
+    q->vy += 40;
+    q->scale += 8;
+    if (q->scale > 512) q->scale = 512;
+    q->qy += q->vy >> 8;
+    q->angle = (q->angle + q->turn) & 0x3FF;
+    int dx = (d->cx - cam_x()) + q->across * d->n;
+    int dy = q->qy - cam_y();
+    int half = (q->scale * 128) >> 8;
+    int x = d->sx + ((dx * half) >> 8);
+    int y = d->sy + ((dy * half) >> 8);
+    if (x + q->size < 0 || x - q->size > DISPLAY_WIDTH || y + q->size < 0 || y - q->size > DISPLAY_HEIGHT) continue;
+    Transform tf;
+    tf.rotation = (uint16_t)(q->angle & 0x3FF);
+    tf.qScaleX = (int16_t)q->scale; tf.qScaleY = (int16_t)q->scale;
+    tf.x = (int16_t)x; tf.y = (int16_t)y;
+    s->frameFlags = (s->frameFlags & ~(SPRITE_X_FLIP | SPRITE_Y_FLIP))
+      | (uint32_t)(4 + q->matrix) | SPRITE_ROT_SCALE_ENABLE | SPRITE_DOUBLE_SIZE;
+    transform_sprite(s, &tf);
+    if (objects_drawing()) display_sprite(s);
+  }
   return 1;
 }
 
-static void debris_new(const Slot *en, int i) {
+// TaskDestructor_DecorationDebris: both blocks of tiles go back
+static void debris_end(ActTask *t) {
+  Debris *d = (Debris *)t->data;
+  object_sprite_free(&d->big);
+  object_end(t);
+}
+
+static void debris_new(const Slot *en) {
   static const int ACROSS[DEBRIS] = { -2, 1, 2, -1 };
   static const int Y[DEBRIS] = { 0, -16, 0, -16 };
   static const int TURN[DEBRIS] = { -42, 42, 14, -14 };
   static const int SIZE[DEBRIS] = { 8, 8, 16, 16 };
   Debris *d = OBJECT_NEW(Debris);
   if (!d) return;
-  d->vy = -512; d->scale = 256;
   d->sx = en->e.x - cam_x(); d->sy = en->e.y - cam_y();
-  d->cx = cam_x(); d->cy = cam_y() - 16;
-  d->qy = d->cy + Y[i];
-  d->across = ACROSS[i]; d->turn = TURN[i]; d->size = SIZE[i]; d->matrix = i;
-  object_sprite(&d->o.sprite, i < 2 ? ANIM_DEBRIS_SMALL : ANIM_DEBRIS_BIG, 0, 0, 8, PRIORITY_FRONT, 0, 0);
-  d->o.sprite.frameFlags = SPRITE_ROT_SCALE_ENABLE | SPRITE_DOUBLE_SIZE | (uint32_t)(4 + i);
-  sprite_step(&d->o.sprite);
-  object_task(&d->o, debris_run, PRIORITY_OBJECTS);
+  d->cx = cam_x();
+  for (int i = 0; i < DEBRIS; i++) {
+    Piece *q = &d->piece[i];
+    q->vy = -512; q->scale = 256; q->qy = cam_y() - 16 + Y[i];
+    q->across = ACROSS[i]; q->turn = TURN[i]; q->size = SIZE[i]; q->matrix = i;
+    Sprite *s = piece_sprite(d, i);
+    if (i == 0 || i == 2) {
+      object_sprite(s, i < 2 ? ANIM_DEBRIS_SMALL : ANIM_DEBRIS_BIG, 0, 0, 8, PRIORITY_FRONT, 0, 0);
+      s->frameFlags = SPRITE_ROT_SCALE_ENABLE | SPRITE_DOUBLE_SIZE | (uint32_t)(4 + i);
+      sprite_step(s);
+    } else {
+      *s = *piece_sprite(d, i - 1);
+      s->frameFlags = SPRITE_ROT_SCALE_ENABLE | SPRITE_DOUBLE_SIZE | (uint32_t)(4 + i);
+    }
+  }
+  if (!object_task_ending(&d->o, debris_run, debris_end, PRIORITY_OBJECTS)) object_sprite_free(&d->big);
 }
 
 typedef struct { Object o; } Boulder;
@@ -94,10 +122,11 @@ static int boulder_run(ActTask *t) {
   Boulder *b = (Boulder *)t->data;
   Slot *en = b->o.slot;
   const Hitbox *hb = box(&b->o, 0);
-  if (hb && breaks(&b->o, en->e.x, en->e.y)) {
+  // or Amy's hammer (Coll_AmyHammer_Spring)
+  if (hb && (breaks(&b->o, en->e.x, en->e.y) || player_hammer_hits(&act.player, en->e.x, en->e.y, hb))) {
     play_song(SE_BREAK);
     dust_cloud(en->e.x, en->e.y);
-    for (int i = 0; i < DEBRIS; i++) debris_new(en, i);
+    debris_new(en);
     en->gone = 1;
     return 0;
   }
@@ -344,20 +373,22 @@ static int grind_run(ActTask *t) {
   int w = d2(en) * 8, h = d3(en) * 8;
   int x = fl(p->x), y = fl(p->y);
   int inside = x >= en->e.x && x <= en->e.x + w && y >= en->e.y && y <= en->e.y + h;
+  // Tails and Knuckles never ride them, and the rail's task then stays, in range or not
+  if (p->character == CHARACTER_TAILS || p->character == CHARACTER_KNUCKLES) return 1;
   if (en->e.kind == 19) {
     if (!p->dead && inside && !p->grinding && p->ysp >= 0 && p->xsp > 0) {
       if (p->xsp < 0.5) p->xsp = 0.5;
       p->grinding = 1;
       p->layer ^= 1;
       p->front = 1;
-      play_song(SE_GRIND_START);
+      play_song(p->character == CHARACTER_AMY ? SE_AMY_GRINDING : SE_GRIND_START);
       grind_sparks_start();
     }
   } else if (!p->dead && inside && p->grinding) {
     int far = x > en->e.x + (w >> 1);
     if (far || (e.input & KEY_A)) {
       p->ysp = far ? -4.875 : -7.0;
-      stop_song(SE_GRIND_START);
+      stop_song(p->character == CHARACTER_AMY ? SE_AMY_GRINDING : SE_GRIND_START);
       play_song(SE_GRIND_END);
       player_end_attack(p);
       p->state = far ? PS_SPRING : PS_RAIL_JUMP;

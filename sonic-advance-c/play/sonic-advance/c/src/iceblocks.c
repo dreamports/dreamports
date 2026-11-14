@@ -109,11 +109,21 @@ static int breaks(int x, int y, const Hitbox *hb, Player *p) {
   return 0;
 }
 
-/** sub_8091E88: Sonic's attack box on it while he is curled up or charging a spin dash */
+/** sub_8091E88: his attack box on it while he is curled up or charging a spin dash, and Tails flying or Knuckles gliding,
+ *  dropping from it, landing or sliding after it, and Amy swinging her hammer or slamming a dive */
+static int attacking(const Player *p) {
+  int s = p->state;
+  // Amy's hammer's moves and her dive's slam, and none of the others' (charStates 87 to 90 and 92)
+  if (p->character == CHARACTER_AMY) return (s >= PS_HAMMER && s <= PS_HAMMER_SWIRL) || s == PS_DIVE_SLAM;
+  if (s == PS_SPIN || s == PS_SPIN_DASH || s == PS_SPIN_DASH_REV) return 1;
+  if (p->character == CHARACTER_TAILS) return s == PS_FLY || s == PS_FLY_TURN;
+  if (p->character == CHARACTER_KNUCKLES) return s == PS_GLIDE || s == PS_GLIDE_DROP || s == PS_DROP_LAND || s == PS_GLIDE_SLIDE
+    || (s >= PS_GLIDE_TURN0 && s <= PS_GLIDE_TURN3);
+  return 0;
+}
 static int curled_attack(int x, int y, const Hitbox *hb, Player *p) {
   const Hitbox *attack = object_box(&p->sprite, 1);
-  return (p->state == PS_SPIN || p->state == PS_SPIN_DASH || p->state == PS_SPIN_DASH_REV) && attack
-    && collide_overlap(x, y, hb, enemy_sonic_x(), enemy_sonic_y(), attack);
+  return attacking(p) && attack && collide_overlap(x, y, hb, enemy_sonic_x(), enemy_sonic_y(), attack);
 }
 
 /** Task_IceBlock */
@@ -126,7 +136,7 @@ static int ice_block_run(ActTask *t) {
   Player *p = &act.player;
   if (!p->dead && hb) {
     // landing on it curled up stands him on it first (sub_80096B0's LANDED)
-    int landed = p->state == PS_SPIN && (collide_platform(&b->o, x, y, hb, p) & COLLIDE_LANDED);
+    int landed = p->state == PS_SPIN && (collide_platform(&b->o, x, y, hb, p) & COLLIDE_LANDED) && p->character != CHARACTER_AMY;
     if (breaks(x, y, hb, p) || curled_attack(x, y, hb, p) || landed) {
       if (p->onObject == &b->o) { p->onObject = NULL; p->air = 1; }
       dust_cloud(x, y);

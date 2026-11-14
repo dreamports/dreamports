@@ -49,6 +49,7 @@ static int regionFirst[MAX_REGIONS + 1];   // where each region's slots start in
 static int slotCount, regionsX, regionsY;
 static int prevX, prevY, scanned;          // the camera the last scan saw
 
+enum { ITEM_ONE_UP = 0, SPECIAL_SPRING_KIND = 102 };
 static void read_list(uint32_t table, int level, int list, int size) {
   Grid g;
   if (!grid_load(table, level, &g)) return;
@@ -61,14 +62,30 @@ static void read_list(uint32_t table, int level, int list, int size) {
       s->e.x = g.data[at] * 8 + (r % g.regionsX) * REGION_SIZE;
       s->e.y = g.data[at + 1] * 8 + (r / g.regionsX) * REGION_SIZE;
       s->e.kind = g.data[at + 2];
+      // Time Attack makes neither 1-UP item boxes nor the special spring (CreateEntity_ItemBox,
+      // CreateEntity_SpecialSpring)
+      if (time_attack() && ((list == ENTITY_ITEM_BOX && s->e.kind == ITEM_ONE_UP) || (list == ENTITY_INTERACTABLE && s->e.kind == SPECIAL_SPRING_KIND))) continue;
       for (int k = 0; k < size - 3; k++) s->e.d[k] = g.data[at + 3 + k];
       s->list = list;
-      // Neo Green Hill act 2's Buzzer at 6032,800 is never spawned by the original: its map entry stays
-      // uninitialized as the manager's scan never reaches its region, so the C leaves it out too.
-      if (level == LEVEL_NEO_GREEN_HILL_2 && list == ENTITY_ENEMY && s->e.kind == 1 && s->e.x == 6032 && s->e.y == 800) continue;
       slotRegion[slotCount++] = (uint16_t)r;
     }
   }
+}
+
+int entities_find(int level, int kind, int *x, int *y) {
+  Grid g;
+  if (!grid_load(TABLE_INTERACTABLES, level, &g)) return 0;
+  for (int r = 0; r < g.regionsX * g.regionsY; r++) {
+    int at = grid_records(&g, r);
+    if (at < 0) continue;
+    for (; g.data[at] != 0xFF; at += 7) {
+      if (g.data[at + 2] != kind) continue;
+      *x = g.data[at] * 8 + (r % g.regionsX) * REGION_SIZE;
+      *y = g.data[at + 1] * 8 + (r / g.regionsX) * REGION_SIZE;
+      return 1;
+    }
+  }
+  return 0;
 }
 
 void entities_load(int level) {

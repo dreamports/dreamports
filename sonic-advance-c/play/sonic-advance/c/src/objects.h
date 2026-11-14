@@ -35,6 +35,9 @@ struct ActTask {
 ActTask *act_task_add(ActRun run, ActEnd end, void *data, int priority);
 /** Runs the tasks of priority `from` up to, not including, `to`. */
 void act_tasks_run(int from, int to);
+void act_tasks_stop(void);
+/** Where the first interactable of `kind` in `level` is, as rom/entities.js reads them: 0 when there is none. */
+int entities_find(int level, int kind, int *x, int *y);
 
 // --- the entities (rom/entities.js) ------------------------------------------------------------------------------
 typedef struct { int x, y, kind, d[4]; } Entity;
@@ -94,6 +97,8 @@ ActTask *lava_spawn(Slot *slot);
 ActTask *crane_claw_spawn(Slot *slot);
 ActTask *pipe_entrance_spawn(Slot *slot);
 ActTask *pipe_exit_spawn(Slot *slot);
+ActTask *air_corner_spawn(Slot *slot);        // 112
+ActTask *toggle_gravity_spawn(Slot *slot);    // 109
 ActTask *visibility_spawn(Slot *slot);
 ActTask *special_spring_spawn(Slot *slot);
 ActTask *ice_block_spawn(Slot *slot);         // 95
@@ -107,7 +112,6 @@ ActTask *lift_spawn(Slot *slot);              // 88
 ActTask *float_spawn(Slot *slot);             // 90
 ActTask *boulder_spawner_spawn(Slot *slot);   // 92
 ActTask *run_wheel_spawn(Slot *slot);         // 86
-ActTask *hang_bar_spawn(Slot *slot);          // 83
 ActTask *mecha_knuckles_spawn(Slot *slot);    // 26
 ActTask *forced_slide_spawn(Slot *slot);      // 46
 ActTask *shrub_spawn(Slot *slot);             // 30
@@ -120,6 +124,13 @@ ActTask *breakable_wall_spawn(Slot *slot);    // 114
 ActTask *sinking_platform_spawn(Slot *slot);  // 85
 ActTask *rising_platform_spawn(Slot *slot);   // 89
 ActTask *lava_platform_spawn(Slot *slot);     // 98
+ActTask *hang_bar_spawn(Slot *slot);              // 83
+ActTask *spiked_barrel_spawn(Slot *slot);         // 93
+ActTask *conveyor_belt_object_spawn(Slot *slot);  // 99
+ActTask *propeller_spawn(Slot *slot);             // 103
+ActTask *egg_rocket_checkpoint_spawn(Slot *slot);
+/** The results have started: Egg Rocket's background stops (gCamera.unk50 |= 0x2000). */
+void egg_rocket_results(void);
 ActTask *square_platform_spawn(Slot *slot);
 ActTask *spiked_platform_spawn(Slot *slot);
 ActTask *barrel_spawn(Slot *slot);
@@ -179,8 +190,15 @@ static inline void *object_plain(void *block) {
 /** Makes the task of an object's block at the objects' priority, or at `priority`; false, with the block freed, when the
  *  list is full. */
 ActTask *object_task(Object *o, ActRun run, int priority);
+/** object_task with an end of its own, for an object holding more than its sprite's tiles; it calls object_end. */
+ActTask *object_task_ending(Object *o, ActRun run, ActEnd end, int priority);
 /** The end of an object's task: its tiles and block go and its place is free for the entity to spawn again. */
 void object_end(ActTask *t);
+/** What object_end does, for an object that another task's data points to: its slot let go, its sprite's tiles freed and
+ *  its block given back. */
+void object_free(Object *o);
+/** Gives back a block OBJECT_NEW handed out, for data that isn't an Object. */
+void object_release(void *data);
 
 /** Gives `s` an object's animation `anim` (variants first to last) in the OAM `order`, in front of the layers `prio`, with its
  *  own tiles. */
@@ -189,6 +207,8 @@ void object_sprite(Sprite *s, int anim, int first, int last, int order, int prio
 enum {
   VRAM_SPIKES = 0x1B00, VRAM_DUST_EFFECT_BRAKING = 0x2100, VRAM_BUMPER_TRI_BIG = 0x26A0, VRAM_BUMPER_TRI = 0x2B20,
   VRAM_BUMPER_TRI_2 = 0x2CA0, VRAM_BUMPER = 0x2E20,
+  VRAM_DUST_CLOUD = 0x1000,   // dust_cloud.c's DUST_CLOUD_VRAM_ADDRESS
+  VRAM_KIKI_SHOT = 0x2580, VRAM_BUZZER_SHOT = 0x2600, VRAM_GAMIGAMI_SHOT = 0x2620,
 };
 /** The same, for the kinds whose tiles sit at a fixed place below the heap (vram_hardcoded.h), shared by all of that kind;
  *  vram_free leaves those places alone. */
@@ -259,6 +279,8 @@ int collide_spring_side(const void *o, int ox, int oy, const Hitbox *hb, Player 
 
 // --- the world's calls (world.c) -----------------------------------------------------------------------------------------
 /** A hazard touched Sonic (Coll_DamagePlayer): false while he is invincible or still blinking. */
+/** PLAYER(i) for each single-player character in turn: Sonic, then the CPU partner when the act has him. */
+#define FOR_EACH_PLAYER(p) for (Player *p = &act.player; p; p = p == &act.player && act.hasPartner ? &act.partner : NULL)
 int world_damage(Player *p);
 void world_lose_rings(int n);
 void world_add_score(int points);

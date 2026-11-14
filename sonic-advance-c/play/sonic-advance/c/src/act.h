@@ -47,10 +47,12 @@ typedef struct {
   int bgX, bgY;
   int wrapped;   // how far the act's loop point has moved the camera, which the background leaves out (unk20)
   int wrappedThisFrame;   // the loop point's shift on this frame, which the layer maps are drawn without (the camera's task runs before it)
+  int held, layerX, layerY;   // a special spring held it this frame, after its task had drawn the layers at (layerX, layerY)
 } Camera;
 
 typedef struct {
   int flash, active;
+  int gone;   // its task was destroyed, as X Zone's normal ending does before the results
 } Hud;
 
 typedef struct PaletteAnim PaletteAnim;
@@ -64,13 +66,21 @@ struct PaletteAnim {
 typedef struct {
   Stage stage;
   Player player;
+  Player partner;                  // Tails as the CPU's partner (gPartner), when the character select's code brought him
+  int hasPartner;
   Camera cam;
   Hud hud;
   int tick, frames, courseTime, ringCount, lives, score;
+  int clockTime;   // gCheckpointTime: the frames the course clock has run this act, counted up even when it counts down
+  int timerReversed;
   uint32_t seed;
   int goalReached, ringsStopped;   // past the goal; past the goal or a beaten boss, the rings manager neither takes nor draws
   int afterLevel;                  // made by GoToNextLevel after the act before, rather than by the course select
+  int restarted;                   // made again after a life lost (HandleLifeLost), at the last checkpoint passed
+  int noPause;                     // STAGE_FLAG__DISABLE_PAUSE_MENU past the card: a life lost, or the results
+  int playerGone;                  // the last life lost: the player's task has ended, and the game over runs
   int fromStartPoint;              // opened by the recording's start point, past its card: only the first act it starts
+  int byCourseSelect;              // made inside the course select's task (0x2000): that frame runs only the tasks after it
   int loadFrames;                  // the frames left that the next act spends loading after its first (act_task)
   int bossFlash;                   // a hit boss drawn into the OBJ window: BOSS_FLASH_WHITE or BOSS_FLASH_WINDOW
   int blendOff;                    // a boss's task cleared the blending this frame
@@ -82,6 +92,7 @@ typedef struct {
   Task *task;
   int stallLoad, musicStarts;
   int palCount, palStarted;
+  uint32_t palettesFrom;   // gFrameCount from which the palette animations' tasks run (a return from a special stage)
   struct PaletteAnim *pal;
   // the title card's graphics and state (titlecard.c), and where its pieces are
   int cardGraphic;
@@ -95,18 +106,37 @@ extern int act_active;
 /** The original's stage clock, gStageTime: the act's own frame count less the frames the level's row says the
  *  original doesn't count yet (`stageClockAhead`). */
 int act_stage_time(void);
-void act_brake_dust(void);
 void act_brake_dust_at(int x, int y);
-void act_dash_dust(void);
+void act_dash_dust_of(const Player *p);
+void act_brake_dust_of(const Player *p);
 void act_insta_shield(void);
+/** The CPU partner (partner.c): made as the act starts, after the title card, from the act's start; Sonic's buttons each
+ *  frame, or NULL while his controls are held; and his task, `card` while the title card holds him. */
+void partner_start(void);
+void partner_hear(const PlayerInput *in);
+void partner_task(int card);
+/** Tails' tail swipe's effect, following him (Player_Tails_InitGfx_TailSwipe). */
+void act_tail_swipe(const Player *p);
+/** Knuckles' uppercut flame, which follows him as the tail swipe's effect does (Player_Knuckles_InitGfx_UppercutFlame). */
+void act_uppercut_flame(const Player *p);
+/** Knuckles' splash while he floats on the water (Player_Knuckles_InitGfx_FloatSplash, Task_KnucklesFloatSplash). */
+void act_float_splash(const Player *p);
+/** Amy's hearts for the swing of her hammer she has just started (CreateAmyAttackHeartEffect), and drawing them after her. */
+void act_amy_hearts(const Player *p);
+void act_amy_hearts_draw(void);
 void act_freeze_camera(void);
 void act_player_died(void);
 void act_life_lost(void);
+/** The game over (gameover.c): made as the last life is lost, its tasks each frame, and its display. */
+void gameover_start(void);
+int gameover_step(void);
+void gameover_display(void);
+void gameover_stop(void);
 // what the objects hand to the act: the goal post, the checkpoints and the special springs (goal.c, checkpoints.c,
 // specialspring.c)
 int act_goal_passed(void);
 void act_goal_reached(void);
-void act_stage_results(void);
+void act_stage_results(int nextFrame);
 void act_go_to_next_level(void);
 int act_checkpoint_index(void);
 void act_checkpoint_pass(int index, int x, int y);
@@ -122,7 +152,9 @@ void act_random_seed(uint32_t seed);
 void water_create(int level, uint32_t mask);
 void water_card(int ending);
 void water_card_flush(void);
+void act_made_at_card_priority(void);
 void water_task(void);
+int water_runs(void);
 int water_line_on_screen(void);
 /** gWater.currentWaterLevel: the water line's height in the world, -1 in an act without water. */
 int water_level(void);
@@ -135,11 +167,12 @@ void act_next_bg_palette(uint16_t *pal);
 // Sonic drowns, a number of the drowning countdown over him, and the drowning music, started and stopped
 void water_splash(int x);
 void water_bubble(int x, int y, int dx, int group);
-void water_drowned_bubbles(void);
-void water_countdown(int n);
+void water_drowned_bubbles(const Player *p);
+void water_countdown(const Player *p, int n);
 void water_drowning_music(void);
 void water_drowning_music_stop(void);
-void titlecard_start(int level, int character);
+void titlecard_start(int level, int character, int after);
+void titlecard_made(int first);
 int titlecard_run(int pressed);
 void titlecard_display(void);
 extern int actHudFlash;
@@ -149,6 +182,12 @@ void act_frame_now(void);
 void rings_skip_first_update(void);
 void act_start(int level, int cardSkip, int preFrames);
 void act_queue(int level, int cardSkip, int preFrames);
+void act_soft_reset(void);
+int act_special_pending(void);
+void act_to_special_stage(void);
+int act_special_start_point(int level);
+void act_come_back(void);
+int act_level(void);
 void act_song_playing(void);
 // what a zone's own code asks of the act (levels.h): one step of a palette animation, the tiles of frame `frame` of
 // the stage's animation copied now, and the frames of the act's music before the first one shown rendered there
@@ -157,6 +196,7 @@ void act_copy_tiles(int frame);
 void act_render_music_at_first_frame(void);
 void act_task(Task *t);
 uint32_t front_frame(void);
+int front_special_start_point(void);
 
 // Secret Base act 1's spotlights (engine/spotlights.js), in actspot.c
 void spotlights_start(void);

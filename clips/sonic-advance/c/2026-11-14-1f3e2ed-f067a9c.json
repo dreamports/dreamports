@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "time-attack-card",
+  "recordingFile": "games/sonic-advance/proof/recordings/time-attack-card.json",
+  "recordingSha1": "3514906dc544e16b747fb0e7b34cf99ab1a9e411",
+  "commit": "1f3e2edc60bc0c8b4660f84743ba28c62638b290",
+  "base": "23e920ccdb1feef7f9743a9043d0bee719aae4da",
+  "sideBySide": true,
+  "video": "f067a9c146eb39ee1b483465153dad44446e0d8d",
+  "measures": {
+    "from": 2350,
+    "to": 2649,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 4,
+    "same": 8,
+    "changed": {
+      "frame": 1781,
+      "why": "where the original first runs code main's proof doesn't count, at 08010278"
+    },
+    "newFrames": 300,
+    "base": "23e920ccdb1feef7f9743a9043d0bee719aae4da"
+  }
+}

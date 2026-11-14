@@ -35,17 +35,18 @@ enum { SONG_ACT_CLEAR = 33, SONG_BOSS_CLEAR = 34, SONG_FINAL_CLEAR = 35, SONG_RE
 #define NAME_COLORS 6
 #define BAND_TILES 16
 #define LETTER_TILES 24
-#define DIGIT_TILES 20
-#define DIGIT_FROM_TILE 32   // the HUD's white digits in the font
+#define HUD_DIGITS_TILE (0xA80 / 32)   // the HUD's white digits, at VRAM_RESERVED_UI_DIGITS_C, which the figures draw from
 #define LINE_PALETTE 12
 #define FONT_PALETTE 6
 
-// where each piece's tiles lie in the results' VRAM block, in tiles
-#define BAND_AT 0
-#define LINE_AT (BAND_AT + BAND_TILES)
-#define LETTERS_AT (LINE_AT + NAME_TILES + TEXT_TILES)
-#define DIGITS_AT (LETTERS_AT + LETTER_TILES)
-#define BLOCK_TILES (DIGITS_AT + DIGIT_TILES)
+// where each piece's tiles lie: the band at a place of its own in the sprites' tiles, which the next act's title card
+// draws from too (sub_80550F8), the line in one block from the heap, and the letters in another; the figures' digits are
+// the HUD's own
+#define BAND_VRAM (OBJ_VRAM + 0x1000)
+#define LINE_BLOCK_TILES (NAME_TILES + TEXT_TILES)
+#define LETTERS_AT 0
+// what CreateStageResults takes from the heap for the letters, VramMalloc(0x1E)
+#define FONT_BLOCK_TAKEN 30
 
 // the texts, after the title card's tables: [offset in the card's table, length]
 #define TEXT_RING 0x8C
@@ -90,8 +91,7 @@ typedef struct {
 typedef struct {
   int active, level, wait, longEnd, frame, ring, time, countdown, skipFirst, fading, display;
   int fadeLevel, fadeSpeed, bldY;
-  int tile0;              // the block's first tile
-  uint32_t vram;
+  uint32_t vram, fontVram;   // the line's block, and the letters'
   Slot_ slot[SLOTS];
   int bandText[BAND_LENGTH], lineText[LINE_LENGTH], ringLabel[LABEL], timeLabel[LABEL];
   Piece p[PIECES];
@@ -144,27 +144,27 @@ static void load_graphics(int level, int character) {
   // the text tiles of the line by level: the first act's, the second act's (0x50 on), X Zone's and the Moon Zone's
   int textAt = level == LEVEL_THE_MOON ? 0xF0 : level == LEVEL_X_ZONE ? 0xA0 : level & 1 ? 0x50 : 0;
 
-  r.vram = vram_malloc(BLOCK_TILES);
-  r.tile0 = (int)((r.vram - OBJ_VRAM) >> 5);
-  r.slot[SLOT_BAND].tile = r.tile0 + BAND_AT;
-  r.slot[SLOT_LINE].tile = r.tile0 + LINE_AT;
-  r.slot[SLOT_LETTERS].tile = r.tile0 + LETTERS_AT;
-  r.slot[SLOT_DIGITS].tile = r.tile0 + DIGITS_AT;
+  r.vram = vram_malloc(LINE_BLOCK_TILES);
+  r.fontVram = vram_malloc(FONT_BLOCK_TAKEN);
+  int fontTile = (int)((r.fontVram - OBJ_VRAM) >> 5);
+  r.slot[SLOT_BAND].tile = (int)((BAND_VRAM - OBJ_VRAM) >> 5);
+  r.slot[SLOT_LINE].tile = (int)((r.vram - OBJ_VRAM) >> 5);
+  r.slot[SLOT_LETTERS].tile = fontTile + LETTERS_AT;
+  r.slot[SLOT_DIGITS].tile = HUD_DIGITS_TILE;
   r.slot[SLOT_BAND].pal = FONT_PALETTE; r.slot[SLOT_LETTERS].pal = FONT_PALETTE; r.slot[SLOT_DIGITS].pal = FONT_PALETTE;
   r.slot[SLOT_LINE].pal = LINE_PALETTE;
 
   copyCount = 0;
-  copy_in(barTiles, r.vram + BAND_AT * TILE, BAND_TILES * TILE);
-  copy_in(nameTiles, r.vram + LINE_AT * TILE, NAME_TILES * TILE);
-  copy_in(textTiles + (uint32_t)textAt * TILE, r.vram + (LINE_AT + NAME_TILES) * TILE, TEXT_TILES * TILE);
+  copy_in(barTiles, BAND_VRAM, BAND_TILES * TILE);
+  copy_in(nameTiles, r.vram, NAME_TILES * TILE);
+  copy_in(textTiles + (uint32_t)textAt * TILE, r.vram + NAME_TILES * TILE, TEXT_TILES * TILE);
   // the font's letters it uses, in the order sub_8056FE4 puts them: R S T U, M N O, B, E, G, I and the blank
   static const int LETTERS[][2] = { { 100, 8 }, { 90, 6 }, { 68, 2 }, { 74, 2 }, { 78, 2 }, { 82, 2 }, { 146, 2 } };
   int to = 0;
   for (int i = 0; i < 7; i++) {
-    copy_in(fontTiles + (uint32_t)LETTERS[i][0] * TILE, r.vram + (LETTERS_AT + to) * TILE, (uint32_t)LETTERS[i][1] * TILE);
+    copy_in(fontTiles + (uint32_t)LETTERS[i][0] * TILE, r.fontVram + (LETTERS_AT + to) * TILE, (uint32_t)LETTERS[i][1] * TILE);
     to += LETTERS[i][1];
   }
-  copy_in(fontTiles + DIGIT_FROM_TILE * TILE, r.vram + DIGITS_AT * TILE, DIGIT_TILES * TILE);
 
   // OBJ palette 6 is the font's, palette 12 the line's with the name's first six colours over them
   for (int i = 0; i < 16; i++) e.objPalette[FONT_PALETTE * 16 + i] = (uint16_t)rom_u16(fontPalette + (uint32_t)i * 2);
@@ -187,7 +187,7 @@ void results_start(int level, int rings, int courseTime, int longEnd, int nextFr
   r.wait = (r.ring > r.time ? r.ring : r.time) / STEP + BASE_WAIT;
   r.countdown = NEXT_ACT_AFTER;
   r.fadeSpeed = FADE_SPEED;
-  load_graphics(level, 0);
+  load_graphics(level, ctx.character);
   read_text(r.bandText, TEXT_BAND, BAND_LENGTH);
   read_text(r.lineText, TEXT_LINE, LINE_LENGTH);
   read_text(r.ringLabel, TEXT_RING, LABEL);
@@ -207,6 +207,8 @@ void results_start(int level, int rings, int courseTime, int longEnd, int nextFr
 }
 
 int results_active(void) { return r.active; }
+/** A soft reset: the results go with the act. */
+void results_stop(void) { r.active = 0; }
 
 // one sprite into OAM from its attribute words
 static void put_oam(int order, uint16_t a0, uint16_t a1, int pal, int tile) {
@@ -375,7 +377,13 @@ int results_run(void) {
       cam->speedX = 0; cam->speedY = 0;
       if ((uint32_t)((int)__builtin_floor(p->x) - (int)__builtin_floor(cam->x) + 64) > 368u) {
         p->xsp = 0; p->gsp = 0;
-        // the CPU partner is stopped here too when he is past the screen, but this version has none
+        // and the CPU partner too when he is past it, held still with nothing pressed
+        Player *q = &act.partner;
+        if (act.hasPartner && (int)__builtin_floor(q->x) - (int)__builtin_floor(cam->x) > 304) {
+          q->carried = 1; q->ignoreInput = 1; q->heldRight = q->heldLeft = 0;
+          q->jumpPressed = 0; q->attackPressed = 0;
+          q->xsp = 0; q->gsp = 0;
+        }
       }
       if (k > r.wait + FADE_AFTER) {
         if (r.level < FINAL_LEVEL_FROM) fade_out();   // X Zone's and the Moon's stay on the screen
@@ -385,7 +393,7 @@ int results_run(void) {
   }
   // the frame the next act starts keeps the last frame's sprites: it draws nothing new
   r.display = r.fading || r.bldY;
-  if (next) { r.active = 0; r.display = 0; vram_free(r.vram); return 0; }
+  if (next) { r.active = 0; r.display = 0; vram_free(r.vram); vram_free(r.fontVram); return 0; }
   r.frame++;
   band_task(&r.p[PIECE_BAND], k);
   line_task(&r.p[PIECE_LINE], k);

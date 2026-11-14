@@ -10,6 +10,7 @@ enum {
 };
 enum {
   ANIM_SPRING = 455, ORDER_SPRING = 18, PRIORITY_FRONT = 2,
+  SPRING_TILES = 16,   // ALLOC_TILES(SA1_ANIM_SPRING): its 32 x 32 box, whichever way the spring faces
   PALETTE_YELLOW_SPRING = 36, YELLOW_BANK = 8,   // the weaker up springs draw with this palette, in the bank after the red one's (gObjPalette[8 * 16])
   SE_SPRING = 170,
   TRIGGER_OUT = 20,       // how far out on its side Sonic's centre must be for a diagonal spring to launch him
@@ -57,9 +58,12 @@ static const Hitbox *box_of(const Spring *sp, int slot) { return object_box(&sp-
 static int up(Spring *sp, Player *p) {
   const Entity *e = &sp->o.slot->e;
   if (p->carried) return 0;
-  if (!(collide_platform(&sp->o, e->x, e->y, box_of(sp, 0), p) & COLLIDE_LANDED)) return 0;
+  // Amy's hammer launches her too, half as fast again (Coll_AmyHammer_Spring)
+  int landed = (collide_platform(&sp->o, e->x, e->y, box_of(sp, 0), p) & COLLIDE_LANDED) != 0;
+  int hammered = !landed && player_hammer_hits(p, e->x, e->y, box_of(sp, 0));
+  if (!landed && !hammered) return 0;
   player_land(p);
-  p->ysp = -sp->speed;
+  p->ysp = hammered ? player_hammer_speed(-sp->speed) : -sp->speed;
   throw_up(sp, p);
   return 1;
 }
@@ -104,19 +108,21 @@ static int diagonal(Spring *sp, Player *p) {
   const Hitbox *trigger = box_of(sp, 1);
   Hitbox probe = { 0, -TRIGGER_HALF_WIDTH, (int8_t)-(p->offsetY + 1), TRIGGER_HALF_WIDTH, (int8_t)(p->offsetY + 1) };
   int px = (int)__builtin_floor(p->x), py = (int)__builtin_floor(p->y);
-  if (!trigger || !collide_overlap(e->x, e->y, trigger, px, py, &probe)) {
+  int hammered = player_hammer_hits(p, e->x, e->y, box_of(sp, 0));
+  if (!hammered && (!trigger || !collide_overlap(e->x, e->y, trigger, px, py, &probe))) {
     collide_platform(&sp->o, e->x, e->y, box_of(sp, 0), p);
     return 0;
   }
   p->curled = 0; p->airLock = 0;   // even without a launch, and without standing him up
   int upLeft = sp->kind == SPRING_BIG_UPLEFT || sp->kind == SPRING_SMALL_UPLEFT;
-  int dir = upLeft && px < e->x - TRIGGER_OUT ? -1 : px > e->x + TRIGGER_OUT ? 1 : 0;
+  int dir = upLeft && (hammered || px < e->x - TRIGGER_OUT) ? -1 : hammered || px > e->x + TRIGGER_OUT ? 1 : 0;
   if (!dir) {
     collide_platform(&sp->o, e->x, e->y, box_of(sp, 0), p);
     return 0;
   }
-  p->ysp = p->inverted ? sp->speed : -sp->speed;   // under flipped gravity, still world up
-  p->xsp = sp->speed * dir;
+  double speed = hammered ? player_hammer_speed(sp->speed) : sp->speed;
+  p->ysp = p->inverted ? speed : -speed;   // under flipped gravity, still world up
+  p->xsp = speed * dir;
   throw_up(sp, p);
   return 1;
 }
@@ -135,8 +141,9 @@ static int spring_run(ActTask *t) {
   Spring *sp = (Spring *)t->data;
   Sprite *s = &sp->o.sprite;
   const Entity *e = &sp->o.slot->e;
-  int hit = collide(sp, &act.player);
-  if (hit) play_song(SE_SPRING);
+  // each player in turn, whatever the last one did, and the spring's sound for each it throws
+  int hit = 0;
+  FOR_EACH_PLAYER(p) if (collide(sp, p)) { hit = 1; play_song(SE_SPRING); }
   if (off_cam(e->x, e->y)) return 0;
   if (sp->launching) {
     // a hit during the launch restarts it, except on the diagonal springs
@@ -170,10 +177,12 @@ static int hidden_hit(HiddenSpring *h, Player *p) {
   const Entity *e = &h->o.slot->e;
   const Hitbox *hb = object_box(s, 0);
   Hitbox body = collide_body(p);
-  if (p->dead || p->carried || !hb ||
-      !collide_overlap(e->x, e->y, hb, (int)__builtin_floor(p->x), (int)__builtin_floor(p->y), &body)) return 0;
+  int hammered = !p->dead && !p->carried && player_hammer_hits(p, e->x, e->y, hb);
+  if (!hammered && (p->dead || p->carried || !hb ||
+      !collide_overlap(e->x, e->y, hb, (int)__builtin_floor(p->x), (int)__builtin_floor(p->y), &body))) return 0;
   player_land(p);
-  p->ysp = -((s8(e->d[1]) << 6) / 256.0);
+  double speed = -((s8(e->d[1]) << 6) / 256.0);
+  p->ysp = hammered ? player_hammer_speed(speed) : speed;
   hidden_throw(h, p);
   sprite_start(s, 1);
   play_song(SE_SPRING);
@@ -186,11 +195,12 @@ static int hidden_spring_run(ActTask *t) {
   const Entity *e = &h->o.slot->e;
   if (!h->launching) {
     // its launch's first frame shows on the next one
-    h->launching = hidden_hit(h, &act.player);
+    // sub_8095224: each player in turn
+    FOR_EACH_PLAYER(p) h->launching |= hidden_hit(h, p);
     if (off_cam(e->x, e->y)) return 0;
     return 1;
   }
-  hidden_hit(h, &act.player);
+  FOR_EACH_PLAYER(p) hidden_hit(h, p);
   if (sprite_step(s)) {
     h->launching = 0;
     sprite_start(s, 0);
@@ -210,7 +220,7 @@ ActTask *hidden_spring_spawn(Slot *slot) {
   h->o.x = en->x;
   h->d0 = en->d[0] & 0xFF;
   Sprite *s = &h->o.sprite;
-  object_sprite(s, ANIM_SPRING, 0, 1, ORDER_SPRING, PRIORITY_FRONT, 0, 0);
+  object_sprite_at(s, vram_malloc(SPRING_TILES), ANIM_SPRING, 0, ORDER_SPRING, PRIORITY_FRONT, 0, 0);
   sprite_step(s);
   return object_task(&h->o, hidden_spring_run, PRIORITY_OBJECTS);
 }
@@ -228,7 +238,7 @@ ActTask *spring_spawn(Slot *slot) {
   sp->idle = LOOKS[look].idle;
   sp->launch = LOOKS[look].launch;
   Sprite *s = &sp->o.sprite;
-  object_sprite(s, ANIM_SPRING, sp->idle, sp->launch, ORDER_SPRING, PRIORITY_FRONT, LOOKS[look].flipX, LOOKS[look].flipY);
+  object_sprite_at(s, vram_malloc(SPRING_TILES), ANIM_SPRING, sp->idle, ORDER_SPRING, PRIORITY_FRONT, LOOKS[look].flipX, LOOKS[look].flipY);
   if (sp->kind == SPRING_UP && !(sp->d0 & 2)) {
     // the weaker up springs are yellow: they skip the animation's red palette and draw with another, in the next bank
     s->frameFlags |= SPRITE_KEEP_PALETTE;

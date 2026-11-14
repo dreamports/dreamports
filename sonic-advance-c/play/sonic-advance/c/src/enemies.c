@@ -7,13 +7,13 @@
 enum {
   SE_ENEMY_DEFEAT = 138,
   ANIM_SCORE = 709, ORDER_SCORE = 0,
-  SAVE_DIFFICULTY = 0x18,    // 0 normal, 1 easy
   SCORE_RISE = 60, SCORE_HOLD = 30,
   SCORE_KINDS = 5,
   ANIMAL_ORDER = 17,
   ANIMAL_GRAVITY = 48, ANIMAL_HOP = 1024, ANIMAL_RUN = 512,   // in 1/256 px
   ANIMAL_START_AIR = 42,     // frames before the floor is looked at
   ANIMAL_MARGIN = 32,        // the animal goes when this far off the screen
+  ANIMAL_TILE = 192,         // where the zone's first animal's tiles are, the second's 4 on and the third's 8
   FLY_START = 576, FLY_TOP = 640, FLY_BOTTOM = 512, FLY_SWING = 6, FLY_SLOW = 20,   // its heading, 1024 a turn
   ZONES = 6, ZONE_ANIMALS_EACH = 3,
 };
@@ -25,7 +25,7 @@ EnemyData enemy_data(const Entity *e) {
 
 int enemy_gone(int spawnX, int spawnY, int x, int y) { return off_display(spawnX, spawnY) && off_cam(x, y); }
 
-int enemy_left_out_on_easy(int zone) { return act.stage.zone == zone && save.bytes[SAVE_DIFFICULTY] != 0; }
+int enemy_left_out_on_easy(int zone) { return act.stage.zone == zone && difficulty_easy(); }
 
 void enemy_sprite(Sprite *s, int anim, int first, int last, int order) {
   object_sprite(s, anim, first, last, order, ENEMY_PRIORITY, 0, 0);
@@ -136,7 +136,9 @@ static void animal_new(int x, int y, int zone) {
   int anim = ANIMALS[zone][next_animal].anim, moves = ANIMALS[zone][next_animal].moves;
   a->x = x * 256; a->y = y * 256;
   a->moves = moves;
-  object_sprite(&a->o.sprite, anim, 0, 0, ANIMAL_ORDER, ENEMY_PRIORITY, 0, 0);
+  // its tiles are at a fixed place in sprite VRAM, the zone's first, second or third animal's (sAnimsTrappedAnimals'
+  // vramOffset), shared by every one of that animal
+  object_sprite_at(&a->o.sprite, OBJ_VRAM + (uint32_t)(ANIMAL_TILE + 4 * next_animal) * 32, anim, 0, ANIMAL_ORDER, ENEMY_PRIORITY, 0, 0);
   if (moves == FLIES) {
     a->heading = FLY_START; a->up = 1;
     object_task(&a->o, flying_animal_run, PRIORITY_OBJECTS);
@@ -160,30 +162,41 @@ void enemy_defeat(int x, int y) {
   if (p->chain < SCORE_KINDS - 1) p->chain++;
 }
 
+// Sonic, then the CPU partner (PLAYER(i) for each single-player character)
+static Player *player_of(int i) { return i == 0 ? &act.player : act.hasPartner ? &act.partner : NULL; }
+
 int enemy_attack(const Sprite *s, int x, int y) {
   const Hitbox *hb = object_box(s, 0);
-  Player *p = &act.player;
-  if (!hb || p->dead) return 0;
-  int px = enemy_sonic_x(), py = enemy_sonic_y();
-  const Hitbox *body = object_box(&p->sprite, 0), *attack = object_box(&p->sprite, 1);
-  if (attack && collide_overlap(x, y, hb, px, py, attack)) {
-    if (p->ysp > 0) p->ysp = -p->ysp;
-    enemy_defeat(x, y);
-    return 1;
-  }
-  if (body && collide_overlap(x, y, hb, px, py, body)) {
-    if (p->invincible > 0) { enemy_defeat(x, y); return 1; }
-    world_damage(p);
+  if (!hb) return 0;
+  for (int i = 0; i < 2; i++) {
+    Player *p = player_of(i);
+    if (!p || p->dead) continue;
+    int px = (int)__builtin_floor(p->x), py = (int)__builtin_floor(p->y);
+    const Hitbox *body = object_box(&p->sprite, 0), *attack = object_box(&p->sprite, 1);
+    if (attack && collide_overlap(x, y, hb, px, py, attack)) {
+      if (p->ysp > 0) p->ysp = -p->ysp;
+      enemy_defeat(x, y);
+      return 1;
+    }
+    if (body && collide_overlap(x, y, hb, px, py, body)) {
+      if (p->invincible > 0) { enemy_defeat(x, y); return 1; }
+      world_damage(p);
+    }
   }
   return 0;
 }
 
 int enemy_projectile(const Sprite *s, int x, int y) {
   const Hitbox *hb = object_box(s, 0);
-  Player *p = &act.player;
-  if (!hb || p->dead) return 0;
-  const Hitbox *body = object_box(&p->sprite, 0);
-  if (!body || !collide_overlap(x, y, hb, enemy_sonic_x(), enemy_sonic_y(), body)) return 0;
-  world_damage(p);
-  return 1;
+  if (!hb) return 0;
+  int touched = 0;
+  for (int i = 0; i < 2; i++) {
+    Player *p = player_of(i);
+    if (!p || p->dead) continue;
+    const Hitbox *body = object_box(&p->sprite, 0);
+    if (!body || !collide_overlap(x, y, hb, (int)__builtin_floor(p->x), (int)__builtin_floor(p->y), body)) continue;
+    world_damage(p);
+    touched = 1;
+  }
+  return touched;
 }

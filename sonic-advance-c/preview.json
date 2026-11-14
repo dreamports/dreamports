@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/743-angel-island-zone-act-2",
-  "commit": "98d9aa3263a13933fc49e8d2ca8321a3cd199abd",
-  "made": "2026-11-12T05:58:55.763Z",
-  "about": "Angel Island Zone act 2 now runs in C, through the hang bars to Mecha Knuckles and the act's end."
+  "branch": "feat/761-time-attack-c",
+  "commit": "1f3e2edc60bc0c8b4660f84743ba28c62638b290",
+  "made": "2026-11-14T04:34:25.564Z",
+  "about": "Time Attack plays in C: its menu, the records, the card, the run, the pause menu, the result and the lobby."
 }

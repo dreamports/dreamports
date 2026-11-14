@@ -19,11 +19,12 @@ enum {
   ANIM_BEATEN = 612,
   ANIM_BELT0 = 613, ANIM_BELT1 = 614, ANIM_BELT2 = 615, ANIM_BELT3 = 616,
   BODY_ORDER = 19, EGGMAN_ORDER = 18, PART_ORDER = 17,
-  BODY_TILES = 64, EGGMAN_TILES = 8,
+  BODY_TILES = 70, EGGMAN_TILES = 8,   // ALLOC_TILES: the body's 80 x 56 box, Eggman's 32 x 16
   ARMS = 5, ARM_STEP = 16, HAMMER_REACH = 96, PIVOT_UP = 36,
   SWING_LOW = -568, SWING_HIGH = 56,
   WAIT = 120, HITS_BEATEN = 8, HITS_LAST = 7, FLASH = 0x20, FLASH_LAST = 0x40,
   SCORE = 1000, PART_FRAMES = 180, BELT_FRAMES = 60,
+  DEBRIS_GRAVITY = 40,   // 1/256 px a frame faster each frame
   FLY_VX = 0x200, FLY_VY = -0x600, FLY_GRAVITY = 40, BELT_VX = 0x400, BELT_VY = -0x200,
   EGG_MOBILE_UP = 64, EGG_MOBILE_SPEED = 512, EGG_MOBILE_GONE = DISPLAY_WIDTH + 64,
   SE_BOSS_HIT = 143, SE_EXPLOSION = 144, SE_IMPACT = 145,
@@ -187,25 +188,15 @@ struct EggTank {
   TankPhase phase;
   int x0, y0;
   int swing, speed, hits, flash, count, grounded, qx, qy, fall;
-  int bodyAgain, eggmanAgain;
+  int eggmanAgain;
 };
 
 static EggTank *current_tank;
 static Arm *arms[ARMS];
 static Hammer *hammer;
 
-static int body_update(EggTank *b) {
-  Sprite *s = &b->o.sprite;
-  if (b->bodyAgain) { b->bodyAgain = 0; sprite_start(s, s->variant); }
-  if (!sprite_step(s)) return 0;
-  if (s->graphics.anim == ANIM_BODY) {
-    int next = s->variant == BODY_PLAIN ? BODY_SECOND : BODY_PLAIN;
-    play(s, ANIM_BODY, next);
-    sprite_step(s);
-    b->bodyAgain = 1;
-  }
-  return 0;
-}
+// the body's own script swaps its two pictures
+static int body_update(EggTank *b) { return sprite_step(&b->o.sprite); }
 static int eggman_update(EggTank *b) {
   Sprite *s = &b->s2;
   if (b->eggmanAgain) { b->eggmanAgain = 0; sprite_start(s, s->variant); }
@@ -257,7 +248,7 @@ static int hit_test(EggTank *b, int x, int y) {
   if (!b0 || !b1) return HIT_NONE;
   if (attack) {
     if (body && collide_overlap(x, y, b1, px, py, body)) { world_damage(p); return HIT_PLAYER; }
-    if (collide_overlap(x, y, b0, px, py, attack)) { p->xsp = -p->xsp; p->ysp = -p->ysp; return HIT_ENEMY; }
+    if (collide_overlap(x, y, b0, px, py, attack)) { player_bounce_off_boss(p); return HIT_ENEMY; }
   }
   if (body && collide_overlap(x, y, b0, px, py, body)) { world_damage(p); return HIT_PLAYER; }
   return HIT_NONE;
@@ -298,7 +289,7 @@ static void tank_show_beaten(EggTank *b, int x, int y) {
 }
 static void tank_smoke(EggTank *b, int x, int y) {
   b->count = (b->count + 1) & 0xFFFF;
-  if (!(b->count & 7)) boss_debris(x, y - 32, 0);
+  if (!(b->count & 7)) boss_debris(x, y - 32, DEBRIS_GRAVITY);
 }
 static int tank_settled(EggTank *b) {
   int x = s16(b->x0 + I(b->qx)), y = s16(b->y0 + I(b->qy));
@@ -369,7 +360,7 @@ static int tank_last(EggTank *b) {
     b->qx += (b->o.sprite.frameFlags & SPRITE_X_FLIP) ? 256 : -256;
   }
   int x = s16(b->x0 + I(b->qx) + dx), y = s16(b->y0 + dy);
-  if (hit_test(b, x, y) == HIT_ENEMY) { tank_beaten(b, x, y, dx, dy); return tank_falling(b); }
+  if (hit_test(b, x, y) == HIT_ENEMY) { tank_beaten(b, x, y, dx, dy); return 1; }   // which runs the fall's first frame
   if (dy == 0) turn_at_edges(b, x);
   tank_show(b, x, y);
   set_pivot(b, x, y);
@@ -404,6 +395,7 @@ static int arm_run(ActTask *t) {
       a->ax = s16((((cos1024(g) << 4) * a->i) >> 14) + ((cam_x() + pivot.x) & 0xFFFF));
       a->ay = s16((((sin1024(g) << 4) * a->i) >> 14) + ((cam_y() + pivot.y) & 0xFFFF));
       a->vx = (a->i & 1) ? FLY_VX : -FLY_VX; a->vy = FLY_VY; a->qax = 0; a->qay = 0; a->t = 0;
+      s->frameFlags &= ~(uint32_t)SPRITE_ROT_SCALE_ENABLE;   // it flies off unturned (Task_80271E4)
     }
     if (a->t++ > PART_FRAMES) return 0;
     a->qax += a->vx;
@@ -422,7 +414,13 @@ static int arm_run(ActTask *t) {
   if (objects_drawing()) display_sprite(s);
   return 1;
 }
-static void arm_end(ActTask *t) { object_end(t); }
+// TaskDestructor_EHTArm and _EHTHammer: the piece's tiles go back as its task ends
+static void part_end(ActTask *t) {
+  PartTask *pt = (PartTask *)t->data;
+  if (pt->arm) { arms[pt->arm->i] = NULL; object_free(&pt->arm->o); }
+  if (pt->hammer) { if (hammer == pt->hammer) hammer = NULL; object_free(&pt->hammer->o); }
+  object_release(pt);
+}
 static Arm *arm_new(int i) {
   Arm *a = OBJECT_NEW(Arm);
   if (!a) return NULL;
@@ -432,7 +430,7 @@ static Arm *arm_new(int i) {
   PartTask *pt = OBJECT_NEW(PartTask);
   if (!pt) return NULL;
   pt->arm = a;
-  if (!act_task_add(arm_run, arm_end, pt, PRIORITY_OBJECTS_ + i)) return NULL;
+  if (!act_task_add(arm_run, part_end, pt, PRIORITY_OBJECTS_ + i)) return NULL;
   return a;
 }
 static int hammer_run(ActTask *t) {
@@ -484,7 +482,6 @@ static int hammer_run(ActTask *t) {
   if (objects_drawing()) display_sprite(s);
   return 1;
 }
-static void hammer_end(ActTask *t) { object_end(t); }
 static Hammer *hammer_new(void) {
   Hammer *h = OBJECT_NEW(Hammer);
   if (!h) return NULL;
@@ -493,7 +490,7 @@ static Hammer *hammer_new(void) {
   PartTask *pt = OBJECT_NEW(PartTask);
   if (!pt) return NULL;
   pt->hammer = h;
-  if (!act_task_add(hammer_run, hammer_end, pt, PRIORITY_OBJECTS_ + ARMS)) return NULL;
+  if (!act_task_add(hammer_run, part_end, pt, PRIORITY_OBJECTS_ + ARMS)) return NULL;
   return h;
 }
 
@@ -530,10 +527,9 @@ ActTask *egg_hammer_tank_spawn(Slot *slot) {
   act.cam.maxX = b->x0 - 64 - DISPLAY_WIDTH;
   act.cam.minX = b->x0 - 64 - 360;
   boss_music(0x10);
-  // the original gives the body the whole tile count its scripts can load, which the tool's own count comes short of
-  object_sprite_at(&b->o.sprite, vram_malloc((uint32_t)sprite_tiles(ANIM_BODY, BODY_PLAIN, BODY_SECOND) + 16), ANIM_BODY, BODY_PLAIN, BODY_ORDER, ENEMY_PRIORITY, 0, 0);
+  // ALLOC_TILES(SA1_ANIM_BOSS_1_BODY): the animation's 80 x 56 box, 70 tiles
+  object_sprite_at(&b->o.sprite, vram_malloc(BODY_TILES), ANIM_BODY, BODY_PLAIN, BODY_ORDER, ENEMY_PRIORITY, 0, 0);
   object_sprite(&b->s2, ANIM_EGGMAN_BOSS, EGGMAN_STILL, EGGMAN_HURT, EGGMAN_ORDER, ENEMY_PRIORITY, 0, 0);
-  update_sprite(&b->o.sprite, 0);
-  update_sprite(&b->s2, 0);
+  // neither sprite takes a step until the fight starts (CreateEntity_EggHammerTank)
   return act_task_add(tank_run, tank_end, b, PRIORITY_OBJECTS_);
 }
