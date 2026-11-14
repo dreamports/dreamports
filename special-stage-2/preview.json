@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/749-special-stage-2-part",
+  "commit": "566804e9b551f11a0e2e19a288f1b645de054bc2",
+  "made": "2026-11-14T06:16:03.319Z",
+  "about": "Proves Special stage 2 in C from Secret Base Zone act 1's special spring through the Chaos Emerald scene, results and return to the act."
+}
