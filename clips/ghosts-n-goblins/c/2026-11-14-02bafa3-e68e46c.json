@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "stage-4-clear",
+  "recordingFile": "games/ghosts-n-goblins/proof/recordings/stage-4-clear.json",
+  "recordingSha1": "d98854ca5dccd65041b7f522c20ae70bbfb1d5e8",
+  "commit": "02bafa387b277840105cfd9cbf70106bc77895da",
+  "base": "d38fff2fda07b96e73a95e01b5f04bd843ec0295",
+  "sideBySide": true,
+  "video": "e68e46c91e1dabcae03e81a73d73f9dd7b83037a",
+  "measures": {
+    "from": 32300,
+    "to": 32599,
+    "frames": 300,
+    "seconds": 4.99,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 31,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs"
+    },
+    "newFrames": 300,
+    "base": "d38fff2fda07b96e73a95e01b5f04bd843ec0295"
+  }
+}
