@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "x-zone-the-moon-opens",
+  "recordingFile": "games/sonic-advance/proof/recordings/x-zone-the-moon-opens.json",
+  "recordingSha1": "c138d2153342aa5a38547d9d6f1033b31edd566a",
+  "commit": "7650f6ab90d658e953c7f596c98d987222335b06",
+  "base": "35825f3e56ecca273024bfe69c5113f5d03a6d6a",
+  "sideBySide": true,
+  "video": "f7b0746109d0a772f909131043a2414df1aa29c1",
+  "measures": {
+    "from": 9610,
+    "to": 9909,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 5,
+    "changed": {
+      "frame": 9610,
+      "why": "where the original first runs code main's proof doesn't count, at 0803F4F8"
+    },
+    "newFrames": 300,
+    "base": "35825f3e56ecca273024bfe69c5113f5d03a6d6a"
+  }
+}

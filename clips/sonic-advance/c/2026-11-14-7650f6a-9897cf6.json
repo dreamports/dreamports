@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-the-moon",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-the-moon.json",
+  "recordingSha1": "c42682067fff8b663c7d6b1fcf877e59f003e180",
+  "commit": "7650f6ab90d658e953c7f596c98d987222335b06",
+  "base": "35825f3e56ecca273024bfe69c5113f5d03a6d6a",
+  "sideBySide": true,
+  "video": "9897cf635a7d44f8ae3c3220ed00001d3783bcc5",
+  "measures": {
+    "from": 10560,
+    "to": 10859,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 9610,
+      "why": "where the original first runs code main's proof doesn't count, at 0803F4F8"
+    },
+    "newFrames": 300,
+    "base": "35825f3e56ecca273024bfe69c5113f5d03a6d6a"
+  }
+}
