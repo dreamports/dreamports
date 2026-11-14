@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/750-special-stage-3-in-c",
-  "commit": "81a851ed72aa9c4064e124b42eebb42ad11bc76e",
-  "made": "2026-11-14T16:45:44.433Z",
-  "about": "Special stage 3 plays in C, from Casino Paradise Zone act 1's special spring to its results."
+  "branch": "feat/751-special-stage-4-in-c",
+  "commit": "ae134e5dab8fe96da81a5179e1a603ca14134c86",
+  "made": "2026-11-14T18:11:20.995Z",
+  "about": "Special stage 4 plays in C, from Ice Mountain Zone act 1's special spring to its results and the act's return."
 }
