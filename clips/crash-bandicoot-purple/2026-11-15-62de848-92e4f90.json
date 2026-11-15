@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "first-hub-standing",
+  "recordingFile": "games/crash-bandicoot-purple/proof/recordings/first-hub-standing.json",
+  "recordingSha1": "659ff2f2a0452aad5864918ec78a23423f02832e",
+  "commit": "62de848d0bd45c9afbb80212ef1befac0bf96284",
+  "base": "07353e0a31bb51aa4e51731bc873e60ff7041323",
+  "sideBySide": true,
+  "video": "92e4f9073d8c06a7f204429473ff49d4fdb08e9a",
+  "measures": {
+    "from": 4757,
+    "to": 5056,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 109,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "07353e0a31bb51aa4e51731bc873e60ff7041323"
+  }
+}

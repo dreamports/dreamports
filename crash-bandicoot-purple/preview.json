@@ -1,0 +1,10 @@
+{
+  "game": "crash-bandicoot-purple",
+  "title": "Crash Bandicoot Purple: Ripto's Rampage Dreamport",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "fix/1325-crash-first-hub-standing",
+  "commit": "62de848d0bd45c9afbb80212ef1befac0bf96284",
+  "made": "2026-11-15T23:13:00.943Z",
+  "about": "The first-hub-standing recording plays the load save screen and the main menu in the Dreamport too, as it has them since #534."
+}
