@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-janken",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-janken.json",
+  "recordingSha1": "a78d27f078aeb12ad3294be0dd84cf2be2692f22",
+  "commit": "98f37a58d1d0c41ea91dc1a4e4462df599967c4d",
+  "base": "f84b1c25a9ea20fa2b17c7d2556e8ab295e8fd4a",
+  "sideBySide": true,
+  "video": "faf1696dd611ef079586598e1d26434ae5a74a3c",
+  "measures": {
+    "from": 1990,
+    "to": 2289,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "f84b1c25a9ea20fa2b17c7d2556e8ab295e8fd4a"
+  }
+}

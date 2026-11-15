@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1312-tcg-hand",
-  "commit": "1a392d6aba84a9d2900e87368bed619070eda542",
-  "made": "2026-11-15T19:12:46.553Z",
-  "about": "In Tiny Chao Garden the hand moves and rocks the egg, pets the Chao and pulls plants up."
+  "branch": "feat/1313-tcg-icons",
+  "commit": "98f37a58d1d0c41ea91dc1a4e4462df599967c4d",
+  "made": "2026-11-15T20:16:43.008Z",
+  "about": "In Tiny Chao Garden the left icon opens its rock-paper-scissors game."
 }
