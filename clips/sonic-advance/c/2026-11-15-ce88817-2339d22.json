@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "language-screen",
+  "recordingFile": "games/sonic-advance/proof/recordings/language-screen.json",
+  "recordingSha1": "2b060a8b8677c182665ab2b1302618a7e3c88c82",
+  "commit": "ce88817456f79b1df617fbf7e62385eb07208c3c",
+  "base": "aecf9cdcf2dc049f7779b5cd02ca1ced50f68b36",
+  "sideBySide": true,
+  "video": "2339d2219c31c5bbde12c50bdefb8d729a175201",
+  "measures": {
+    "from": 1990,
+    "to": 2289,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 171,
+    "changed": {
+      "frame": 1930,
+      "why": "where The language screen, from the Options menu starts, a part main didn't prove"
+    },
+    "newFrames": 300,
+    "base": "aecf9cdcf2dc049f7779b5cd02ca1ced50f68b36"
+  }
+}
