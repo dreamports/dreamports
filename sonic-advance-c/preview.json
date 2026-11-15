@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1310-tcg-start-and-egg",
-  "commit": "97a3c16977ec3fdcf01b41fd3a8475711084aa84",
-  "made": "2026-11-15T17:51:07.346Z",
-  "about": "Tiny Chao Garden opens from the main menu and its garden plays left alone until the egg hatches."
+  "branch": "feat/1311-tcg-chao-left-alone",
+  "commit": "6f00c2fb8d72f6472a91a7310f78cb9d63d8dd41",
+  "made": "2026-11-15T18:51:32.075Z",
+  "about": "In Tiny Chao Garden the egg hatches and the Chao lives in the garden left alone."
 }

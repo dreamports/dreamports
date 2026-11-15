@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-hatches",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-hatches.json",
+  "recordingSha1": "2f2cbdbfefc6a854ec1ab760683d33e9996e645f",
+  "commit": "6f00c2fb8d72f6472a91a7310f78cb9d63d8dd41",
+  "base": "7805823fc17b225b7a9b10082546b704509da46f",
+  "sideBySide": true,
+  "video": "23086fc08d589f2a84855a24dc71f7481796c902",
+  "measures": {
+    "from": 3540,
+    "to": 3839,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 175,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "7805823fc17b225b7a9b10082546b704509da46f"
+  }
+}
