@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-garden-exit",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-garden-exit.json",
+  "recordingSha1": "451c69c0c391261f677b1d6a8c616e141cfdd904",
+  "commit": "b1fe2db3c116094d9d66315efbc1227f7de6e80e",
+  "base": "766d971b424bdc56be6ac1961a0c65fac013ba61",
+  "sideBySide": true,
+  "video": "e83291640e1bfabc2afa5a25eeb8310b1d3f3885",
+  "measures": {
+    "from": 1880,
+    "to": 2179,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 52,
+    "same": 237,
+    "changed": {
+      "frame": 1729,
+      "why": "where Tiny Chao Garden starts, a part main didn't prove"
+    },
+    "newFrames": 300,
+    "base": "766d971b424bdc56be6ac1961a0c65fac013ba61"
+  }
+}
