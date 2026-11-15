@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sound-test",
+  "recordingFile": "games/sonic-advance/proof/recordings/sound-test.json",
+  "recordingSha1": "c982489bbc20f83d87d07536ee27cf3f9c76fa9b",
+  "commit": "5cd78e988a0de89792f00799ffe384ae55708f1b",
+  "base": "c660784c6c9c609f1ec2512be81450fc84be2254",
+  "sideBySide": true,
+  "video": "82e5bb9eb348c59569c7f3739fba4329ae6d520c",
+  "measures": {
+    "from": 2000,
+    "to": 2299,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 1910,
+      "why": "where The sound test starts, a part main didn't prove"
+    },
+    "newFrames": 300,
+    "base": "c660784c6c9c609f1ec2512be81450fc84be2254"
+  }
+}
