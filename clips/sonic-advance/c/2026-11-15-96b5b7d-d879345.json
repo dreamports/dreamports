@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "vs-2-players-chase",
+  "recordingFile": "games/sonic-advance/proof/recordings/vs-2-players-chase.json",
+  "recordingSha1": "80092a1d490926c85bc08cb6aa2a30f388923ee2",
+  "commit": "96b5b7dfee0ac8e32c60745f9a1e271cedab8c1c",
+  "base": "65e50374e04775a2659fec5a442026fdde343665",
+  "sideBySide": true,
+  "video": "d879345fbdddbad900d2651b1a4c2d3ef572a392",
+  "measures": {
+    "from": 5800,
+    "to": 6099,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, and no code map says which of its code is new",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "65e50374e04775a2659fec5a442026fdde343665"
+  }
+}
