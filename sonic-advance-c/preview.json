@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1313-tcg-icons",
-  "commit": "98f37a58d1d0c41ea91dc1a4e4462df599967c4d",
-  "made": "2026-11-15T20:16:43.008Z",
-  "about": "In Tiny Chao Garden the left icon opens its rock-paper-scissors game."
+  "branch": "feat/1313-tcg-cards",
+  "commit": "1c57a20964b6b821ad6584829f89f7cca35a67d8",
+  "made": "2026-11-15T20:59:49.200Z",
+  "about": ""
 }

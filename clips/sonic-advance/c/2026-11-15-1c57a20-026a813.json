@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-cards",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-cards.json",
+  "recordingSha1": "28d459783257a303f4e7ef89fe126a73f60955a5",
+  "commit": "1c57a20964b6b821ad6584829f89f7cca35a67d8",
+  "base": "92cf6dd0d1665cb4f4f51011a6088c6ba09722d0",
+  "sideBySide": true,
+  "video": "026a813d3003ebe2d34b5f38b87df272080b72ef",
+  "measures": {
+    "from": 3260,
+    "to": 3559,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 98,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "92cf6dd0d1665cb4f4f51011a6088c6ba09722d0"
+  }
+}

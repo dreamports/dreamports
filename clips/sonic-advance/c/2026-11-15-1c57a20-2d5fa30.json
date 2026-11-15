@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-cards-lost",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-cards-lost.json",
+  "recordingSha1": "f801365485d06b8ddb2b1331713265c1baa8c279",
+  "commit": "1c57a20964b6b821ad6584829f89f7cca35a67d8",
+  "base": "92cf6dd0d1665cb4f4f51011a6088c6ba09722d0",
+  "sideBySide": true,
+  "video": "2d5fa30db9e63742a01b439f68ae6c435bdfd7c7",
+  "measures": {
+    "from": 3700,
+    "to": 3999,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 116,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "92cf6dd0d1665cb4f4f51011a6088c6ba09722d0"
+  }
+}
