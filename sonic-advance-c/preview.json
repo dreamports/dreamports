@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1301-chao-hunt-played-in-c",
-  "commit": "96b5b7dfee0ac8e32c60745f9a1e271cedab8c1c",
-  "made": "2026-11-15T03:06:59.523Z",
+  "branch": "feat/1130-player-data-in-c",
+  "commit": "8048994557e22b19c07f5b8b963d41f0f08151f7",
+  "made": "2026-11-15T16:14:14.063Z",
   "about": ""
 }

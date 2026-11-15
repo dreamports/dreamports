@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "player-data",
+  "recordingFile": "games/sonic-advance/proof/recordings/player-data.json",
+  "recordingSha1": "d64237efcc04c91a7b3cbc71b5c0659d6725b1a5",
+  "commit": "8048994557e22b19c07f5b8b963d41f0f08151f7",
+  "base": "886ef2d8f3873a3936ad7f316c1b8c1f1be467ca",
+  "sideBySide": true,
+  "video": "e4ca1b234f8fcd958b6c4a735e6bfbf6ce098a94",
+  "measures": {
+    "from": 1960,
+    "to": 2259,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 155,
+    "changed": {
+      "frame": 1840,
+      "why": "where Player data, with the name input and the VS record starts, a part main didn't prove"
+    },
+    "newFrames": 300,
+    "base": "886ef2d8f3873a3936ad7f316c1b8c1f1be467ca"
+  }
+}
