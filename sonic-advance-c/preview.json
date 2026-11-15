@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1311-tcg-chao-left-alone",
-  "commit": "6f00c2fb8d72f6472a91a7310f78cb9d63d8dd41",
-  "made": "2026-11-15T18:51:32.075Z",
-  "about": "In Tiny Chao Garden the egg hatches and the Chao lives in the garden left alone."
+  "branch": "feat/1312-tcg-hand",
+  "commit": "1a392d6aba84a9d2900e87368bed619070eda542",
+  "made": "2026-11-15T19:12:46.553Z",
+  "about": "In Tiny Chao Garden the hand moves and rocks the egg, pets the Chao and pulls plants up."
 }

@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-hand",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-hand.json",
+  "recordingSha1": "8b2991a3e476f7f00fa054c201de583dacc62af7",
+  "commit": "1a392d6aba84a9d2900e87368bed619070eda542",
+  "base": "c0f016473852ffdd8d43f0c456846d2afd64871e",
+  "sideBySide": true,
+  "video": "cf12297063696dd25ee35ba3133883a449b042b1",
+  "measures": {
+    "from": 1790,
+    "to": 2089,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 136,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "c0f016473852ffdd8d43f0c456846d2afd64871e"
+  }
+}
