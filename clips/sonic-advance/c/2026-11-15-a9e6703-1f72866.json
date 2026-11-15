@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-shop",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-shop.json",
+  "recordingSha1": "a11d2ca0f90c43759cd416ddf0706108ead2ed3c",
+  "commit": "a9e67030fea7132a45ec2acb1cbc325eb50142ea",
+  "base": "142120ace5e6844932c2832d346dd3b4d8e8f8cc",
+  "sideBySide": true,
+  "video": "1f728664eccebc6627fcd640fcd02930b0cc0580",
+  "measures": {
+    "from": 5040,
+    "to": 5339,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 101,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "142120ace5e6844932c2832d346dd3b4d8e8f8cc"
+  }
+}
