@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "vs-2-players-round",
+  "recordingFile": "games/sonic-advance/proof/recordings/vs-2-players-round.json",
+  "recordingSha1": "b04a04d54567eb9b0ef85e757ba68edb9e083b91",
+  "commit": "a5b6eea545218702e01fac3565bcc77b716a81e9",
+  "base": "aa988ac1a91eb070e4c803d5feca778a36fd9813",
+  "sideBySide": true,
+  "video": "a2ee478f099c3670ae719d4de3ca8860b986d6d9",
+  "measures": {
+    "from": 14850,
+    "to": 15149,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 16,
+    "changed": {
+      "frame": 1750,
+      "why": "where VS, for 2 to 4 players starts, a part main didn't prove"
+    },
+    "newFrames": 300,
+    "base": "aa988ac1a91eb070e4c803d5feca778a36fd9813"
+  }
+}
