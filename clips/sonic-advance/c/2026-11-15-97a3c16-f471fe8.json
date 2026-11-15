@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-garden",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-garden.json",
+  "recordingSha1": "2a0d36af38fd087e0918a5e84e058b60acd8b787",
+  "commit": "97a3c16977ec3fdcf01b41fd3a8475711084aa84",
+  "base": "8e3bbf811c10998a99e06d0958f32b1ece093fe5",
+  "sideBySide": true,
+  "video": "f471fe8e88434e55df6802a1569ecfbe2be5bd2b",
+  "measures": {
+    "from": 1700,
+    "to": 1999,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 30,
+    "same": 236,
+    "changed": {
+      "frame": 1730,
+      "why": "where the original first runs code main's proof doesn't count, at 0800E060"
+    },
+    "newFrames": 270,
+    "base": "8e3bbf811c10998a99e06d0958f32b1ece093fe5"
+  }
+}

@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1132-language-screen-in-c",
-  "commit": "ce88817456f79b1df617fbf7e62385eb07208c3c",
-  "made": "2026-11-15T16:59:30.973Z",
-  "about": ""
+  "branch": "feat/1310-tcg-start-and-egg",
+  "commit": "97a3c16977ec3fdcf01b41fd3a8475711084aa84",
+  "made": "2026-11-15T17:51:07.346Z",
+  "about": "Tiny Chao Garden opens from the main menu and its garden plays left alone until the egg hatches."
 }
