@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1341-stops-and-twins",
-  "commit": "47893479bd6440eecf7fd61fcb9290d0a214e606",
-  "made": "2026-11-16T02:07:34.675Z",
+  "branch": "fix/1351-saves-as-cartridge",
+  "commit": "c692afb9fb227be2c3d2de02efcfc9e4297cada6",
+  "made": "2026-11-16T14:21:27.430Z",
   "about": ""
 }
