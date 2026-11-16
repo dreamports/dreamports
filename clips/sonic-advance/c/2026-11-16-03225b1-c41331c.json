@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-seeks-fruit",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-seeks-fruit.json",
+  "recordingSha1": "ba8e2e9196ad9eecbe844d81a12b9ee2a223d4cf",
+  "commit": "03225b13f889d31d2001e7e09db6fe80dcf087be",
+  "base": "df04e691ab6bbc908e54e2f32e1595da7f4b32f9",
+  "sideBySide": true,
+  "video": "c41331c1d89021e9e7cbe5382e7cefa380f662ff",
+  "measures": {
+    "from": 18560,
+    "to": 18859,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 140,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "df04e691ab6bbc908e54e2f32e1595da7f4b32f9"
+  }
+}
