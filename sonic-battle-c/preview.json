@@ -3,8 +3,8 @@
   "title": "Sonic Battle Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1341-stops-and-twins",
-  "commit": "47893479bd6440eecf7fd61fcb9290d0a214e606",
-  "made": "2026-11-16T02:06:22.462Z",
+  "branch": "fix/1351-sonic-battle-saves",
+  "commit": "ea02ebc6c5e92f0f0eff5dc0c6c780202c3b5b01",
+  "made": "2026-11-16T14:57:56.290Z",
   "about": ""
 }
