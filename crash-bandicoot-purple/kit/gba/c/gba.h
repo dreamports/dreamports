@@ -79,6 +79,10 @@ uint32_t gba_lz77(const uint8_t *src, uint32_t srcSize, uint8_t *dst, uint32_t m
  *  after it, and a copy that reads the waiting byte gets what VRAM held there before
  *  (kit/gba/notes/lz77-to-vram-writes-a-halfword-at-a-time.md). Returns how many bytes it wrote. */
 uint32_t gba_lz77_vram(const uint8_t *src, uint32_t srcSize, uint32_t at);
+/** The BIOS's Sqrt: the whole part of the square root of `n`. */
+int gba_sqrt(uint32_t n);
+/** The BIOS's ArcTan2, as the console works it out: the angle from (0, 0) to (`x`, `y`), 0 to 0xFFFF a full turn. */
+int gba_arctan2(int x, int y);
 
 /** The buttons held at the V-blank that ends this frame, as KEYINPUT has them, for a game that reads them there as
  *  well as at the frame's start, as a soft reset's V-blank does: what the page finds held as the frame ends, or what a
@@ -111,6 +115,10 @@ int gba_sound_start_layout(uint32_t playerTable, int players, int channels, int 
  *  m4aSoundInit leaves it. The sound chip goes on as it was. Songs played after it are the program's. */
 int gba_sound_start_program(uint32_t romOffset, uint32_t size, uint32_t playerTable, int library, int players, int channels,
                             int volume, int rate, int reverb);
+/** gba_sound_start_library for the copy's own game once such a program soft resets back into it, as Tiny Chao Garden's
+ *  Save & Exit does into Sonic Advance: the engine starts again from nothing with the copy's tables, and the sound chip
+ *  goes on as it was. */
+int gba_sound_start_after_program(int library, int players, int channels, int volume, int rate, int reverb);
 /** For a game whose SoundMain runs well into the console's frame: from the next sound frame, SoundMain's writes to the
  *  sound chip's four channels land `cycles` into its frame plus what SoundMain has counted so far, while the game's own
  *  calls write at once, as a square's phase lasts from note to note
