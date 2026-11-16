@@ -1,0 +1,13 @@
+{
+  "proof": "dreamports",
+  "version": "sonic-advance-2",
+  "recordings": 24,
+  "progress": "68314f56fd772b320dfe2d467fe1982aa7a24763",
+  "same": true,
+  "trees": {
+    "game": "dff4faa9136944af6caec117ec6471b5ab465d09",
+    "kit": "992290fdb587e0ee09602c32f60edc4a5f9d0a2d"
+  },
+  "commit": "47893479bd6440eecf7fd61fcb9290d0a214e606",
+  "base": "c40bbb40679cd965f6549a19e85fa090070db95d"
+}
