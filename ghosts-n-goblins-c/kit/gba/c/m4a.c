@@ -62,12 +62,21 @@ static int samples_at(int rate) {
   return 176;
 }
 
-static uint32_t u32(const M4a *m, uint32_t at) {
-  if (at + 4 > m->romSize) return 0;
-  const uint8_t *b = m->rom + at;
-  return b[0] | b[1] << 8 | b[2] << 16 | (uint32_t)b[3] << 24;
+// what the engine reads at `at`, an address less ROM_BASE: the copy, or a program the game unpacked into the work RAM,
+// whose addresses from 0x02000000 come out of the subtraction wrapped round (SoundLayout's ram)
+#define RAM_LESS_ROM (0x02000000u - ROM_BASE)
+static int rom8(const M4a *m, uint32_t at) {
+  if (at < m->romSize) return m->rom[at];
+  uint32_t r = at - RAM_LESS_ROM;
+  return r < m->layout.ramSize ? m->layout.ram[r] : 0;
 }
-static int rom8(const M4a *m, uint32_t at) { return at < m->romSize ? m->rom[at] : 0; }
+static uint32_t u32(const M4a *m, uint32_t at) {
+  if (at + 4 <= m->romSize) {
+    const uint8_t *b = m->rom + at;
+    return b[0] | b[1] << 8 | b[2] << 16 | (uint32_t)b[3] << 24;
+  }
+  return rom8(m, at) | rom8(m, at + 1) << 8 | rom8(m, at + 2) << 16 | (uint32_t)rom8(m, at + 3) << 24;
+}
 static int r8(const M4a *m, uint32_t addr) { return rom8(m, addr - ROM_BASE); }
 
 // high 32 bits of an unsigned 32 × 32 bit product
@@ -1002,6 +1011,14 @@ static int mix(M4a *m) {
   }
   m->frameCycles = m->cycles;
   return base;
+}
+
+int m4a_missed_frame(M4a *m) {
+  if (m->locked) return 0;
+  // the V-blank's bookkeeping alone: the DMA goes on round the samples, and plays what it holds there from before
+  int dc = u8(m->dmaCounter - 1);
+  m->dmaCounter = s8(dc) > 0 ? dc : m->framesPerDma;
+  return (m->dmaCounter <= 1 ? 0 : m->framesPerDma - (m->dmaCounter - 1)) * m->samples;
 }
 
 int m4a_frame(M4a *m) {

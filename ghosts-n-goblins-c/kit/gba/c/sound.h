@@ -72,6 +72,10 @@ typedef struct {
   // with psgAt, the DMA that halts the CPU while SoundMain runs, in the chip's frame: the FIFO refills' first place and
   // what each costs, and where the first visible line's H-blank DMA lands (gba_sound_dma_at)
   int fifoAt, fifoCost, hblankAt;
+  // a program the game unpacked into the console's work RAM, whose own engine's tables and songs are there: the engine
+  // reads addresses from 0x02000000 in it (gba_sound_start_program), or nothing
+  const uint8_t *ram;
+  uint32_t ramSize;
 } SoundLayout;
 
 // The places in SoundMain where m4a.c counts the console's cycles, each with what it costs in Sonic Battle's library.
@@ -209,12 +213,15 @@ typedef struct {
   M4aPlayer *earlyPlayer;
   const int16_t *costs;   // what each place costs in the game's version of the library (M4A_COSTS)
   int hblank, late;       // this frame's H-blank DMA, in cycles a line, and how late its SoundMain starts
+  int missed;             // sound frames the game's SoundMain still misses (gba_sound_missed)
 } M4a;
 
 void m4a_init(M4a *m, const uint8_t *rom, uint32_t romSize, const SoundLayout *layout, Apu *io);
 /** One GBA frame: the V-blank's DMA bookkeeping, then SoundMain. Returns the offset of the samples just mixed into
  *  m->pcm (right side; the left side is PCM_HALF bytes later). */
 int m4a_frame(M4a *m);
+/** A frame whose SoundMain the game misses: nothing is mixed, and the offset is of the samples the DMA plays again. */
+int m4a_missed_frame(M4a *m);
 void m4a_vsync_off(M4a *m);
 void m4a_vsync_on(M4a *m);
 void m4a_song_start(M4a *m, int n);
@@ -246,7 +253,7 @@ enum {
   OP_SETUP = 1, OP_RESET, OP_START, OP_START_OR_CHANGE, OP_START_OR_CONTINUE, OP_STOP, OP_PLAYER_START, OP_PLAYER_STOP,
   OP_PLAYER_CONTINUE, OP_IMM_INIT, OP_PITCH, OP_VOLUME, OP_PANPOT, OP_FADE_IN, OP_FADE_OUT, OP_TEMPO, OP_ALL_STOP,
   OP_ALL_CONTINUE, OP_VSYNC_OFF, OP_VSYNC_ON, OP_WAVE_AT, OP_PLAYED_FOR, OP_PSG_AT, OP_CHIP_CLOCK, OP_DMA_AT,
-  OP_HBLANK_DMA, OP_LATE,
+  OP_HBLANK_DMA, OP_LATE, OP_PROGRAM, OP_MISSED,
 };
 
 typedef struct { int32_t op, a, b, c, d; } SoundCall;
