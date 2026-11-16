@@ -1,11 +1,12 @@
 // The save, translated from engine/save.js (SAT-R's src/game/sa1/save.c, and CreateEmptySaveGame in src/game/game.c):
 // Sonic Advance's one save, struct SaveGame, the 0x430 bytes the cartridge's flash memory keeps, which the kit's save
-// memory holds here (gba_save). At power-on the game reads the save (SaveGameExists), or starts an empty one
+// memory holds here (gba_save), with the rest of the flash, where Tiny Chao Garden keeps its own (garden.c). At power-on the game reads the save (SaveGameExists), or starts an empty one
 // (CreateEmptySaveGame) and the language screen; then it changes the save in memory as it goes, and writes it at set
 // moments (WriteSaveGame). engine/save.js lists its fields. The save's bytes are the same as the JavaScript version's,
 // so the two share it (main.js), and a player keeps their save whichever they play.
 
 #include "sa.h"
+#include "levels.h"
 
 #define CHECKSUM 0x42C
 #define SECURITY 0x4F524950u
@@ -40,7 +41,18 @@ static void empty_save(uint8_t *bytes) {
 
 /** The save at power-on: the one the save memory keeps, if it is one (its security and checksum right), or an empty one. */
 void save_open(void) {
-  flash = gba_save(SAVE_SIZE);
+  flash = gba_save(FLASH_BYTES);
+  save.keep = 1;
+  // a start point's save is the game's own, kept nowhere, as the JavaScript version's openSave(null) gives it: it
+  // doesn't read the cartridge's, so the language screen comes as it does at a first start
+  if (gba_start_point("unlocked") || gba_start_point("special")) {
+    empty_save(save.bytes);
+    save.exists = 0;
+    save.keep = 0;
+    // the special stage's start point writes it at once (main.js), so the game has one if it starts again
+    if (gba_start_point("special")) save_write();
+    return;
+  }
   save.exists = get32(flash, 0) == SECURITY && get32(flash, CHECKSUM) == checksum(flash);   // SaveGameExists
   if (save.exists) memcpy(save.bytes, flash, SAVE_SIZE);
   else empty_save(save.bytes);
@@ -50,6 +62,9 @@ void save_open(void) {
  * WriteSaveGame: nothing when the flash already holds the save; otherwise the save is marked, summed and kept. Returns
  * whether it was written, which takes WRITE_FRAMES.
  */
+// the act's rings into the save's ring bank (unk428), as a signed halfword, as CreateStageResults adds them
+void save_add_ring_bank(int rings) { set32(save.bytes, 0x428, le32(save.bytes, 0x428) + (uint32_t)(int16_t)rings); }
+
 int save_write(void) {
   if (save.exists) {
     int same = 1;
@@ -60,10 +75,47 @@ int save_write(void) {
   set32(save.bytes, CHECKSUM, checksum(save.bytes));
   memcpy(flash, save.bytes, SAVE_SIZE);
   save.exists = 1;
-  gba_save_write();
+  if (save.keep) gba_save_write();
   return 1;
 }
 
 uint16_t save_unlocked_level(int character) { return (uint16_t)(save.bytes[0x08 + character * 2] | save.bytes[0x09 + character * 2] << 8); }
+void save_set_unlocked_level(int character, uint16_t level) { save.bytes[0x08 + character * 2] = (uint8_t)level; save.bytes[0x09 + character * 2] = (uint8_t)(level >> 8); }
+void save_moon_opened(void) {
+  uint16_t cur = save_unlocked_level(0);
+  if (cur < LEVEL_THE_MOON + 1) save_set_unlocked_level(0, (uint16_t)(LEVEL_THE_MOON + 1));
+}
+/** CreateExtraStageResults: the Moon beaten, the first unlocked level is 15 and unk424 is set. */
+void save_moon_beaten(void) {
+  save_set_unlocked_level(0, 15);
+  save.bytes[0x424] = 1;
+}
+#define TIME_RECORDS 0x20
+#define RECORD_LEVELS 18
+#define RECORDS_PER_COURSE 3
+static uint32_t record_at(int character, int level, int rank) {
+  return TIME_RECORDS + (uint32_t)((character * RECORD_LEVELS + level) * RECORDS_PER_COURSE + rank) * 4;
+}
+uint32_t save_time_record(int character, int level, int rank) { return get32(save.bytes, record_at(character, level, rank)); }
+int save_register_time_record(int character, int level, uint32_t time) {
+  for (int rank = 0; rank < RECORDS_PER_COURSE; rank++) {
+    uint32_t record = get32(save.bytes, record_at(character, level, rank));
+    if (time >= record) continue;
+    set32(save.bytes, record_at(character, level, rank), time);
+    for (int next = rank + 1; next < RECORDS_PER_COURSE; next++) {
+      uint32_t slower = get32(save.bytes, record_at(character, level, next));
+      set32(save.bytes, record_at(character, level, next), record);
+      record = slower;
+    }
+    return rank == 0;
+  }
+  return 0;
+}
 uint32_t save_player_id(void) { return get32(save.bytes, 0x04); }
 void save_set_player_id(uint32_t id) { set32(save.bytes, 0x04, id); }
+
+// CreateEmptySaveGame, as DELETE GAME DATA's YES does it in the Options menu: the save in memory empty again
+void save_empty(void) { empty_save(save.bytes); }
+
+// sub_8012F6C, the flash erased: the next write keeps the save whatever it holds
+void save_erase(void) { save.exists = 0; }
