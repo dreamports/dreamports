@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "tiny-chao-moods",
+  "recordingFile": "games/sonic-advance/proof/recordings/tiny-chao-moods.json",
+  "recordingSha1": "66e958b28bb5d8b023ef4d0a26ea2f8a66143cbf",
+  "commit": "98641bb8636216ad858ea6fb6d2e147b78acbe0a",
+  "base": "13d305c5f23f78f4700d721f669ea05504a63bd2",
+  "sideBySide": true,
+  "video": "4921ea620d2aa253e84859e501214c4e6aa88358",
+  "measures": {
+    "from": 10750,
+    "to": 11049,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 209,
+    "changed": {
+      "frame": 10793,
+      "why": "where the original first runs code main's proof doesn't count, at 020022D8/F0B557464E464546"
+    },
+    "newFrames": 257,
+    "base": "13d305c5f23f78f4700d721f669ea05504a63bd2"
+  }
+}
