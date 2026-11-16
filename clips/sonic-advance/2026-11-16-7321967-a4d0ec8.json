@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "special-stage-1-quota",
+  "recordingFile": "games/sonic-advance/proof/recordings/special-stage-1-quota.json",
+  "recordingSha1": "dd192a557d622979a3564a0f2ba16d99ce3503b0",
+  "commit": "7321967a0c7eedd5eac47b80095d2ece8a2b0804",
+  "base": "1beb35653ddb0c67fb7f45aad4739b26be5ded6a",
+  "sideBySide": true,
+  "video": "a4d0ec8bc2b3bd0da8aebc96aa78ad3a1483a2ea",
+  "measures": {
+    "from": 2771,
+    "to": 3070,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 2831,
+      "why": "where the original first runs code main's proof doesn't count, at 0802AB70"
+    },
+    "newFrames": 240,
+    "base": "1beb35653ddb0c67fb7f45aad4739b26be5ded6a"
+  }
+}
