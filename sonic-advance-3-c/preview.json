@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance-3/c",
+  "title": "Sonic Advance 3 Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1341-stops-and-twins",
+  "commit": "47893479bd6440eecf7fd61fcb9290d0a214e606",
+  "made": "2026-11-16T02:04:42.677Z",
+  "about": ""
+}
