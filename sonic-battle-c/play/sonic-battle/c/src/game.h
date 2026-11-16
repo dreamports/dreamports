@@ -105,6 +105,9 @@ typedef struct {
 
   // the last sound frame's cycles, which the JavaScript kit gives as frameCycles()
   int32_t sound_cycles;
+
+  // the cycles a move on the Mini-games screen takes unpacking its picture and writing its letters (minigames.c)
+  int32_t move_cycles, text_cycles;
 } Game;
 
 extern Game g;
@@ -143,6 +146,15 @@ void copyAtVblank(void);
 void queueRegister(uint16_t offset, uint16_t value);
 void copyToVram(uint32_t from, uint32_t to, uint32_t count);
 void decompress(uint32_t from, uint32_t to);
+int32_t unpackCycles(uint32_t from);
+
+// The console's frame as mGBA times it, in cycles from the V-blank's start: each line, the whole frame (as the kit's
+// sound.h has it), when line 0 is drawn, and the interrupt at line 1 (0x08018654), where SoundMain takes its cycles.
+#define LINE_CYCLES 1232
+#define FRAME_CYCLES 280896
+#define LINE_ZERO_DRAWN 84777
+#define LINE_ONE 85000
+
 void copyTileBlock(uint32_t to, uint32_t from, int columns, int rows, int base);
 uint16_t *colours(uint32_t first);
 void clearLayer(int layer);
@@ -212,6 +224,12 @@ void resetBrain(int i);
 void restartBrain(int i);
 int wayToTarget(int i);
 void setBrainLevel(int level);
+uint16_t arcTan2(int x, int y);
+
+// brain.c
+void brainReset(int i);
+void brainTick(int i);
+
 void queueFrameAtTile(uint32_t sheet, int tile, int frame);
 void queueFighterFrame(uint32_t sheet, int slot, int frame);
 
@@ -272,6 +290,7 @@ void battleReadyAfterWait(void);
 void battleFrame(void);
 void battleAfterWait(void);
 void beginEnding(void);
+void placeRealBlast(void);
 void endingFrame(void);
 void endingAfterWait(void);
 void resultTransition(void);
@@ -279,6 +298,14 @@ void resultTransitionAfterWait(void);
 void resultScreen(void);
 
 // fight.js
+void startFadeIn(int frames);
+void setUpFight(void);
+void setUpFighters(void);
+void giveComputerPicks(int i);
+void demoScreen(void);
+void demoSetup(void);
+void demoFrame(void);
+void demoAfterWait(void);
 void startFight(int vblanks, int action, int you, int rival, int arena, int colour, int battle);
 void choosing(void);
 void choosingAfterWait(void);
@@ -293,5 +320,12 @@ void restartFromStart(void);
 
 // options.js
 void startOptions(void);
+
+// skills.js
+void startSkills(void);
+
+// mini-games.js and lobby.js
+void startMiniGames(void);
+void startLobby(void);
 
 #endif

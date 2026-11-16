@@ -19,6 +19,25 @@
 #define FIGHT_CLOCK 0x030030D0u
 #define RESULT_WINNER 0x03003DA0u
 #define RESULT_WINNER_LIST 0x03003D90u
+#define THINGS_ 0x030017D0u
+#define THING_SIZE_ 68
+#define THING_KIND_ 56
+
+// The blast a real knockout leaves, as the original's thing table holds it at the end of the Challenge fight: the
+// three-part picture of kind 138, following the fighter whose hit took the last of the health.
+static const uint8_t REAL_BLAST[THING_SIZE_] = {
+  0x00, 0x01, 0x02, 0xFF, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00,
+  0x00, 0x00, 0x47, 0x00, 0x6A, 0x00, 0x20, 0x00, 0x09, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+  0xFF, 0xFF, 0xF0, 0xFF, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE8, 0xFF, 0xF0, 0xFF, 0x08, 0x00,
+  0x00, 0x00, 0x03, 0x00, 0x03, 0x01, 0x00, 0x01, 0x8A, 0x00, 0xAC, 0xED, 0x38, 0xED, 0x00, 0x00,
+  0x00, 0x02, 0x01, 0x00,
+};
+
+/** Puts the real knockout's blast in the thing table, for a start point at the end that a real knockout leaves. */
+void placeRealBlast(void) {
+  for (int i = 0; i < 12; i++) write16(THINGS_ + (uint32_t)i * THING_SIZE_ + THING_KIND_, 0);
+  for (int i = 0; i < THING_SIZE_; i++) write8(THINGS_ + (uint32_t)i, REAL_BLAST[i]);
+}
 
 static uint32_t record(int i) { return FIGHTERS_ + (uint32_t)i * RECORD_; }
 static int active(int i) { return read8(SLOTS_ + i) != 255; }
@@ -34,7 +53,7 @@ static uint16_t pressedKeys(int i) {
 /** 0x0801a228: whether a fighter has won, by the fight's rule: mode 2 counts the points each fighter reached, and the
  *  others go by time and points. Only the score rule is reached by a start point so far. */
 int fightWinner(int mode) {
-  if (read8(SETUP_ + 8) != 0) return 255;   // team fights aren't reached yet
+  if (read8(SETUP_ + 8) != 0) return 255;   // team fights aren't reached yet dp:stop 0x0801A228
   if (mode == 2) {
     int wins = 0;
     for (int i = 0; i < 4; i++) {
@@ -150,6 +169,10 @@ void battleReadyAfterWait(void) {
 /** 0x0801b394: a fight's frame. It runs every fighter, then its wait, then the winner check. A win hands the next
  *  frame to the ending and starts the Game Set banner, whose first frame the wait below draws. */
 void battleFrame(void) {
+  for (int i = 0; i < 4; i++) {
+    uint8_t kind = read8(SETUP_ + 28 + i);
+    if (kind != 0 && kind != 255) brainTick(i);
+  }
   int player = (int)read32(PLAYER_);
   readAllKeys(player);
   startFighterEffects();
@@ -188,7 +211,7 @@ void beginEnding(void) {
 
 void battleAfterWait(void) {
   int player = (int)read32(PLAYER_);
-  if ((pressedKeys(player) & 8) && countUntilDone() == 30) unsupported();   // 0x0801c8f0, pausing
+  if ((pressedKeys(player) & 8) && countUntilDone() == 30) unsupported();   // 0x0801c8f0, pausing dp:stop 0x0801C8F0
   // 0x0801bb1a, the way 0x0801b394 draws after a win: the fight's frame with the ending's HUD mode, whose first
   // draw only marks the banner as started
   drawFightFrameHud(player, read8(SETUP_ + 135) != 0 ? hudMode() : 0);
@@ -245,10 +268,10 @@ void resultTransition(void) {
   if (stepFade()) {
     int mode = read8(SETUP_ + 125);
     if (mode == 0 || mode == 1) g.callback = resultScreen;
-    else if (mode == 2) unsupported();
-    else if (mode == 3) unsupported();
-    else if (mode == 4) unsupported();
-    else if (mode == 5) unsupported();
+    else if (mode == 2) unsupported();   // dp:stop 0x0801BD90
+    else if (mode == 3) unsupported();   // dp:stop 0x0801BD90
+    else if (mode == 4) unsupported();   // dp:stop 0x0801BD90
+    else if (mode == 5) unsupported();   // dp:stop 0x0801BD90
   }
   g.after_wait = resultTransitionAfterWait;
 }

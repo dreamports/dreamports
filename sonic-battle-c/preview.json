@@ -3,8 +3,8 @@
   "title": "Sonic Battle Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/630-a-fights-end",
-  "commit": "3e4b12f841df63074c6cb455df42ecbe07034d30",
-  "made": "2026-11-09T09:58:54.227Z",
-  "about": "The fight's end now runs into the result screen's fade in."
+  "branch": "feat/1341-stops-and-twins",
+  "commit": "47893479bd6440eecf7fd61fcb9290d0a214e606",
+  "made": "2026-11-16T02:06:22.462Z",
+  "about": ""
 }

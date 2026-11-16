@@ -4,7 +4,7 @@
 
 This folder is what every console's kit in C shares, so a game can be written in C on any console in [`kit/consoles.js`](../consoles.js). A game in C runs in the browser with nothing to install: it's built to WebAssembly, and its page is the one every console's games share, with the same start screen, settings, controller drawn on touch screens and proof mode. The same C also builds for a computer, with no browser.
 
-A console with a kit in C of its own builds on this one, as the Game Boy Advance's does in [`kit/gba/c/`](../gba/c/README.md) and the NES's in [`kit/nes/c/`](../nes/c/README.md), which draw and play as the console's hardware does. A game on any other console stands on this alone, and draws its own picture at its own size, and makes its own sound, as a JavaScript game on such a console does ([Other consoles](../../docs/CONSOLES.md)).
+A console with a kit in C of its own builds on this one, as the Game Boy Advance's does in [`kit/gba/c/`](../gba/c/README.md) and the NES's in [`kit/nes/c/`](../nes/c/README.md), which draw and play as the console's hardware does, and the PlayStation 2's in [`kit/ps2/c/`](../ps2/c/README.md), which draws as its graphics chip is written. A game on any other console stands on this alone, and draws its own picture at its own size, and makes its own sound, as a JavaScript game on such a console does ([Other consoles](../../docs/CONSOLES.md)).
 
 Like the rest of the kits it's under [GPL-3.0-or-later](LICENSE), and nothing from any game is in it.
 
@@ -32,7 +32,7 @@ Its folder, `games/<game>/c/`, holds its page and its code, with its C in `src/`
 
 ## How it's built
 
-`buildGame(folder)` in [`tools/lib/c.mjs`](../../tools/lib/c.mjs) builds `src/game.wasm` from the game's C and its console's kit, which it takes from the console the game's `proof/original.json` names: this folder, with the console's own kit on top where it has one. It uses Clang and its linker built as WebAssembly themselves, from npm ([`@yowasp/clang`](https://yowasp.org)), so `npm ci` is all it needs, the same on every computer. `buildNative()` builds the same C for the computer it runs on, with that computer's C compiler, the one the proof tools already need. `game.wasm` isn't kept in the repository: the site builds it as it copies the games, `share` as it makes a preview, and the proof tools before they open one.
+`buildGame(folder)` in [`tools/lib/c.mjs`](../../tools/lib/c.mjs) builds `src/game.wasm` from the game's C and its console's kit, which it takes from the console the game's `proof/original.json` names: this folder, with the console's own kit on top where it has one. It uses Clang and its linker built as WebAssembly themselves, from npm ([`@yowasp/clang`](https://yowasp.org)), so `npm ci` is all it needs, the same on every computer. `buildNative()` builds the same C for the computer it runs on, with that computer's C compiler, the one the proof tools already need. `game.wasm` isn't kept in the repository: the site builds it as it copies the games, `share` as it makes a preview, and the proof tools before they open one. A build inside the repository's folder is left as it is while nothing it comes from has changed: the game's C, the kit's, how the compiler is asked and which compiler it is, which `.dreamports/c/built.json` remembers on that computer.
 
 ## How it's checked
 
