@@ -3,8 +3,8 @@
   "title": "Sonic Advance Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1414-search-steers",
-  "commit": "7321967a0c7eedd5eac47b80095d2ece8a2b0804",
-  "made": "2026-11-16T16:22:18.797Z",
+  "branch": "fix/1448-title-demos",
+  "commit": "01b4f3d750869161692b0df27677692a4365a93a",
+  "made": "2026-11-17T02:39:44.390Z",
   "about": ""
 }

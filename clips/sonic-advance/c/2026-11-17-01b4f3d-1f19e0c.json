@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "title-demos-cut-short",
+  "recordingFile": "games/sonic-advance/proof/recordings/title-demos-cut-short.json",
+  "recordingSha1": "944737d078bab8861e3757f60eb5749912bf45c4",
+  "commit": "01b4f3d750869161692b0df27677692a4365a93a",
+  "base": "0b26a4a619e59f6bec6a864ad20479fb6590d509",
+  "sideBySide": true,
+  "video": "1f19e0c87610bad7be8324a1ae365a88ac3a90af",
+  "measures": {
+    "from": 3520,
+    "to": 3819,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 4,
+    "changed": {
+      "frame": 1906,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 300,
+    "base": "0b26a4a619e59f6bec6a864ad20479fb6590d509"
+  }
+}
