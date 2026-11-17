@@ -14,7 +14,7 @@ extern const uint8_t *kit_copy;
 extern uint32_t kit_copy_size;
 
 /**
- * The cartridge's save memory, `size` bytes, with what the browser kept of it, or zeros the first time. It is the
+ * The cartridge's save memory, `size` bytes, with what the browser kept of it, or 0xFF in every byte the first time, as a cartridge never written holds. It is the
  * same memory every call. What its bytes mean is the game's, which calls kit_save_write when the original writes it.
  */
 uint8_t *kit_save(uint32_t size);
@@ -36,6 +36,24 @@ int32_t kit_start_number(const char *name, int32_t absent);
 
 /** Memory for the game, zeroed, which lasts as long as the page. */
 void *kit_alloc(size_t size);
+/**
+ * Keeps the memory from address `from` up to `to` for the game alone, zeroed, for a game that keeps its console's
+ * memory at the console's own addresses, as one whose every function is a twin does (docs/STANDARD.md): the memory
+ * grows to reach it, and kit_alloc gives out only what is above it from then on. A stretch has to be above what the
+ * program and kit_alloc have already taken, so a game keeps its stretches in order, lowest first, as it starts. Only
+ * as WebAssembly, where addresses are the game's to choose.
+ */
+void kit_memory_keep(uintptr_t from, uintptr_t to);
+
+/**
+ * Ends the frame here, from anywhere in the game's code, and carries on from here when the game next runs: what a
+ * console's game does when it waits for the screen from inside a function. The game runs under kit_run, and its build
+ * then gets one more pass (tools/README.md, Waiting from inside a function). Only as WebAssembly.
+ */
+void kit_wait_frame(void);
+/** Runs `game`, from its start the first time and from where it last waited after that, until it next waits. Call it
+ *  once from game_start or game_step for each of the console's frames, always with the same function. */
+void kit_run(void (*game)(void));
 
 /**
  * The picture the page shows this frame, `width` × `height` words, red in the lowest byte and 0xFF above blue, as an

@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "feat/1341-stops-and-twins",
-  "commit": "47893479bd6440eecf7fd61fcb9290d0a214e606",
-  "made": "2026-11-16T01:59:55.789Z",
-  "about": ""
+  "branch": "fix/1456-gng-twins-right",
+  "commit": "46af4b656d72f338d47bc897596f22e53f25b6c2",
+  "made": "2026-11-17T22:04:00.529Z",
+  "about": "Ghosts'n Goblins Dreamport's twins put right against the function check"
 }
