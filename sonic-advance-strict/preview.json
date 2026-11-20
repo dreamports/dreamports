@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/strict",
+  "title": "Sonic Advance Dreamport in C, the stricter way",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1455-strict-stage-17",
+  "commit": "426cd96e46d923a3f42f63a5952fbc79cea05f48",
+  "made": "2026-11-20T05:44:00.283Z",
+  "about": "the stricter-way trial's first 933 frames the same as the original's, in picture, sound and work memory: the save, the interrupts and the console's stack"
+}
