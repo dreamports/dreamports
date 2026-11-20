@@ -15,7 +15,8 @@ Like the rest of the kits it's under [GPL-3.0-or-later](LICENSE), and nothing fr
 | `kit.h`, `kit.c` | The player's copy, the save memory, the words of the page's address, memory for the game and the picture the page shows, and what the page calls to give the game the copy and the words |
 | `page.h` | What a kit uses to meet the page, which a game doesn't need |
 | `libc.c` | The few C library functions the compiler calls on its own, as WebAssembly has no C library |
-| `pause.c` | `kit_wait_frame()` and `kit_run()`: ending a frame from anywhere in a game's C and going on from there in the next, for a game that waits for the screen from inside its functions as its original does ([the same-memory build](../../tools/README.md#the-same-memory-build)). A game that doesn't call them has none of it |
+| `pause.c` | `kit_wait_frame()` and `kit_run()`: ending a frame from anywhere in a game's C and going on from there in the next, for a game that waits for the screen from inside its functions as its original does ([the same-memory build](../../tools/README.md#the-same-memory-build)), and `kit_pause()`, pausing partway through a frame until the page has what the game waits for. A game that doesn't call them has none of it |
+| `disc.h`, `disc.c` | The player's disc, read as the console's drive reads it, a few sectors at a time, on a console whose games come on discs ([The player's disc](#the-players-disc)) |
 | `game.js` | The page's side: it loads the game's WebAssembly, hands it the copy, the save memory and the words, and plays sound on an audio thread of its own. A console's kit builds on it, and `loadGame` runs a game on a console with none |
 | `console.c` | A game on a console with no kit in C of its own: what the page calls to start it, run its frames, draw them and hear them |
 | `worklet.js` | That game's sound on its audio thread: the samples each frame made, played as they come |
@@ -31,9 +32,21 @@ It defines four functions. `game_start()` runs once, with the player's copy in `
 
 Its folder, `games/<game>/c/`, holds its page and its code, with its C in `src/`: `src/main.c` and any other `.c` files there. `src/main.js` is the page's script, which is the JavaScript starting point's with `loadGame()` from `game.js` in place of the game's own code, and it runs `src/game.wasm`. `npm run dp -- new <game>/c` writes that starting point on any console, from `startingFiles(game, original, { language: 'c' })` in [`tools/lib/new-game.mjs`](../../tools/lib/new-game.mjs), whose `main.c` paints the screen blue at the game's size, and green while a button is held, as the JavaScript one does.
 
+## The player's disc
+
+A console whose games come on discs, the PlayStation, the PlayStation 2 and the PlayStation Portable (`disc` in `kit/consoles.js`), has `disc.c` in its kit as well, and a game reads its disc through `"disc.h"` as the console's drive gives it, however large it is. The page never holds the disc: it reads its sectors from the player's file as the game asks for them ([`kit/copy/`](../copy/README.md)), whether it's an ISO, a BIN and its `.cue`, a CHD or a CSO, and the kit keeps the last 4 MB of them.
+
+`kit_disc_read(lba, count, from, size, to)` copies `count` sectors from `lba`, `size` bytes of each from byte `from` of the whole sector as the drive reads it: 2352 bytes on a CD, its sync at 0, its header at 12, a Mode 2 sector's subheader at 16 and data at 24, a Mode 1 sector's data at 16, and 2048 bytes on a DVD. What an ISO leaves out of a CD's sectors, their sync, header, subheader, EDC and ECC, is made again as the disc holds them. `kit_disc_kind()`, `kit_disc_sectors()`, `kit_disc_layer_break()` and `kit_disc_track(number)` give the disc's layout and table of contents, `kit_disc_q(lba, q)` the subchannel Q a CD's drive reads beside a sector, and `kit_disc_ahead(lba, count)` says the drive was told to seek there, so the page fetches those sectors between frames.
+
+How long the console's drive takes to seek and read, in the console's time, is the console's kit's to count: `kit_disc_read` gives the bytes at once, as far as the game can tell. When the page hasn't fetched them yet, the game pauses partway through its frame with `kit_pause()`, the page fetches them, and calls the frame again, which goes on from where it paused, so nothing the game sees depends on how fast the player's computer reads. That pause is the same Asyncify wait as `kit_wait_frame()`, so a disc is read from code that runs under `kit_run()`, which returns 0 when it paused partway: `game_step` then returns at once, doing nothing it does after a frame, and a console's kit does its own work before and after the frame only when `kit_frame_paused()` says the frame isn't paused. A game that reads a disc runs as WebAssembly only, as one that waits from inside a function does.
+
 ## How it's built
 
 `buildGame(folder)` in [`tools/lib/c.mjs`](../../tools/lib/c.mjs) builds `src/game.wasm` from the game's C and its console's kit, which it takes from the console the game's `proof/original.json` names: this folder, with the console's own kit on top where it has one. It uses Clang and its linker built as WebAssembly themselves, from npm ([`@yowasp/clang`](https://yowasp.org)), so `npm ci` is all it needs, the same on every computer. `buildNative()` builds the same C for the computer it runs on, with that computer's C compiler, the one the proof tools already need. `game.wasm` isn't kept in the repository: the site builds it as it copies the games, `share` as it makes a preview, and the proof tools before they open one. A build inside the repository's folder is left as it is while nothing it comes from has changed: the game's C, the kit's, how the compiler is asked and which compiler it is, which `.dreamports/c/built.json` remembers on that computer.
+
+## Shared libraries
+
+Code that many games of a console share without having written it, such as its maker's libraries, is written once as twins in a folder of its own, `lib/<name>/` in a console's kit in C, or `kit/c/lib/<name>/` for C that several consoles' games share. A game takes one through its `proof/libraries.json`, and its build links the library's C with its own ([Shared libraries](../../tools/README.md#shared-libraries)). The kit's own sources never include a library, so a game that takes none is built as before.
 
 ## How it's checked
 

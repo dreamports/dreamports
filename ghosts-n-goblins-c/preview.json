@@ -3,8 +3,8 @@
   "title": "Ghosts'n Goblins Dreamport in C",
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
-  "branch": "fix/1456-gng-twins-right",
-  "commit": "46af4b656d72f338d47bc897596f22e53f25b6c2",
-  "made": "2026-11-17T22:04:00.529Z",
-  "about": "Ghosts'n Goblins Dreamport's twins put right against the function check"
+  "branch": "fix/1456-nes-twins-finished",
+  "commit": "186109609500053e46d0508c7cb594df199f1765",
+  "made": "2026-11-20T04:55:46.493Z",
+  "about": "the function check follows the stack pointer and the game follows Y; no frame changes"
 }

@@ -1,6 +1,8 @@
 // A game in C on the PlayStation 2's kit: what the page calls, by name, to start it, run its frames, draw them and hear
-// them, as kit/c/console.c does for a console with no kit of its own, and each frame's draw list, which the proof tools
-// ask for (ps2.h). What the game writes before its first frame, as it sets up its screen, is in no frame's list.
+// them, as kit/c/console.c does for a console with no kit of its own, and each frame's draw list and sound list, which
+// the proof tools ask for (ps2.h). What the game writes before its first frame, as it sets up its screen and its
+// sound, is in no frame's list. Each frame runs the console's time on to the next V-blank, which mixes the sound chip's
+// samples due in it (iop.c), and those play, with whatever game_sound adds of its own.
 
 #include "ps2-kit.h"
 #include "page.h"
@@ -8,20 +10,132 @@
 // the most samples one call makes, a tenth of a second's: the page asks again for more
 #define SOUND_MAX (CONSOLE_SOUND_RATE / 10 + 1)
 static float sound[SOUND_MAX * 2];
-static uint32_t frame_hash, frame_count;
+static uint32_t frame_hash, frame_count, sound_hash, sound_count;
+
+// the sound chip's samples mixed and not played yet, left and right, which the page takes as it plays
+#define WAITING 16384
+static int16_t waiting[WAITING * 2];
+static uint32_t waiting_from, waiting_count;
+static void heard(void) {
+  uint32_t pairs;
+  const int16_t *samples = spu2_heard(&pairs);
+  for (uint32_t i = 0; i < pairs; i++) {
+    // a page that has stopped taking them loses the oldest
+    if (waiting_count == WAITING) {
+      waiting_from = (waiting_from + 1) % WAITING;
+      waiting_count--;
+    }
+    uint32_t at = (waiting_from + waiting_count++) % WAITING;
+    waiting[at * 2] = samples[i * 2];
+    waiting[at * 2 + 1] = samples[i * 2 + 1];
+  }
+}
+
+// the game's start is over: the console's time runs on to its first V-blank
+static int starting;
+static void started(void) {
+  ps2_clock_to_vblank();
+  heard();
+}
 
 /** Starts the game. */
 EXPORT("dp_start") void dp_start(void) {
+  ps2_clock_power();
   gs_power();
+  iop_bios_power();
+  pad_power();
+  cdvd_power();
+  mc_power();
+  spu2_list_start();
   game_start();
+  // a game whose start waits for its disc goes on with it in the page's next call
+  starting = kit_frame_paused();
+  if (!starting) started();
 }
-/** Runs one frame with the buttons in `buttons` held, a bit each in kit/consoles.js's order (console.h). */
+/** Runs one frame with the buttons in `buttons` held, a bit each in kit/consoles.js's order (console.h). A frame the
+ *  game paused partway through, as it waited for its disc (kit_pause), goes on with the same draw list. */
 EXPORT("dp_step") void dp_step(uint32_t buttons) {
-  gs_list_start();
+  // a start that paused for the disc goes on first, as game_step runs the same code under kit_run, and then the frame
+  if (starting) {
+    game_step(buttons);
+    if (kit_frame_paused()) return;
+    starting = 0;
+    started();
+  }
+  if (!kit_frame_paused()) {
+    gs_list_start();
+    spu2_list_start();
+    iop_vblank();
+    pad_hold(buttons);
+  }
   game_step(buttons);
+  if (kit_frame_paused()) return;
+  ps2_clock_to_vblank();
   frame_hash = gs_list_hash();
   frame_count = gs_list_count();
+  sound_hash = spu2_list_hash();
+  sound_count = spu2_list_count();
+  heard();
 }
+/** The sound list of the last frame run: its hash and how many things it holds, as the draw list's, and the whole
+ *  list, as its bytes and how many, or 0xFFFFFFFF when it was too long to keep (spu2.c). */
+EXPORT("dp_sound_list") uint32_t dp_sound_list(void) { return sound_hash; }
+EXPORT("dp_sound_list_count") uint32_t dp_sound_list_count(void) { return sound_count; }
+EXPORT("dp_sound_list_bytes") const uint8_t *dp_sound_list_bytes(void) {
+  uint32_t size;
+  return spu2_list_bytes(&size);
+}
+EXPORT("dp_sound_list_size") uint32_t dp_sound_list_size(void) {
+  uint32_t size;
+  spu2_list_bytes(&size);
+  return size;
+}
+/** The samples the sound chip mixed in the last frame, left and right, 16 bits each, and how many pairs: what the
+ *  proof tools compare with the original's, sample for sample. */
+EXPORT("dp_sound_heard") const int16_t *dp_sound_heard(void) {
+  uint32_t pairs;
+  return spu2_heard(&pairs);
+}
+EXPORT("dp_sound_heard_count") uint32_t dp_sound_heard_count(void) {
+  uint32_t pairs;
+  spu2_heard(&pairs);
+  return pairs;
+}
+/** The memory cards, for the page to keep and the proof tools to compare with the original's (mc.c, kit/ps2/card.js):
+ *  how many times the game has changed them, and their bytes. */
+EXPORT("dp_memory_cards_changes") uint32_t dp_memory_cards_changes(void) { return mc_changes(); }
+EXPORT("dp_memory_cards") const uint8_t *dp_memory_cards(void) {
+  uint32_t size;
+  return mc_bytes(&size);
+}
+EXPORT("dp_memory_cards_size") uint32_t dp_memory_cards_size(void) {
+  uint32_t size;
+  mc_bytes(&size);
+  return size;
+}
+// The console's memory, for the proof tools to compare with the original's after every frame (tools/lib/memory.mjs): a
+// game that keeps its memory where the console keeps it, as one whose every function is a twin does, says where each
+// stretch of it is, and the page reads them back by the console's own addresses (kit/c/game.js). The kit keeps none of
+// it for a game that says nothing.
+#define MEMORIES 32
+static struct { uint32_t memory, address, size; uint8_t *at; } memories[MEMORIES];
+static int memory_count;
+void ps2_console_memory(uint32_t memory, uint32_t address, uint32_t size, void *at) {
+  if (memory_count == MEMORIES) return;
+  memories[memory_count].memory = memory;
+  memories[memory_count].address = address;
+  memories[memory_count].size = size;
+  memories[memory_count].at = at;
+  memory_count++;
+}
+/** Where `bytes` from `address` of one of the console's memories are, or 0 when the game keeps none of them there. */
+EXPORT("dp_console_memory") uint8_t *dp_console_memory(uint32_t memory, uint32_t address, uint32_t bytes) {
+  for (int i = 0; i < memory_count; i++) {
+    if (memories[i].memory == memory && address >= memories[i].address && (uint64_t) address + bytes <= (uint64_t) memories[i].address + memories[i].size) return memories[i].at + (address - memories[i].address);
+  }
+  return 0;
+}
+
 /** The draw list of the last frame run: its hash, and how many things were written. */
 EXPORT("dp_draw_list") uint32_t dp_draw_list(void) { return frame_hash; }
 EXPORT("dp_draw_list_count") uint32_t dp_draw_list_count(void) { return frame_count; }
@@ -48,6 +162,11 @@ EXPORT("dp_sound_render") float *dp_sound_render(int count) {
   if (count > SOUND_MAX) count = SOUND_MAX;
   for (int i = 0; i < SOUND_MAX * 2; i++) sound[i] = 0;
   if (count > 0) game_sound(sound, sound + SOUND_MAX, count);
+  for (int i = 0; i < count && waiting_count; i++, waiting_count--) {
+    sound[i] += waiting[waiting_from * 2] / 32768.0f;
+    sound[SOUND_MAX + i] += waiting[waiting_from * 2 + 1] / 32768.0f;
+    waiting_from = (waiting_from + 1) % WAITING;
+  }
   return sound;
 }
 EXPORT("dp_sound_render_max") int dp_sound_render_max(void) { return SOUND_MAX; }
