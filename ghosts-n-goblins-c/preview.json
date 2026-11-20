@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "fix/1456-nes-twins-finished",
-  "commit": "186109609500053e46d0508c7cb594df199f1765",
-  "made": "2026-11-20T04:55:46.493Z",
-  "about": "the function check follows the stack pointer and the game follows Y; no frame changes"
+  "commit": "b64c4a81f265ab82feab2312a6b6d851157bda65",
+  "made": "2026-11-20T07:11:54.403Z",
+  "about": ""
 }
