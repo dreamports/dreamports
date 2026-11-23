@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1794-functions-08000980",
+  "commit": "da9cf078868924196adde5c55d93eeb69fdb772d",
+  "made": "2026-11-23T22:16:21.768Z",
+  "about": "UpdateScreenCpuSet, the V-blank's work through the BIOS's copiers, has its twin in C, and so does the BIOS's CpuFastSet it calls. Both come out as the original's bytes."
+}
