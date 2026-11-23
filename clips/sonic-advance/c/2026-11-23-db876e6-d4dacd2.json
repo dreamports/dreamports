@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "logos-and-intro",
+  "recordingFile": "games/sonic-advance/proof/recordings/logos-and-intro.json",
+  "recordingSha1": "b90d36c3238af0c61b1233fd162dff9cbe3a57fe",
+  "commit": "db876e672471eaeaa081915803b4b48222d3622a",
+  "base": "79d449f005174c46dc91742bada1f8a80218f897",
+  "sideBySide": true,
+  "video": "d4dacd2dfa467e2ee6085930887ea4e09778d681",
+  "measures": {
+    "from": 194,
+    "to": 493,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 58,
+    "same": 239,
+    "changed": {
+      "frame": 254,
+      "why": "where The SEGA and Sonic Team logos starts, a part main didn't prove"
+    },
+    "newFrames": 240,
+    "base": "79d449f005174c46dc91742bada1f8a80218f897"
+  }
+}
