@@ -4,7 +4,7 @@
   "author": "NahuelGenchi",
   "repository": "dreamports/dreamports",
   "branch": "feat/1783-character-select-sound-frames",
-  "commit": "b949b2351ff7889a0b0fc3016f8098bbb20f566e",
-  "made": "2026-11-23T06:35:27.644Z",
-  "about": "Twenty-nine recordings that skip the character select now tell the game how many frames the original spent there, so the C sound library's 15-frame counter stays in step with the original's. A note says what was measured and what is still apart."
+  "commit": "01271f2b01627be27134e313d13fa9029877be6a",
+  "made": "2026-11-23T06:54:56.165Z",
+  "about": "Twenty-eight recordings that skip the character select now tell the game how many frames the original spent there, so the C sound library's 15-frame counter stays in step with the original's. A note says what was measured and what is still apart."
 }

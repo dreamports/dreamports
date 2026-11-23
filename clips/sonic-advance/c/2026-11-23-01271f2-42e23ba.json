@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "soft-reset-normal-ending",
+  "recordingFile": "games/sonic-advance/proof/recordings/soft-reset-normal-ending.json",
+  "recordingSha1": "a4bb0c24732adb6852a36d9386323174a4e985ee",
+  "commit": "01271f2b01627be27134e313d13fa9029877be6a",
+  "base": "b9ff6208bac33f8e60c45702fde10493b70e751c",
+  "sideBySide": true,
+  "video": "42e23ba4557242e70d490342d1d308a140cdff50",
+  "measures": {
+    "from": 9380,
+    "to": 9679,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 7,
+    "same": 154,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "b9ff6208bac33f8e60c45702fde10493b70e751c"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "amy-angel-island",
+  "recordingFile": "games/sonic-advance/proof/recordings/amy-angel-island.json",
+  "recordingSha1": "bb569af65d8ad5eab53d3b3860c1a63d12406225",
+  "commit": "01271f2b01627be27134e313d13fa9029877be6a",
+  "base": "b9ff6208bac33f8e60c45702fde10493b70e751c",
+  "sideBySide": true,
+  "video": "6e23aa93c6868fa3cea1fef181960299631e65f4",
+  "measures": {
+    "from": 2362,
+    "to": 2661,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "b9ff6208bac33f8e60c45702fde10493b70e751c"
+  }
+}

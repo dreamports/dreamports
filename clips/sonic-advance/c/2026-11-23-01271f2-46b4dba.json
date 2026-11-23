@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "course-select-all-rows",
+  "recordingFile": "games/sonic-advance/proof/recordings/course-select-all-rows.json",
+  "recordingSha1": "0115d3f67df9746351147981c654932687001e17",
+  "commit": "01271f2b01627be27134e313d13fa9029877be6a",
+  "base": "b9ff6208bac33f8e60c45702fde10493b70e751c",
+  "sideBySide": true,
+  "video": "46b4dba65d852b5d45be60f3e3ebc6c7ad56eeca",
+  "measures": {
+    "from": 3880,
+    "to": 4179,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 211,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "b9ff6208bac33f8e60c45702fde10493b70e751c"
+  }
+}
