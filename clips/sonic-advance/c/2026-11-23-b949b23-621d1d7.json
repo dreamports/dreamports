@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "amy-cosmic-angel",
+  "recordingFile": "games/sonic-advance/proof/recordings/amy-cosmic-angel.json",
+  "recordingSha1": "61ff0c1f1b9c6862d376a34041b1e9c92f51479c",
+  "commit": "b949b2351ff7889a0b0fc3016f8098bbb20f566e",
+  "base": "b9ff6208bac33f8e60c45702fde10493b70e751c",
+  "sideBySide": true,
+  "video": "621d1d7f44525d06c9e87d354917593c15e60547",
+  "measures": {
+    "from": 2434,
+    "to": 2733,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "b9ff6208bac33f8e60c45702fde10493b70e751c"
+  }
+}

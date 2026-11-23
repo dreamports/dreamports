@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "amy-ice-mountain",
+  "recordingFile": "games/sonic-advance/proof/recordings/amy-ice-mountain.json",
+  "recordingSha1": "5ce6296e89fabc7d1b8d47450ffee243e5a139c4",
+  "commit": "b949b2351ff7889a0b0fc3016f8098bbb20f566e",
+  "base": "b9ff6208bac33f8e60c45702fde10493b70e751c",
+  "sideBySide": true,
+  "video": "375bdaee5cabc63ecfb67dec73ffd012b92db7c9",
+  "measures": {
+    "from": 2314,
+    "to": 2613,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 0,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "b9ff6208bac33f8e60c45702fde10493b70e751c"
+  }
+}

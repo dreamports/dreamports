@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-the-moon",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-the-moon.json",
+  "recordingSha1": "4059aaa31a79d51948ceef0b9edcd271c4632724",
+  "commit": "b949b2351ff7889a0b0fc3016f8098bbb20f566e",
+  "base": "b9ff6208bac33f8e60c45702fde10493b70e751c",
+  "sideBySide": true,
+  "video": "da9e9d71e806e6165e9de25e695197a37a44fbd3",
+  "measures": {
+    "from": 13300,
+    "to": 13599,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 62,
+    "same": 61,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "b9ff6208bac33f8e60c45702fde10493b70e751c"
+  }
+}

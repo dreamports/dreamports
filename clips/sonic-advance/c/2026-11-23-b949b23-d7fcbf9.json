@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-ice-mountain-act-2",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-ice-mountain-act-2.json",
+  "recordingSha1": "8d10dc5ef1e47b692e1b1ae08b917844e4676116",
+  "commit": "b949b2351ff7889a0b0fc3016f8098bbb20f566e",
+  "base": "b9ff6208bac33f8e60c45702fde10493b70e751c",
+  "sideBySide": true,
+  "video": "d7fcbf92eb813695e8d5a9bccb2734e6df824829",
+  "measures": {
+    "from": 16406,
+    "to": 16705,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 14,
+    "same": 18,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "b9ff6208bac33f8e60c45702fde10493b70e751c"
+  }
+}
