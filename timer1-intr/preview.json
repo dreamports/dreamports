@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1795-timer1-intr",
+  "commit": "960f2862ef898d5a735c86209ad84245809050cf",
+  "made": "2026-11-24T01:48:15.561Z",
+  "about": "Timer1Intr, the original's function at 0x080013BC, has its twin in C, proven by the same bytes. It finishes the twelve functions from 0x0800116C to 0x080013D4."
+}
