@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1878-the-intro-in-c",
+  "commit": "2dc9b5c92b74fb5762e675f2245f700055b37fb1",
+  "made": "2026-11-24T06:30:48.290Z",
+  "about": "Sonic Advance Dreamport in C plays the whole story opening, from the falling emerald through Sonic, Tails, Knuckles and Amy, and reaches the title screen's first frames. Each of the intro's 46 functions has its proof, and frames 933 to 3414 match the original."
+}

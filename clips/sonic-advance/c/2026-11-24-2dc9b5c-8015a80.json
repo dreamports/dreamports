@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "logos-and-intro",
+  "recordingFile": "games/sonic-advance/proof/recordings/logos-and-intro.json",
+  "recordingSha1": "b90d36c3238af0c61b1233fd162dff9cbe3a57fe",
+  "commit": "2dc9b5c92b74fb5762e675f2245f700055b37fb1",
+  "base": "90ec9854d71f37c1be80f8d9a0a862a58f1d67b5",
+  "sideBySide": true,
+  "video": "8015a8070d13b002a2f5c7a1367a1b5e74c91100",
+  "measures": {
+    "from": 873,
+    "to": 1172,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 3,
+    "same": 44,
+    "changed": {
+      "frame": 933,
+      "why": "where The intro starts, a part main didn't prove"
+    },
+    "newFrames": 240,
+    "base": "90ec9854d71f37c1be80f8d9a0a862a58f1d67b5"
+  }
+}

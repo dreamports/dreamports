@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "course-select-the-moon-open",
+  "recordingFile": "games/sonic-advance/proof/recordings/course-select-the-moon-open.json",
+  "recordingSha1": "22f9531f2ad43efc54d9f18a0d533c88e4d4810b",
+  "commit": "2dc9b5c92b74fb5762e675f2245f700055b37fb1",
+  "base": "90ec9854d71f37c1be80f8d9a0a862a58f1d67b5",
+  "sideBySide": true,
+  "video": "cb540f496084375e7fb7c303c0d697cd39ba0458",
+  "measures": {
+    "from": 1698,
+    "to": 1997,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 122,
+    "changed": {
+      "frame": 1758,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 240,
+    "base": "90ec9854d71f37c1be80f8d9a0a862a58f1d67b5"
+  }
+}
