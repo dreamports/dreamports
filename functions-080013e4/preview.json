@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1796-functions-080013e4",
+  "commit": "1e7dadd2338ddadd64462cc426bf00a5cee4633a",
+  "made": "2026-11-24T01:29:33.557Z",
+  "about": "DummyFunc, ClearOamBufferCpuSet and IwramDefrag of Sonic Advance now have their twins in C, each coming out as the original's exact bytes. All 12 functions from 080013E4 to 08001930 are proven."
+}

@@ -1,0 +1,67 @@
+// A game in C on the Super Nintendo's kit: what the page calls, by name, to start it, run its frames, draw them and
+// hear them. Each frame the kit runs the game's step, what its original does in a V-blank and after it, and then draws
+// the lines the console draws next, from the registers as the step left them, as `prove` compares a Dreamport's frame
+// with the original's next one.
+
+#include "snes-kit.h"
+#include "page.h"
+
+// the most samples one call makes, a tenth of a second's: the page asks again for more
+#define SOUND_MAX (CONSOLE_SOUND_RATE / 10 + 1)
+static float sound[SOUND_MAX * 2];
+
+/** Starts the game, with the console as it powers on. */
+EXPORT("dp_start") void dp_start(void) {
+  cartridge_load();
+  ppu_power();
+  // the work memory as the reference emulator powers it on
+  for (uint32_t i = 0; i < SNES_RAM_SIZE; i++) SNES_RAM[i] = 0x55;
+  for (int i = 0; i < 0x100; i++) SNES_B_REGISTERS[i] = 0;
+  for (int i = 0; i < 0x400; i++) SNES_CPU_REGISTERS[i] = 0;
+  // $4201's programmable port, all ones, which $4213 reads back
+  SNES_CPU_REGISTERS[0x201] = SNES_CPU_REGISTERS[0x213] = 0xFF;
+  apu_power();
+  game_start();
+}
+/** Runs the game's step, with the buttons in `buttons` held, the sound side on to the frame's end, and draws the
+ *  frame's lines. */
+EXPORT("dp_step") void dp_step(uint32_t buttons) {
+  // the step is the NMI's handler, as V-blank starts; then V-blank's lines, with any IRQs on them, and the frame's
+  int from = ppu_vblank_line();
+  timing_nmi();
+  game_step(buttons);
+  if (ppu_lines() + SNES_FIRST_LINE > from) {
+    // overscan turned on after V-blank started at line 225: Snes9x draws on to line 239 and starts V-blank again, a
+    // frame of its own for the tools, and the step's NMI again
+    apu_run(timing_step(from, ppu_lines() + SNES_FIRST_LINE, 1));
+    ppu_rest();
+  } else {
+    timing_vblank();
+    apu_run(timing_step(from, ppu_lines() + SNES_FIRST_LINE, 0));
+    ppu_frame();
+  }
+  // V-blank starts: the picture unit's sprite table goes back, and $4210 says so, with the processor's version, 2
+  ppu_vblank();
+  SNES_CPU_REGISTERS[0x210] = 0x82;
+}
+/** The frame, 256 or 512 words across and 224 or 448 down, as the page shows them. */
+EXPORT("dp_draw") uint32_t *dp_draw(void) {
+  game_draw();
+  int width, height;
+  const uint32_t *picture = ppu_picture(&width, &height);
+  uint32_t *out = kit_screen(width, height);
+  for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) out[y * width + x] = picture[y * 2 * SNES_WIDTH + x];
+  return out;
+}
+/** The next `count` samples of the game's sound, at most dp_sound_render_max(), the left ones and then the right ones
+ *  dp_sound_render_max() words on, each -1 to 1: the sound chip's, with the game's own added. */
+EXPORT("dp_sound_render") float *dp_sound_render(int count) {
+  if (count > SOUND_MAX) count = SOUND_MAX;
+  for (int i = 0; i < SOUND_MAX * 2; i++) sound[i] = 0;
+  if (count > 0) {
+    apu_samples(sound, sound + SOUND_MAX, count);
+    game_sound(sound, sound + SOUND_MAX, count);
+  }
+  return sound;
+}
+EXPORT("dp_sound_render_max") int dp_sound_render_max(void) { return SOUND_MAX; }
