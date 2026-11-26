@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1901-language-screen-c",
+  "commit": "1a33fa3ee0ed546af202d84dcd2cc64c95b05bf1",
+  "made": "2026-11-26T06:12:08.683Z",
+  "about": "Two of the three V-blank background functions the language screen runs are now proven by the same memory as the original. The third still has one made-up case to settle."
+}
