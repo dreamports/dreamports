@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1901-background-copy-proof",
+  "commit": "3574e40d3d284398e0d94d6d51daea08ed41a3e9",
+  "made": "2026-11-26T17:54:40.341Z",
+  "about": "The background copy's twin now keeps on the console's stack what the original keeps there and reads it back as the original does. Its last function isn't proven yet."
+}
