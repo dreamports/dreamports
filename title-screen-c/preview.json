@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1879-title-screen-c",
+  "commit": "fd07b6a56ea6d0ab3226f9f5062e33b9401f29d7",
+  "made": "2026-11-27T01:09:21.727Z",
+  "about": "The title screen plays whole in C: the game's logo comes down to its size, PRESS START blinks, and Start opens the main menu. Its six functions left are written and proven by the same bytes as the original's."
+}
