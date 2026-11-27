@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "sonic-neo-green-hill",
+  "recordingFile": "games/sonic-advance/proof/recordings/sonic-neo-green-hill.json",
+  "recordingSha1": "65ce4509235588ef93b9531f1d0c7575bed7dcb1",
+  "commit": "0a45d21d06c363d90afb53973ddc08a1441df813",
+  "base": "3f84242014b2282163610bdb2de8f0447e30464f",
+  "sideBySide": true,
+  "video": "500b01aa13ecbb489e19a6a9c770a7ce6cc751cf",
+  "measures": {
+    "from": 891,
+    "to": 1190,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 261,
+    "changed": {
+      "frame": 951,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 240,
+    "base": "3f84242014b2282163610bdb2de8f0447e30464f"
+  }
+}

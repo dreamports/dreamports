@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "soft-reset-menu",
+  "recordingFile": "games/sonic-advance/proof/recordings/soft-reset-menu.json",
+  "recordingSha1": "caf790f7d96431dfc8286bf058fc6a5d74668eb5",
+  "commit": "0a45d21d06c363d90afb53973ddc08a1441df813",
+  "base": "3f84242014b2282163610bdb2de8f0447e30464f",
+  "sideBySide": true,
+  "video": "5ab0fea2061a290651623f1700bb534de90a1a24",
+  "measures": {
+    "from": 1203,
+    "to": 1502,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 215,
+    "changed": {
+      "frame": 1301,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 202,
+    "base": "3f84242014b2282163610bdb2de8f0447e30464f"
+  }
+}

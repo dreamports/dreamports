@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "x-zone-the-normal-ending",
+  "recordingFile": "games/sonic-advance/proof/recordings/x-zone-the-normal-ending.json",
+  "recordingSha1": "ff7cfdb9201fbfc358916ecead11a268c76344c5",
+  "commit": "0a45d21d06c363d90afb53973ddc08a1441df813",
+  "base": "3f84242014b2282163610bdb2de8f0447e30464f",
+  "sideBySide": true,
+  "video": "372a8a2bb31800bd949e1ae7e8b1d884f85e239c",
+  "measures": {
+    "from": 941,
+    "to": 1240,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 1,
+    "same": 252,
+    "changed": {
+      "frame": 1001,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 240,
+    "base": "3f84242014b2282163610bdb2de8f0447e30464f"
+  }
+}
