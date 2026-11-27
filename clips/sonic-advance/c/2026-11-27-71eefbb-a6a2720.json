@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "pick-knuckles",
+  "recordingFile": "games/sonic-advance/proof/recordings/pick-knuckles.json",
+  "recordingSha1": "e4f46ddbf1c0376a5bed5726e44ed03a26080c10",
+  "commit": "71eefbb6d8570ca967ef71bce24bb63e69d21d57",
+  "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35",
+  "sideBySide": true,
+  "video": "a6a2720b7a5973b53ecdaf6b1e2028a53c343b4f",
+  "measures": {
+    "from": 1606,
+    "to": 1905,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 3,
+    "same": 79,
+    "changed": {
+      "frame": 1701,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 205,
+    "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35"
+  }
+}

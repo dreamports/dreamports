@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "pick-tails",
+  "recordingFile": "games/sonic-advance/proof/recordings/pick-tails.json",
+  "recordingSha1": "0297e433d5c95c55a4eeba5df069644667ddea51",
+  "commit": "71eefbb6d8570ca967ef71bce24bb63e69d21d57",
+  "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35",
+  "sideBySide": true,
+  "video": "114d952dc8acf68547cf2784781febc23026c9a5",
+  "measures": {
+    "from": 1566,
+    "to": 1865,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 3,
+    "same": 119,
+    "changed": {
+      "frame": 1701,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 165,
+    "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35"
+  }
+}

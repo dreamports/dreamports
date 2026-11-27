@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "pick-amy",
+  "recordingFile": "games/sonic-advance/proof/recordings/pick-amy.json",
+  "recordingSha1": "0323ffbfe30765542b48723b883a521a28cd7a9f",
+  "commit": "71eefbb6d8570ca967ef71bce24bb63e69d21d57",
+  "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35",
+  "sideBySide": true,
+  "video": "c227f86356caef6068adfa24e4d1214276f3acb8",
+  "measures": {
+    "from": 1566,
+    "to": 1865,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 3,
+    "same": 119,
+    "changed": {
+      "frame": 1701,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 165,
+    "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35"
+  }
+}

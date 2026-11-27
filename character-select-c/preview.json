@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1881-character-select-c",
+  "commit": "71eefbb6d8570ca967ef71bce24bb63e69d21d57",
+  "made": "2026-11-27T16:34:37.756Z",
+  "about": "The character select screen tasks, UI tile-drawing helpers and hitbox animation command are in C, matching character rotation, selection and the CPU partner code."
+}

@@ -1,0 +1,29 @@
+{
+  "clip": "dreamports",
+  "recording": "partner-code",
+  "recordingFile": "games/sonic-advance/proof/recordings/partner-code.json",
+  "recordingSha1": "b781a9c1abd4a010672c0e533c62257d6a431e78",
+  "commit": "71eefbb6d8570ca967ef71bce24bb63e69d21d57",
+  "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35",
+  "sideBySide": true,
+  "video": "5cdddef6716b310f13d2cea5f57e237fe3303ae0",
+  "measures": {
+    "from": 1641,
+    "to": 1940,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 2,
+    "same": 44,
+    "changed": {
+      "frame": 1701,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 240,
+    "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35"
+  },
+  "also": [
+    "partner-neo-green-hill"
+  ]
+}

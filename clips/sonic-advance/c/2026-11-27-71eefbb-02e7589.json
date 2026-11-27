@@ -1,0 +1,31 @@
+{
+  "clip": "dreamports",
+  "recording": "amy-neo-green-hill",
+  "recordingFile": "games/sonic-advance/proof/recordings/amy-neo-green-hill.json",
+  "recordingSha1": "84aed23c7f3a07091277f17be496648ec17b1ffa",
+  "commit": "71eefbb6d8570ca967ef71bce24bb63e69d21d57",
+  "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35",
+  "sideBySide": true,
+  "video": "02e75898ac215128c79dbf7448d95d2c5a0d6f21",
+  "measures": {
+    "from": 1566,
+    "to": 1865,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 3,
+    "same": 119,
+    "changed": {
+      "frame": 1701,
+      "why": "the first that differed on main and matches now"
+    },
+    "newFrames": 165,
+    "base": "1db9425c397720d9c1fadad8d5ce2705f6d9af35"
+  },
+  "also": [
+    "soft-reset-special-stage",
+    "special-stage-1-quota",
+    "special-stage-1"
+  ]
+}
