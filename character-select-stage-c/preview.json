@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1881-character-select-stage-c",
+  "commit": "4cd0e8eb676117ca8871b75c27ee55cb138bfe19",
+  "made": "2026-11-27T22:06:37.563Z",
+  "about": "Stage setup, title card UI, entity and ring managers, and player physics and movement twins in C for Sonic Advance."
+}
