@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1880-main-menu-c",
+  "commit": "57d90c3d7bbf40106ab4fc9961b0b822265eaa3c",
+  "made": "2026-11-27T10:55:16.918Z",
+  "about": "The main menu is in C: Up and Down move its cursor, and A fades it to white and opens the character select's screen. Its 398 frames match the original's."
+}

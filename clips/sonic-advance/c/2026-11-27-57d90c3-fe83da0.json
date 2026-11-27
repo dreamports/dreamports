@@ -1,0 +1,26 @@
+{
+  "clip": "dreamports",
+  "recording": "main-menu-cursor",
+  "recordingFile": "games/sonic-advance/proof/recordings/main-menu-cursor.json",
+  "recordingSha1": "36483b5072700df78a71e29cb6445e8250e32432",
+  "commit": "57d90c3d7bbf40106ab4fc9961b0b822265eaa3c",
+  "base": "a9ca9ed5b08e148de1644f75c0343da2ac4e358a",
+  "sideBySide": true,
+  "video": "fe83da0da02ebff6e21ece3fa7924a351f3bddfb",
+  "measures": {
+    "from": 1350,
+    "to": 1649,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 0,
+    "same": 265,
+    "changed": {
+      "frame": 1254,
+      "why": "where the original first runs code main's proof doesn't count, at 0800E044"
+    },
+    "newFrames": 300,
+    "base": "a9ca9ed5b08e148de1644f75c0343da2ac4e358a"
+  }
+}
