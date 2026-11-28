@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1881-character-select-end",
+  "commit": "7a23584780b1b4a69d6f75450ea70246efc839e1",
+  "made": "2026-11-28T04:56:00.477Z",
+  "about": "Four more of the character select's functions are proven by the same bytes, with the eight they call, and the V-blank's work is timed on every path, so going back from the character select to the main menu now matches the original."
+}

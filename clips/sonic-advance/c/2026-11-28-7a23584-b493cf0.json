@@ -1,0 +1,27 @@
+{
+  "clip": "dreamports",
+  "recording": "character-select-back-to-menu",
+  "recordingFile": "games/sonic-advance/proof/recordings/character-select-back-to-menu.json",
+  "recordingSha1": "5287f5169553eda58440358f7f969a978735e0ae",
+  "commit": "7a23584780b1b4a69d6f75450ea70246efc839e1",
+  "base": "f8562ff914c9052d72d4951d5551ed4f7b5ef048",
+  "sideBySide": true,
+  "video": "b493cf03731466b551cf4362b1e454c4d64dae3a",
+  "measures": {
+    "from": 1800,
+    "to": 2099,
+    "frames": 300,
+    "seconds": 5.02,
+    "apart": 0,
+    "differing": 0,
+    "oneColour": 2,
+    "same": 248,
+    "changed": {
+      "frame": 0,
+      "why": "as main didn't prove this recording as it is, though it proves all the code it runs",
+      "whole": true
+    },
+    "newFrames": 300,
+    "base": "f8562ff914c9052d72d4951d5551ed4f7b5ef048"
+  }
+}
