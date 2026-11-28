@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1881-character-select-last",
+  "commit": "2e0a1ecc7c434bc1c8e49d885c8883841cd8342a",
+  "made": "2026-11-28T17:35:41.365Z",
+  "about": "The character select's last function, which starts the stage, is in C, so the whole character select matches the original, and the act's first frames match too with the camera and Neo Green Hill's background in C."
+}
