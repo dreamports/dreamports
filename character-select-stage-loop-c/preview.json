@@ -1,0 +1,10 @@
+{
+  "game": "sonic-advance/c",
+  "title": "Sonic Advance Dreamport in C",
+  "author": "NahuelGenchi",
+  "repository": "dreamports/dreamports",
+  "branch": "feat/1881-character-select-rest",
+  "commit": "a3fe8d94e1d451e494de7df872ea76a34f424155",
+  "made": "2026-11-28T00:38:25.486Z",
+  "about": "The stage's own loop, the player's main task, input, ground movement, floor sensors and level edges, the rings and entities managers and the player's sprite functions are written in C and proven by the same bytes, with the tile lookup proven by the same memory. No frame changes yet, as the act's start stays out until its first frames can match."
+}
